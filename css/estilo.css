@@ -1,0 +1,34 @@
+body{
+    background: #FFF url("http://www.webdeia.com.br/images/fundo/bgSite.png") repeat scroll 0 0;
+}
+
+/* mensagens */
+.info, .sucesso, .aviso, .erro {
+    margin: 10px 0;
+    padding: 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+
+.sucesso {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+
+.aviso {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+
+.erro {
+    color: #D8000C;
+    background-color: #FFBABA;
+}

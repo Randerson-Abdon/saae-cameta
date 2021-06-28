@@ -1,0 +1,99 @@
+/* corpo da pagina*/
+body,
+html{
+	background:#CCC; 	/* cor fundo*/
+	margin:0;	/* espaçamento das paginas*/
+	padding:0;	/* espaçamento interno*/
+	height:100%;	/* autura*/
+}
+
+/* card do login*/
+.card_login{
+	height:400px;
+	width:350px;		/* largura*/
+	margin-bottom:auto;/* com margem centralizada na vertical*/
+	margin-top:auto;  
+	background:#E2A21B;
+	position:relative;		
+	display:flex;		/* posicionamento um ao lado do outro*/
+	justify-content:center; /* posicionar objeto de dentro no centro*/
+	flex-direction: column;  /* posicionamento um a baixo do outro*/
+	/* sombreamento de opacidade sombreamento e desfoque*/
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	border-radius: 10px; /* borda arredondada*/
+	
+}
+
+/* area da logo*/
+.area_logo{
+	position:absolute;  /* ocupa 100% da area onde ela esta*/
+	height:170px;
+	width:170px;
+	border-radius:50%;
+	background:#CCC;
+	padding:10px;
+	margin-left:90px;
+	text-align:center;
+	top:-75px;		/* posicionamento em relação ao topo*/
+	
+	}
+
+/* o ponto significa que é uma classe*/
+.logo_circular{
+	height:150px;
+	width:150px;
+	border-radius:50%;
+	border:2px solid #FFF;
+		
+}
+
+/* area da form login*/
+.form_login{
+	margin-top:100px;
+	
+	}
+
+/* area da usuario*/
+input_usuario{
+	outline:0px; /* sem linha*/
+	
+	}
+/* area interna do usuario*/
+.input-group-text{
+	background:#E3290F;
+	color:white;
+	border:0;
+	border-radius:0.25rem 0 0 0.25rem;
+	
+	}
+
+/* customização do checkbox lembrar-me ao ser marcado*/
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before{
+	background-color:#E3290F;
+	
+	}
+/* area do botao*/	
+.area_botao{
+	padding:0 2rem;
+	
+	}
+/* botao*/		
+.btn_login{
+	width:100%;
+	background:#E3290F;
+	color:white;
+	
+	}
+	
+/* botao*/		
+.btn_login:hover{
+	background:#CCC;
+	
+	}
+	
+.area_links{
+	font-size:14px;
+	
+	}
