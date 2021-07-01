@@ -177,12 +177,12 @@ include_once('../conexao.php');
                     <li>
                       <b>UC:</b> <?php echo $uc; ?>
                       &nbsp;&nbsp;<b>CPF/ CNPJ: </b><?php echo $numero_cpf_cnpj ?>
-                      &nbsp;&nbsp;<b>Status da Ligação:</b> <?php echo $status_ligacao ?>
+                      &nbsp;&nbsp;<b>Status:</b> <?php echo $status_ligacao ?>
+                      &nbsp;&nbsp;<b>Nome/Razão Social:</b> <?php echo $nome_razao_social; ?>
                     </li>
 
                     <li>
-                      <b>Nome /Razão Social:</b> <?php echo $nome_razao_social; ?>
-                      &nbsp;&nbsp;<b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro ?>
+                      <b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro . ', COMPLEMENTO ' . $complemento_logradouro;; ?>
                     </li>
 
                   </ul>
