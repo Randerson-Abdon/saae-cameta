@@ -170,19 +170,22 @@ include_once('../conexao.php');
                     $status_ligacao           = $row_uc['STATUS'];
                     $data_cadastro            = $row_uc['CADASTRO'];
                     $observacoes_text         = $row_uc['OBSERVAÇÕES'];
+                    if ($complemento_logradouro == "") {
+                      $complemento_logradouro = "INEXISTENTE";
+                    }
 
                     ?>
 
 
                     <li>
                       <b>UC:</b> <?php echo $uc; ?>
-                      &nbsp;&nbsp;<b>CPF/ CNPJ: </b><?php echo $numero_cpf_cnpj ?>
+                      &nbsp;&nbsp;<b>CPF/CNPJ: </b><?php echo $numero_cpf_cnpj ?>
                       &nbsp;&nbsp;<b>Status:</b> <?php echo $status_ligacao ?>
                       &nbsp;&nbsp;<b>Nome/Razão Social:</b> <?php echo $nome_razao_social; ?>
                     </li>
 
                     <li>
-                      <b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro . ', COMPLEMENTO ' . $complemento_logradouro;; ?>
+                      <b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro . ', COMPLEMENTO ' . $complemento_logradouro; ?>
                     </li>
 
                   </ul>
