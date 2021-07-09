@@ -20,7 +20,7 @@ date_default_timezone_set('America/Sao_Paulo');
 define('HOST', 'localhost');
 define('USUARIO', 'provider');
 define('SENHA', 'Jp?20061965');
-define('BD', 'santaizabel-pa');
+define('BD', 'cameta-pa');
 
 //VARIAVEL PARA GUARDAR A EXECUÇÃO DA CONEXÃO
 $conexao = mysqli_connect(HOST, USUARIO, SENHA, BD) or die('Não Conectou');

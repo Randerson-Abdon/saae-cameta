@@ -3,9 +3,6 @@
 ini_set('memory_limit', '-1');
 include_once('../conexao.php');
 include_once('../verificar_autenticacao.php');
-?>
-
-<?php
 
 if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
   header('Location: ../login.php');
@@ -13,6 +10,17 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 }
 
 ?>
+
+<style>
+  #imgpos {
+    margin-left: 30%;
+    top: 80%;
+    /* posiciona a 70px para baixo */
+    display: none;
+    z-index: 2 !important;
+
+  }
+</style>
 
 
 <div class="modal-body" style="margin-top: -50px;">
@@ -145,7 +153,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
         </div>
 
       </div>
-      <div class="form-group" id="dados3" style="display: none; margin-left: -25px;"></div>
+      <div class="form-group" id="dados3" style="display: none; margin-left: -25px; z-index: 1;"></div>
 
 
 
@@ -210,6 +218,8 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
   });
 
   $("#buscar3").click(function() {
+    $("#dados3").hide();
+    $("#imgpos").show();
     $.ajax({
       url: "resultado6.php ",
       type: "POST",
@@ -220,6 +230,8 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
       }), //estamos enviando o valor do input
       success: function(resposta) {
+        $("#imgpos").hide();
+        $("#dados3").show();
         $('#dados3').html(resposta);
       }
 
@@ -302,3 +314,5 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     keepStatic: true
   });
 </script>
+
+<img src="../img/load.gif" width="25%" alt="logo do site Maujor" id="imgpos" />

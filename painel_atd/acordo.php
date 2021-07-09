@@ -168,18 +168,12 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                         <label for="valorEntrada">Parcelas</label>
                         <select id="parcelas" name="parcelas" class="form-control">
                             <option selected="selected" value="0">selecione o número de parcelas</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
+                            <?php
+
+                            for ($i = 1; $i <= 60; $i++) { ?>
+                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+
+                            <?php } ?>
                         </select>
                     </div>
                 </div>

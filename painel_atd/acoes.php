@@ -28,6 +28,15 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 			background: #fff;
 		}
 	}
+
+	#imgpos {
+		margin-left: -100%;
+		top: 30%;
+		/* posiciona a 70px para baixo */
+		display: none;
+		z-index: 10 !important;
+		position: absolute;
+	}
 </style>
 
 <bady>
@@ -100,7 +109,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 					<td colspan="3" align="right">
 
 						<input type="button" value="VOLTAR" class="btn btn-primary" onclick="window.close();">
-						<input type="submit" value="ENVIAR" id="myP" onclick="myFunction()" class="btn btn-success">
+						<input type="submit" value="ENVIAR" id="myP" onclick="myFunction();" class="btn btn-success">
 					</td>
 
 
@@ -108,7 +117,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 				<script>
 					function myFunction() {
-						document.getElementById("myP").style.cursor = "wait";
+
+						$('#imgpos').show();
+
 					}
 				</script>
 
@@ -116,7 +127,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 		</table>
 		<div id="consulta5" class="toggle div-inline">
-			<label class="text-justify text-danger" for="id_produto" style="margin-left: -200px;">Para a efetivação do contrato de parcelamento e confissão de dívida é necessário que o mesmo seja lido e assinado, pelo consumidor, em duas vias. Para visualizar/imprimir o contrato <a data-toggle="modal" data-target="#myModal"><span class="text-success" style="cursor: pointer;"><u>CLIQUE AQUI.</u></span></a><br><br></label>
+			<label class="text-justify text-danger" for="id_produto" style="margin-left: -200px;">Para a efetivação do contrato de parcelamento e confissão de dívida é necessário que o mesmo seja lido e assinado, pelo consumidor, em duas vias. Para visualizar/imprimir o contrato <a data-toggle="modal" data-target="#myModal"><span class="text-success" onclick=""><u>CLIQUE AQUI.</u></span></a><br><br></label>
 		</div>
 	<?php } ?>
 
@@ -273,7 +284,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 		$extenso_entrada = convert_number_to_words($valorEntrada2);
 
 		$decimal = substr($valorEntrada, 2, 2);
-		@$decExtenso = $valorEntrada - substr($valorEntrada, 2, 2);
+		$decExtenso = (int)$valorEntrada - (int)substr($valorEntrada, 2, 2);
 
 		$extenso_entrada2 = convert_number_to_words($decExtenso) . ' reais';
 
@@ -475,3 +486,6 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 		}
 	}
 </script>
+
+
+<img src="../img/load.gif" width="100%" alt="logo do site Maujor" id="imgpos" />

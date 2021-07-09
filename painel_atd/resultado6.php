@@ -212,8 +212,6 @@ include_once('../conexao.php');
 
                             $id = $uc;
 
-                            echo $id . ', ' . $localidade;
-
                             //trazendo info acordos
                             $query_ac = "SELECT * from acordo_parcelamento where id_unidade_consumidora = '$uc' and data_pagamento_parcela is null order by id_acordo_parcelamento desc ";
                             $result_ac = mysqli_query($conexao, $query_ac);
@@ -254,18 +252,22 @@ include_once('../conexao.php');
                             $data_cadastro            = $row_uc['CADASTRO'];
                             $observacoes_text         = $row_uc['OBSERVAÇÕES'];
 
+                            if ($complemento_logradouro == "") {
+                              $complemento_logradouro = "INEXISTENTE";
+                            }
+
                             ?>
 
 
                             <li>
                               <b>UC:</b> <?php echo $uc; ?>
-                              &nbsp;&nbsp;<b>CPF/ CNPJ: </b><?php echo $numero_cpf_cnpj ?>
-                              &nbsp;&nbsp;<b>Status da Ligação:</b> <?php echo $status_ligacao ?>
+                              &nbsp;&nbsp;<b>CPF/CNPJ: </b><?php echo $numero_cpf_cnpj ?>
+                              &nbsp;&nbsp;<b>Status:</b> <?php echo $status_ligacao ?>
+                              &nbsp;&nbsp;<b>Nome/Razão Social:</b> <?php echo $nome_razao_social; ?>
                             </li>
 
                             <li>
-                              <b>Nome /Razão Social:</b> <?php echo $nome_razao_social; ?>
-                              &nbsp;&nbsp;<b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro ?>
+                              <b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro . ', COMPLEMENTO ' . $complemento_logradouro; ?>
                             </li>
 
                           </ul>
