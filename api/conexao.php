@@ -5,8 +5,8 @@ $host = 'localhost';
 $usuario = 'root';
 $senha = '';
  */
-$banco = 'cameta-pa';
-$host = 'cameta-pa.cvpyiyze5epg.sa-east-1.rds.amazonaws.com';
+$banco = 'santaizabel-pa';
+$host = 'santaizabel-pa.cvpyiyze5epg.sa-east-1.rds.amazonaws.com';
 $usuario = 'provider';
 $senha = 'Jp?20061965';
 

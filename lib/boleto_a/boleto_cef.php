@@ -116,14 +116,16 @@ $observacoes_text         = $row_uc['OBSERVAÇÕES'];
 
 $id_usuario_editor = $_SESSION['id_usuario'];
 
-$data = date('Y/m/d');
-$vencimento = date('Y/m/d', strtotime('+3 days'));
+$data = date('Y-m-d');
+$vencimento = date('Y-m-d', strtotime('+3 days'));
 
 $query_teste = "SELECT * from controle_boleto_acordo where id_acordo_parcelamento = '$id_acordo_firmado' AND data_lancamento_boleto = '$data' ";
 $result_teste = mysqli_query($conexao, $query_teste);
 $linha_count = mysqli_num_rows($result_teste);
 
-if ($linha_count == '') {
+//echo $id_acordo_firmado . ', ' . $doc . ', ' . $codigo_barras . ', ' . $total_geral_faturado2 . ', ' . $id_usuario_editor . ', ' . $vencimento;
+
+if ($linha_count == 0) {
 	$query_boleto = "INSERT INTO controle_boleto_acordo (id_acordo_parcelamento, numero_boleto, codigo_barras_boleto, valor_boleto, gerador_controle_boleto, data_vencimento_boleto) values ('$id_acordo_firmado', '$doc', '$codigo_barras', '$total_geral_faturado2', '$id_usuario_editor', '$vencimento')";
 
 	$result_boleto = mysqli_query($conexao, $query_boleto);
@@ -132,7 +134,7 @@ if ($linha_count == '') {
 		echo "<script language='javascript'>window.alert('Ocorreu um erro ao Gerar!'); </script>";
 	} else {
 
-		$query_acordo = "INSERT INTO acordo_parcelamento (id_localidade, id_unidade_consumidora, id_acordo_parcelamento,	numero_parcela, Id_usuario_editor_registro, data_lancamento_parcela,	data_vencimento_parcela, valor_parcela) values ('$id_localidade', '$id', '$id_acordo_firmado', '00/00', '$id_usuario_editor', '$data', '$vencimento', '$total_geral_faturado2')";
+		$query_acordo = "INSERT INTO acordo_parcelamento (id_localidade, id_unidade_consumidora, id_acordo_parcelamento, numero_parcela, Id_usuario_editor_registro, data_lancamento_parcela, data_vencimento_parcela, valor_parcela) values ('$id_localidade', '$id', '$id_acordo_firmado', '00/00', '$id_usuario_editor', '$data', '$vencimento', '$total_geral_faturado2')";
 
 		$result_acordo = mysqli_query($conexao, $query_acordo);
 

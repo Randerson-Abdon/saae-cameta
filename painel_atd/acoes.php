@@ -30,7 +30,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 	}
 
 	#imgpos {
-		margin-left: -100%;
+		margin-left: -140%;
 		top: 30%;
 		/* posiciona a 70px para baixo */
 		display: none;
@@ -127,8 +127,73 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 		</table>
 		<div id="consulta5" class="toggle div-inline">
-			<label class="text-justify text-danger" for="id_produto" style="margin-left: -200px;">Para a efetivação do contrato de parcelamento e confissão de dívida é necessário que o mesmo seja lido e assinado, pelo consumidor, em duas vias. Para visualizar/imprimir o contrato <a data-toggle="modal" data-target="#myModal"><span class="text-success" onclick=""><u>CLIQUE AQUI.</u></span></a><br><br></label>
+			<label class="text-justify text-danger" for="id_produto" style="margin-left: -200px;">Para a efetivação do contrato de parcelamento e confissão de dívida é necessário que o mesmo seja lido e assinado, pelo consumidor, em duas vias. Para visualizar/imprimir o contrato <a data-toggle="modal" data-target="#myModal"><span class="text-success" style="cursor: pointer;"><u>CLIQUE AQUI.</u></span></a><br><br></label>
 		</div>
+
+		<?php if ($nParcelas > 10) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 40%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 20) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 50%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 30) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 60%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 40) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 70%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 50) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 80%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+
+
+
+
 	<?php } ?>
 
 
