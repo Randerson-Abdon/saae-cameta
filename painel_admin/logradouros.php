@@ -125,10 +125,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                       $nome_localidade = $row_localidade['nome_localidade'];
 
                       //trazendo o nome do bairro que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_bairro = "SELECT * from bairro where id_bairro = '$bairro' ";
+                      $query_bairro = "SELECT * from bairro where id_localidade = '$localidade' AND id_bairro = '$bairro' ";
                       $result_bairro = mysqli_query($conexao, $query_bairro);
                       $row_bairro = mysqli_fetch_array($result_bairro);
                       $nome_bairro = $row_bairro['nome_bairro'];
+
 
                       //trazendo o nome do tipo logradouro que esta relacionado com o id, semelhante ao INNER JOIN
                       $query_t_log = "SELECT * from tipo_logradouro where id_tipo_logradouro = '$tipo_logradouro' ";
@@ -318,7 +319,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
       $nome_localidade = mb_strtoupper($_POST['id_localidade']);
       //consulta para id_localidade
-      $query_loc = "select * from localidade order by id_localidade desc ";
+      $query_loc = "SELECT * FROM localidade WHERE nome_localidade = '$nome_localidade' ";
       $result_loc = mysqli_query($conexao, $query_loc);
       $res_loc = mysqli_fetch_array($result_loc);
       $id_localidade = $res_loc["id_localidade"];
@@ -341,22 +342,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         exit();
       }
 
-      $query = "INSERT INTO logradouro (id_logradouro, nome_logradouro, id_localidade, id_bairro, cep_logradouro, id_usuario_editor_registro, tipo_logradouro, data_ultima_edicao) values ('$id_logradouro', '$nome_logradouro', '$id_localidade', '$id_bairro', '$cep_logradouro', '$id_usuario_editor', '$id_tipo_logradouro', curDate())";
+      echo $id_logradouro . ', ' . $nome_logradouro . ', ' . $id_localidade . ', ' . $id_bairro . ', ' . $cep_logradouro . ', ' . $id_usuario_editor . ', ' . $id_tipo_logradouro;
+
+      $query = "INSERT INTO logradouro (id_logradouro, nome_logradouro, id_localidade, id_bairro, cep_logradouro, id_usuario_editor_registro, tipo_logradouro) values ('$id_logradouro', '$nome_logradouro', '$id_localidade', '$id_bairro', '$cep_logradouro', '$id_usuario_editor', '$id_tipo_logradouro')";
 
       $result = mysqli_query($conexao, $query);
-
-
-      //INSERINDO NA TABELA DE ALUNOS
-      // if($nivel == 'Aluno'){
-
-      // $query_alunos = "INSERT INTO alunos (nome, cpf, email, senha, foto, data) values ('$nome', '$cpf', '$usuario', '$senha', 'sem-perfil.png', curDate())";
-
-      // $result_alunos = mysqli_query($conexao, $query_alunos);
-
-
-      // }
-
-
 
       if ($result == '') {
         echo "<script language='javascript'>window.alert('Ocorreu um erro ao Salvar!'); </script>";

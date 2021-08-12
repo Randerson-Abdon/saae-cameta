@@ -211,23 +211,35 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                           Competência
                         </th>
                         <th>
-                          Total Tarifa
+                          Tarifa
                         </th>
                         <th>
-                          Total Multa
+                          Multa
                         </th>
                         <th>
-                          Total Juros
+                          Juros
                         </th>
                         <th>
-                          Total Serviços
+                          Serviços
                         </th>
                         <th>
-                          Total Parcelas
+                          Parcelas
                         </th>
                         <th>
                           Faturado
                         </th>
+
+                        <?php
+                        if ($status == '2') { ?>
+                          <th>
+                            Vencimento
+                          </th>
+                          <th>
+                            Pagamento
+                          </th>
+                        <?php } ?>
+
+
 
 
 
@@ -248,6 +260,8 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                           $total_servicos_requeridos = $res["SERVICOS"];
                           $total_parcela_acordo      = $res["ACORDO"];
                           $id_localidade             = $res["ID_LOC"];
+                          @$data_pagamento           = $res["PGTO"];
+                          @$vencimento2              = $res["VENCTO"];
 
                           // Explode a barra e retorna três arrays
                           //$data = explode("/", $mes_faturado);
@@ -269,6 +283,11 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                             <td><?php echo $total_servicos_requeridos; ?></td>
                             <td><?php echo $total_parcela_acordo; ?></td>
                             <td><?php echo $total_geral_faturado; ?></td>
+                            <?php
+                            if ($status == '2') { ?>
+                              <td><?php echo $vencimento2; ?></td>
+                              <td><?php echo $data_pagamento; ?></td>
+                            <?php } ?>
 
 
                           </tr>
@@ -299,22 +318,22 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
         <thead class="text-secondary">
 
           <th>
-            Total Geral Tarifa
+            Total Tarifa
           </th>
           <th>
-            Total Geral Multa
+            Total Multa
           </th>
           <th>
-            Total Geral Juros
+            Total Juros
           </th>
           <th>
-            Total Geral Serviços
+            Total Serviços
           </th>
           <th>
-            Total Geral Parcelas
+            Total Parcelas
           </th>
           <th>
-            Total Geral Faturado
+            Total Faturado
           </th>
           <th>
             Total Registros

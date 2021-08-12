@@ -47,6 +47,9 @@
     ) or die("Erro na query da procedure AZ: " . mysqli_error($conexao));
     mysqli_next_result($conexao);
 
+    $value = count($dados);
+    $x = 0;
+
     foreach ($dados as $linha) {
 
       if ((substr($linha, 0, 1) == 'G')) {
@@ -56,6 +59,17 @@
         //@$total_reg = count($cdb);
 
         //echo $cabecalho . ', ' . $nome_retorno . ', ' . $cdb . ', ' . $id_usuario_editor . '<br>';
+
+        $x++;
+
+        if ($x == $value - 2) {
+          //executa o store procedure info manutencao_retorno_bancario_g
+          $result_g = mysqli_query(
+            $conexao,
+            "CALL sp_processa_arrecadacao_g('$cabecalho','$nome_retorno','$cdb','$id_usuario_editor');"
+          ) or die("Erro na query da procedure G: " . mysqli_error($conexao));
+          mysqli_next_result($conexao);
+        }
 
         //executa o store procedure info manutencao_retorno_bancario_g
         $result_g = mysqli_query(
