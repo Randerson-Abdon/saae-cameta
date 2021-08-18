@@ -4,7 +4,7 @@ include_once('../conexao.php');
 
 include_once('../verificar_autenticacao.php');
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -61,7 +61,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                 $id_unidade_consumidora = $_POST['id_unidade_consumidora'];
                 $status          = $_POST['status'];
                 //mudar saae
-                $localidade = $_POST['id_localidade'];
+                $localidade = '01';
                 $id_unidade_consumidora = str_pad($id_unidade_consumidora, 5, '0', STR_PAD_LEFT);
 
                 //executa o store procedure
@@ -103,7 +103,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                   @$uf_saae = $row_ps['uf_saae'];
                   @$nome_saae = $row_ps['nome_saae'];
                   @$email_saae = $row_ps['email_saae'];
-                  @$logo_orgao = $row_ps['logo_orgao'];
+                  $logo_orgao = $row_ps['logo_orgao'];
 
                   $data = date('d/m/Y');
 
@@ -112,9 +112,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                   <table style="margin-bottom: 15px;">
                     <thead>
                       <tr>
-                        <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+                        <th style="width: 20%;"><img width="80%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
                         <th>
-                          <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+                          <p><?php echo $nome_prefeitura ?> <br>
                             SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                             SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
                             RELATÓRIO DA COMPOSIÇÃO DE ACORDOS <?php if ($status == 'DEVEDORA') {
@@ -139,7 +139,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
                           $id = $id_unidade_consumidora;
 
-                          //echo $id;
+                          $localidade = '01';
 
                           //executa o store procedure info consumidor
                           $result_sp = mysqli_query(
@@ -197,7 +197,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                           N° da Parcela
                         </th>
                         <th>
-                          Competência
+                          Vencimento
                         </th>
                         <?php if ($status == 'PAGA') { ?>
                           <th>
@@ -215,34 +215,36 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                           $id = $row['N.º UC'];
                           $valor = $row['VALOR'];
 
-                          $id_acordo_firmado = $row['N.º CONTRATO'];
+                          $id_acordo_parcelamento = $row['N.º CONTRATO'];
                           $competencia = $row['COMPETÊNCIA'];
                           $numero_parcela = $row['N.º PARC.'];
                           $vencimento = $row['VENCTO'];
                           $data_pagamento = $row['PGTO'];
 
-                          // Explode a barra e retorna três arrays
-                          //$data = explode("/", $mes_faturado);
+                          if (empty($vencimento)) {
 
-                          // Cria três variáveis $dia $mes $ano
-                          //list($ano, $mes) = $data;
+                            $update = 'S';
 
-                          // Recria a data invertida
-                          //$data = "$mes/$ano";
+                            $data = date('d-m-Y');
+                            $n = explode('/', $numero_parcela);
+                            $n = $n[0];
+
+                            if ($n == '00') {
+                              $vencimento = date('d/m/Y');
+                            } elseif ($n == '01') {
+                              $vencimento = date('d/m/Y', strtotime('+3 days', strtotime($data)));
+                            } else {
+                              $vencimento = date('d/m/Y', strtotime('+' . ($n - 1) . 'month', strtotime($data)));
+                            }
+                          }
 
                         ?>
 
                           <tr>
 
-                            <td class="text-danger"><?php echo $id_acordo_firmado; ?></td>
+                            <td class="text-danger"><?php echo $id_acordo_parcelamento; ?></td>
                             <td><?php echo $numero_parcela; ?></td>
-
-                            <td><?php if ($competencia == '') {
-                                  echo 'ENTRADA';
-                                } else {
-                                  echo $competencia;
-                                } ?></td>
-
+                            <td><?php echo $vencimento; ?></td>
                             <?php if ($status == 'PAGA') { ?>
                               <td><?php echo $data_pagamento; ?></td>
                             <?php } ?>

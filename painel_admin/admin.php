@@ -185,9 +185,6 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     <a href="admin.php?acao=retorno">Processamento Bancário</a>
                   </li>
                   <li>
-                    <a href="admin.php?acao=baixa">Processamento Manual</a>
-                  </li>
-                  <li>
                     <a href="admin.php?acao=faturando">Estono e Faturamento</a>
                   </li>
                 </ul>
@@ -246,7 +243,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
               <div class="sidebar-submenu">
                 <ul>
                   <li>
-                    <a href="#">Planejamento e Execução de Cortes</a>
+                    <a href="admin.php?acao=os">Ordens de Serviço</a>
                   </li>
                   <li>
                     <a href="#">Planejamento e Execução de Ligações</a>
@@ -323,13 +320,19 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
               <div class="sidebar-submenu">
                 <ul>
                   <li>
-                    <a href="admin.php?acao=rel_bl">Relatório Bairro/Logradouro</a>
+                    <a href="admin.php?acao=rel_bl">Consumidores</a>
                   </li>
                   <li>
-                    <a href="#">Taxas e Serviços</a>
+                    <a href="admin.php?acao=contas_recebidas">Contas Recebidas</a>
                   </li>
                   <li>
-                    <a href="#">Rubricas</a>
+                    <a href="admin.php?acao=contas_receber">Contas a Receber</a>
+                  </li>
+                  <li>
+                    <a href="admin.php?acao=matriculas_baixadas">Matrículas Baixadas</a>
+                  </li>
+                  <li>
+                    <a href="admin.php?acao=arq_baixados">Crédito Bancário</a>
                   </li>
                 </ul>
               </div>
@@ -462,11 +465,13 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         } elseif (@$_GET['acao'] == 'endereco' or isset($_GET['txtpesquisarEndereco'])) {
           include_once('endereco.php');
         } elseif (@$_GET['acao'] == 'faturamento' or isset($_GET['txtpesquisarFaturamento'])) {
-          include_once('faturamento.php');
+          include_once('historico_financeiro.php');
         } elseif (@$_GET['acao'] == 'os' or isset($_GET['txtpesquisarOs'])) {
           include_once('os.php');
         } elseif (@$_GET['acao'] == 'manutencao' or isset($_GET['txtpesquisarNotificacao'])) {
           include_once('view/manutencao_da.php');
+        } elseif (@$_GET['acao'] == 'os' or isset($_GET['txtpesquisarOs'])) {
+          include_once('os.php');
         } elseif (@$_GET['acao'] == 'fatura') {
           include_once('acordo.php');
         } elseif (@$_GET['acao'] == 'retorno') {
@@ -489,6 +494,20 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
           include_once('view/lancamento_da.php');
         } elseif (@$_GET['acao'] == 'visualizacao') {
           include_once('view/visualizacao_da.php');
+        } elseif (@$_GET['acao'] == 'contas_recebidas') {
+          include_once('view/contas_recebidas.php');
+        } elseif (@$_GET['acao'] == 'matriculas_baixadas') {
+          include_once('view/matriculas_baixadas.php');
+        } elseif (@$_GET['acao'] == 'contas_receber') {
+          include_once('view/contas_receber.php');
+        } elseif (@$_GET['acao'] == 'estorno') {
+          include_once('processa_estorno.php');
+        } elseif (@$_GET['acao'] == 'arq_baixados') {
+          include_once('view/arquivos_baixados.php');
+        } elseif (@$_GET['acao'] == 'confirma') {
+          include_once('view/confirmacao.php');
+        } elseif (@$_GET['acao'] == 'baixa') {
+          include_once('baixa_manual.php');
         } else {
           include_once('home.php');
         }

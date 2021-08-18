@@ -67,7 +67,7 @@ function listaNotificacao_sp($localidade, $bairro, $logradouro)
     $result = mysqli_query(
         $conexao,
         "CALL sp_lista_notificacoes(NULL,$localidade,$bairro ,$logradouro,'0');"
-    ) or die("Erro na query da procedure 6: " . mysqli_error($conexao));
+    ) or die("Erro na query da procedure: " . mysqli_error($conexao));
     mysqli_next_result($conexao);
 
     return $result;
@@ -81,7 +81,7 @@ function listaNotificacao_uc_sp($localidade, $id)
     $result = mysqli_query(
         $conexao,
         "CALL sp_lista_notificacoes(NULL,$localidade,'0','0',$id);"
-    ) or die("Erro na query da procedure 5: " . mysqli_error($conexao));
+    ) or die("Erro na query da procedure: " . mysqli_error($conexao));
     mysqli_next_result($conexao);
 
     return $result;
@@ -95,7 +95,7 @@ function listaNotificacao_uc_manutencao($localidade, $id)
     $result = mysqli_query(
         $conexao,
         "CALL sp_lista_notificacoes(NULL,$localidade,'0','0',$id);"
-    ) or die("Erro na query da procedure 4: " . mysqli_error($conexao));
+    ) or die("Erro na query da procedure: " . mysqli_error($conexao));
     mysqli_next_result($conexao);
 
     return $result;
@@ -109,7 +109,7 @@ function listaNotificacao_log_sp($localidade, $bairro, $logradouro)
     $result = mysqli_query(
         $conexao,
         "CALL sp_lista_notificacoes(NULL,$localidade,$bairro,$logradouro,'0');"
-    ) or die("Erro na query da procedure 3: " . mysqli_error($conexao));
+    ) or die("Erro na query da procedure: " . mysqli_error($conexao));
     mysqli_next_result($conexao);
 
     return $result;

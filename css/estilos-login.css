@@ -1,10 +1,20 @@
 /* corpo da pagina*/
 body,
 html{
-	background:#CCC; 	/* cor fundo*/
-	margin:0;	/* espaçamento das paginas*/
-	padding:0;	/* espaçamento interno*/
-	height:100%;	/* autura*/
+	background-image: url(../img/01.gif);
+	background-color: #E47B38;
+	background-repeat: no-repeat;
+	background-size:100%;
+	bottom: 0;
+    color: black;
+    left: 0;
+    overflow: auto;
+    padding: 3em;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    background-size: cover;
 }
 
 /* card do login*/
@@ -13,16 +23,18 @@ html{
 	width:350px;		/* largura*/
 	margin-bottom:auto;/* com margem centralizada na vertical*/
 	margin-top:auto;  
-	background:#E2A21B;
+	background-image: url(../img/azul.jpg);
 	position:relative;		
 	display:flex;		/* posicionamento um ao lado do outro*/
 	justify-content:center; /* posicionar objeto de dentro no centro*/
 	flex-direction: column;  /* posicionamento um a baixo do outro*/
 	/* sombreamento de opacidade sombreamento e desfoque*/
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-webkit-box-shadow: 0 4px 8px 10px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	border-radius: 10px; /* borda arredondada*/
+	border:2px solid #b2b2b2;
+	
 	
 }
 
@@ -32,7 +44,7 @@ html{
 	height:170px;
 	width:170px;
 	border-radius:50%;
-	background:#CCC;
+	background-color: #9ED2F3;
 	padding:10px;
 	margin-left:90px;
 	text-align:center;
@@ -45,7 +57,7 @@ html{
 	height:150px;
 	width:150px;
 	border-radius:50%;
-	border:2px solid #FFF;
+	border:2px solid #b2b2b2;
 		
 }
 
@@ -97,3 +109,20 @@ input_usuario{
 	font-size:14px;
 	
 	}
+
+a{
+	color: #ffffff;
+}
+
+@keyframes fa-blink {
+	0% { opacity: 1; }
+	50% { opacity: 0.5; }
+	100% { opacity: 0; }
+}
+.fa-blink {
+  -webkit-animation: fa-blink .75s linear infinite;
+  -moz-animation: fa-blink .75s linear infinite;
+  -ms-animation: fa-blink .75s linear infinite;
+  -o-animation: fa-blink .75s linear infinite;
+  animation: fa-blink .75s linear infinite;
+}

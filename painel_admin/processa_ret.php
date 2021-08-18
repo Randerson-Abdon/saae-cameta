@@ -1,6 +1,5 @@
 <?php
 @session_start();
-include_once('../conexao.php');
 ?>
 <div class="container ml-4">
 
@@ -23,9 +22,14 @@ include_once('../conexao.php');
                 //var_dump($arquivo);
                 @$arquivo_tmp = $_FILES['arquivo']['tmp_name'];
                 @$nome_arquivo = $_FILES['arquivo']['name'];
+                $local = $_SESSION['nome_municipio'];
 
-                $arquivo_destino = "../include/ret_cameta/$nome_arquivo.txt";
+
+
+                $arquivo_destino = "../include/RET_$local/$nome_arquivo.txt";
                 copy($arquivo_tmp, $arquivo_destino);
+
+                //echo $arquivo_destino;
 
 
                 //ler todo o arquivo para um array
@@ -48,16 +52,15 @@ include_once('../conexao.php');
                   }
                   if ((substr($linha, 0, 1) == 'Z')) {
                     $t_reg = substr($linha, 1, 6);
-                    //$t_reg = $t_reg - 2;                // total de registros
                     $t_reg = $t_reg;                // total de registros
                     $v_t_r = substr($linha, 7, 17) / 100;      //valor total dos registros
                   }
 
                   //trazendo info bancos
-                  $query_banco = "SELECT * from banco_arrecadador where id_febraban = '$cd_banco' ";
+                  $query_banco = "SELECT * from banco_conveniado where id_febraban = '$cd_banco' ";
                   $result_banco = mysqli_query($conexao, $query_banco);
                   $row_banco = mysqli_fetch_array($result_banco);
-                  $nome_banco = $row_banco["nome_banco"];
+                  @$nome_banco = $row_banco["nome_banco"];
 
 
                 ?>
@@ -121,7 +124,6 @@ include_once('../conexao.php');
                             <a style="font-size: 12pt; height: 37px;" class="btn btn-danger btn-sm" target="_blank" href="rel_retorno.php">Imprimir</a>
                           </div>
 
-
                         <?php } ?>
 
                       </div>
@@ -134,7 +136,7 @@ include_once('../conexao.php');
                       Localidade
                     </th>
                     <th>
-                      Matrícula
+                      UC
                     </th>
                     <th>
                       Mês Faturado
@@ -194,9 +196,9 @@ include_once('../conexao.php');
                           $dt_cred = date("dmY", strtotime($dt_cred)); //data do credito
 
                           $id_sequencial = substr($linha, 100, 8); //
-                          $id_boleto = substr($linha, 62, 3); // identificação do tipo do boleto 
+                          $id_boleto = substr($linha, 62, 5); // identificação do tipo do boleto     
 
-                          if ($id_boleto == '140') {
+                          if ($id_boleto == '14001') {
                             $tipo = 'Fatura Normal';
                           } else {
                             $id_boleto = substr($linha, 62, 4);
@@ -263,7 +265,7 @@ include_once('../conexao.php');
 
                           <?php if (substr($linha, 0, 1) == 'G') { ?>
 
-                            <td><input type="text" class="form-control mr-2" name="id_localidade[]" value="<?php if ($id_boleto == '140') {
+                            <td><input type="text" class="form-control mr-2" name="id_localidade[]" value="<?php if ($id_boleto == '14001') {
                                                                                                               echo $localidade_a;
                                                                                                             } else {
                                                                                                               echo $localidade_n;
@@ -278,6 +280,7 @@ include_once('../conexao.php');
                             <td><input type="text" class="form-control mr-2" name="dt_pagamento[]" value="<?php echo @$dt_pg3; ?>" style="text-transform:uppercase; display: none;"></td>
                             <td><input type="text" class="form-control mr-2" name="mes_faturado[]" value="<?php echo @$mes_faturado2; ?>" style="text-transform:uppercase; display: none;"></td>
                             <td><input type="text" class="form-control mr-2" name="data_vencimento[]" value="<?php echo @$data_vencimento3; ?>" style="text-transform:uppercase; display: none;"></td>
+                            <td><input type="text" class="form-control mr-2" name="cabecalho" value="<?php echo @$cabecalho; ?>" style="text-transform:uppercase; display: none;"></td>
                             <td><input type="text" class="form-control mr-2" name="cabecalho" value="<?php echo @$cabecalho; ?>" style="text-transform:uppercase; display: none;"></td>
                             <td><input type="text" class="form-control mr-2" name="rodape" value="<?php echo $_SESSION['rodape']; ?>" style="text-transform:uppercase; display: none;"></td>
                             <td><input type="text" class="form-control mr-2" name="data" value="<?php echo $dt_ret; ?>" style="text-transform:uppercase; display: none;"></td>
@@ -304,14 +307,6 @@ include_once('../conexao.php');
                     </tfoot>
                   </table>
               </form>
-
-              <script type="text/javascript">
-                //post alternativo
-                function submitForm(form, action) {
-                  form.action = action;
-                  form.submit();
-                }
-              </script>
 
             </div>
           </div>

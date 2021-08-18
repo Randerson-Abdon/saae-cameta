@@ -50,7 +50,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                 $numero_req = '%' . $_GET['txtpesquisarOs'] . '%';
                 $nome = $_GET['txtpesquisarOs'] . '%';
                 //trazendo info requerimento
-                $query_up = "SELECT * from requerimento where nome_razao_social LIKE '%$nome%' ";
+                $query_up = "SELECT * from requerimento_servico where nome_razao_social LIKE '%$nome%' ";
                 $result_up = mysqli_query($conexao, $query_up);
                 $row_up = mysqli_fetch_array($result_up);
                 $nome2 = $row_up['id_requerimento'];
@@ -58,7 +58,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                 $datap = $_GET['txtpesquisarOs'];
                 $datap2 = implode('-', array_reverse(explode('/', $datap)));
                 //trazendo info requerimento
-                $query_dp = "SELECT * from requerimento where data_requerimento LIKE '%$datap2%' ";
+                $query_dp = "SELECT * from requerimento_servico where data_requerimento LIKE '%$datap2%' ";
                 $result_dp = mysqli_query($conexao, $query_dp);
                 $row_dp = mysqli_fetch_array($result_dp);
                 @$datap3 = $row_dp['id_requerimento'];
@@ -123,12 +123,13 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                       $status_ordem_servico = $res["status_ordem_servico"];
 
                       //trazendo tipo_enderecamento de unidade_consumidora que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_u = "SELECT * from requerimento where id_requerimento = '$id_requerimento' ";
+                      $query_u = "SELECT * from requerimento_servico where id_requerimento = '$id_requerimento' ";
                       $result_u = mysqli_query($conexao, $query_u);
                       $row_u = mysqli_fetch_array($result_u);
                       @$nome_razao_social = $row_u['nome_razao_social'];
                       @$data_requerimento = $row_u['data_requerimento'];
 
+                      $data_requerimento = substr($data_requerimento, 0, 10);
                       $data2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
                     ?>
@@ -230,7 +231,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $status_ordem_servico = $res['status_ordem_servico'];
 
         //trazendo info do requerimento
-        $query_rq = "SELECT * from requerimento where id_requerimento = '$id_requerimento' ";
+        $query_rq = "SELECT * from requerimento_servico where id_requerimento = '$id_requerimento' ";
         $result_rq = mysqli_query($conexao, $query_rq);
         $row_rq = mysqli_fetch_array($result_rq);
         $nome_razao_social = $row_rq['nome_razao_social'];
@@ -240,10 +241,12 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $data_requerimento = $row_rq['data_requerimento'];
         $status_requerimento = $row_rq['status_requerimento'];
 
+        $data_requerimento = substr($data_requerimento, 0, 10);
         $data2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
+
         //trazendo info endereco_instalacao
-        $query_e = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
+        $query_e = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
         $result_e = mysqli_query($conexao, $query_e);
         $row_e = mysqli_fetch_array($result_e);
         $id_localidade = $row_e['id_localidade'];
@@ -253,21 +256,21 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $complemento_logradouro = $row_e['complemento_logradouro'];
 
         //consulta para recuperação do nome da localidade
-        $query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+        $query_loc = "select * from enderecamento_localidade where id_localidade = '$id_localidade' ";
         $result_loc = mysqli_query($conexao, $query_loc);
         $row_loc = mysqli_fetch_array($result_loc);
         //vai para a modal
         $nome_loc = $row_loc['nome_localidade'];
 
         //consulta para recuperação do nome do bairro
-        $query_ba = "select * from bairro where id_localidade = '$id_localidade' and id_bairro = '$id_bairro' ";
+        $query_ba = "select * from enderecamento_bairro where id_bairro = '$id_bairro' ";
         $result_ba = mysqli_query($conexao, $query_ba);
         $row_ba = mysqli_fetch_array($result_ba);
         //vai para a modal
         $nome_ba = $row_ba['nome_bairro'];
 
         //consulta para recuperação do nome do logradouro
-        $query_log = "select * from logradouro where id_logradouro = '$id_logradouro' and id_bairro = '$id_bairro' ";
+        $query_log = "select * from enderecamento_logradouro where id_logradouro = '$id_logradouro' AND id_bairro = '$id_bairro' ";
         $result_log = mysqli_query($conexao, $query_log);
         $row_log = mysqli_fetch_array($result_log);
         //vai para a modal
@@ -303,32 +306,32 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                     <div class="form-group col-md-2">
                       <label for="id_produto">Nº OS</label>
-                      <input type="text" class="form-control mr-2" name="id_ordem_servico" value="<?php echo $id; ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="id_ordem_servico" value="<?php echo $id; ?>" required>
                     </div>
 
                     <div class="form-group col-md-2">
                       <label for="id_produto">Nº req</label>
-                      <input type="text" class="form-control mr-2" name="id_requerimento" value="<?php echo $id_requerimento; ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="id_requerimento" value="<?php echo $id_requerimento; ?>" required>
                     </div>
 
                     <div class="form-group col-md-3">
                       <label for="id_produto">UC</label>
-                      <input type="text" class="form-control mr-2" name="id_unidade_consumidora" value="<?php echo $id_unidade_consumidora ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="id_unidade_consumidora" value="<?php echo $id_unidade_consumidora ?>">
                     </div>
 
                     <div class="form-group col-md-4">
                       <label for="id_produto">CPF/CNPJ</label>
-                      <input type="text" id="numero_cpf_cnpj" class="form-control mr-2" name="numero_cpf_cnpj" placeholder="CPF/CNPJ" value="<?php echo $numero_cpf_cnpj ?>" readonly>
+                      <input type="text" id="numero_cpf_cnpj" class="form-control mr-2" name="numero_cpf_cnpj" placeholder="CPF/CNPJ" value="<?php echo $numero_cpf_cnpj ?>" required>
                     </div>
 
                     <div class="form-group col-md-5">
                       <label for="id_produto">Nome/Razão Social</label>
-                      <input type="text" class="form-control mr-2" name="nome_razao_social" placeholder="Nome/Razão Social" value="<?php echo $nome_razao_social ?>" style="text-transform:uppercase;" readonly>
+                      <input type="text" class="form-control mr-2" name="nome_razao_social" placeholder="Nome/Razão Social" value="<?php echo $nome_razao_social ?>" style="text-transform:uppercase;" required>
                     </div>
 
                     <div class="form-group col-md-3">
                       <label for="id_produto">Celular</label>
-                      <input type="text" class="form-control mr-2" name="fone_movel" placeholder="Celular" id="cel" value="<?php echo $fone_movel ?>" style="text-transform:uppercase;" readonly>
+                      <input type="text" class="form-control mr-2" name="fone_movel" placeholder="Celular" id="cel" value="<?php echo $fone_movel ?>" style="text-transform:uppercase;" required>
                     </div>
 
                   </div>
@@ -354,12 +357,12 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                     <div class="form-group col-md-3">
                       <label for="id_produto">Nº Logradouro</label>
-                      <input type="text" class="form-control mr-2" name="numero_logradouro" placeholder="Nº" style="text-transform:uppercase;" value="<?php echo $numero_logradouro; ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="numero_logradouro" placeholder="Nº" style="text-transform:uppercase;" value="<?php echo $numero_logradouro; ?>" required>
                     </div>
 
                     <div class="form-group col-md-5">
                       <label for="id_produto">Complemento</label>
-                      <input type="text" class="form-control mr-2" name="complemento_logradouro" placeholder="Complemento" style="text-transform:uppercase;" value="<?php echo $complemento_logradouro; ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="complemento_logradouro" placeholder="Complemento" style="text-transform:uppercase;" value="<?php echo $complemento_logradouro; ?>">
                     </div>
 
                   </div>
@@ -530,7 +533,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
             echo "<script language='javascript'>window.alert('Ocorreu um erro ao Iniciar!'); </script>";
           } else {
 
-            $query_status = "UPDATE requerimento set status_requerimento = '$status_requerimento' where id_requerimento = '$id_requerimento'";
+            $query_status = "UPDATE requerimento_servico set status_requerimento = '$status_requerimento' where id_requerimento = '$id_requerimento'";
             mysqli_query($conexao, $query_status);
 
             $query_sr = "UPDATE servico_requerido set id_ordem_servico = '$id' where id_requerimento = '$id_requerimento' AND id_ordem_servico is null ";
@@ -566,7 +569,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $observacoes = $res['observacoes'];
 
         //trazendo info do requerimento
-        $query_rq = "SELECT * from requerimento where id_requerimento = '$id_requerimento' ";
+        $query_rq = "SELECT * from requerimento_servico where id_requerimento = '$id_requerimento' ";
         $result_rq = mysqli_query($conexao, $query_rq);
         $row_rq = mysqli_fetch_array($result_rq);
         $nome_razao_social = $row_rq['nome_razao_social'];
@@ -599,22 +602,22 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                     <div class="form-group col-md-2">
                       <label for="id_produto">Nº OS</label>
-                      <input type="text" class="form-control mr-2" name="id_ordem_servico" value="<?php echo $id; ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="id_ordem_servico" value="<?php echo $id; ?>" required>
                     </div>
 
                     <div class="form-group col-md-2">
                       <label for="id_produto">Nº req</label>
-                      <input type="text" class="form-control mr-2" name="id_requerimento" value="<?php echo $id_requerimento; ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="id_requerimento" value="<?php echo $id_requerimento; ?>" required>
                     </div>
 
                     <div class="form-group col-md-3">
                       <label for="id_produto">UC</label>
-                      <input type="text" class="form-control mr-2" name="id_unidade_consumidora" value="<?php echo $id_unidade_consumidora ?>" readonly>
+                      <input type="text" class="form-control mr-2" name="id_unidade_consumidora" value="<?php echo $id_unidade_consumidora ?>">
                     </div>
 
                     <div class="form-group col-md-5">
                       <label for="id_produto">Nome/Razão Social</label>
-                      <input type="text" class="form-control mr-2" name="nome_razao_social" placeholder="Nome/Razão Social" value="<?php echo $nome_razao_social ?>" style="text-transform:uppercase;" readonly>
+                      <input type="text" class="form-control mr-2" name="nome_razao_social" placeholder="Nome/Razão Social" value="<?php echo $nome_razao_social ?>" style="text-transform:uppercase;" required>
                     </div>
 
                   </div>
@@ -742,7 +745,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                     <div class="form-group col-md-3">
                       <label for="fornecedor">Data de Conclusão</label>
-                      <input type="date" class="form-control mr-2" min="<?php echo $data_inicio_servico; ?>" maxlength="10" id="saida" name="data_conclusao_servico" value="<?php echo $data_inicio_servico; ?>" required />
+                      <input type="date" class="form-control mr-2" min="<?php echo $data_inicio_servico; ?>" maxlength="10" id="saida" name="data_conclusao_servico" value="2020-06-01" required />
                     </div>
 
                     <div class="form-group col-md-3">
@@ -798,7 +801,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
             $mensagem = 'O requerimento Nº ' . $id_requerimento . ' requer sua atenção!';
 
-            $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+            $query_mensagem = "UPDATE  set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
             mysqli_query($conexao, $query_mensagem);
           }
 
@@ -806,7 +809,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
             $mensagem = 'O requerimento Nº ' . $id_requerimento . ' requer sua atenção!';
 
-            $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+            $query_mensagem = "UPDATE requerimento_servico set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
             mysqli_query($conexao, $query_mensagem);
           }
 
@@ -814,7 +817,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
             $mensagem = 'O requerimento Nº ' . $id_requerimento . ' requer sua atenção!';
 
-            $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+            $query_mensagem = "UPDATE requerimento_servico set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
             mysqli_query($conexao, $query_mensagem);
           }
 
@@ -822,7 +825,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
             $mensagem = 'O requerimento Nº ' . $id_requerimento . ' requer sua atenção!';
 
-            $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+            $query_mensagem = "UPDATE requerimento_servico set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
             mysqli_query($conexao, $query_mensagem);
           }
 
@@ -830,7 +833,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
             $mensagem = 'O requerimento Nº ' . $id_requerimento . ' requer sua atenção!';
 
-            $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+            $query_mensagem = "UPDATE requerimento_servico set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
             mysqli_query($conexao, $query_mensagem);
           }
 
@@ -872,7 +875,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $status_ordem_servico = $res['status_ordem_servico'];
 
         //trazendo info do requerimento
-        $query_rq = "SELECT * from requerimento where id_requerimento = '$id_requerimento' ";
+        $query_rq = "SELECT * from requerimento_servico where id_requerimento = '$id_requerimento' ";
         $result_rq = mysqli_query($conexao, $query_rq);
         $row_rq = mysqli_fetch_array($result_rq);
         $nome_razao_social = $row_rq['nome_razao_social'];
@@ -882,11 +885,12 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $data_requerimento = $row_rq['data_requerimento'];
         $status_requerimento = $row_rq['status_requerimento'];
 
+        $data_requerimento = substr($data_requerimento, 0, 10);
         $data2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
 
         //trazendo info endereco_instalacao
-        $query_e = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
+        $query_e = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
         $result_e = mysqli_query($conexao, $query_e);
         $row_e = mysqli_fetch_array($result_e);
         $id_localidade = $row_e['id_localidade'];
@@ -896,21 +900,21 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $complemento_logradouro = $row_e['complemento_logradouro'];
 
         //consulta para recuperação do nome da localidade
-        $query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+        $query_loc = "select * from enderecamento_localidade where id_localidade = '$id_localidade' ";
         $result_loc = mysqli_query($conexao, $query_loc);
         $row_loc = mysqli_fetch_array($result_loc);
         //vai para a modal
         $nome_loc = $row_loc['nome_localidade'];
 
         //consulta para recuperação do nome do bairro
-        $query_ba = "select * from bairro where id_bairro = '$id_bairro' ";
+        $query_ba = "select * from enderecamento_bairro where id_bairro = '$id_bairro' ";
         $result_ba = mysqli_query($conexao, $query_ba);
         $row_ba = mysqli_fetch_array($result_ba);
         //vai para a modal
         $nome_ba = $row_ba['nome_bairro'];
 
         //consulta para recuperação do nome do logradouro
-        $query_log = "select * from logradouro where id_logradouro = '$id_logradouro' AND id_bairro = '$id_bairro' ";
+        $query_log = "select * from enderecamento_logradouro where id_logradouro = '$id_logradouro' AND id_bairro = '$id_bairro' ";
         $result_log = mysqli_query($conexao, $query_log);
         $row_log = mysqli_fetch_array($result_log);
         //vai para a modal
@@ -1184,7 +1188,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
             echo "<script language='javascript'>window.alert('Ocorreu um erro ao Iniciar!'); </script>";
           } else {
 
-            $query_status = "UPDATE requerimento set status_requerimento = '$status_requerimento' where id_requerimento = '$id_requerimento'";
+            $query_status = "UPDATE requerimento_servico set status_requerimento = '$status_requerimento' where id_requerimento = '$id_requerimento'";
 
             mysqli_query($conexao, $query_status);
 

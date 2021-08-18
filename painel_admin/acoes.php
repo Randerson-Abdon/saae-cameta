@@ -4,7 +4,7 @@ include_once('../conexao.php');
 // arquivo  Que contém todas as funções
 require "config/funcoes.php";
 
-if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 	header('Location: ../login.php');
 	exit();
 }
@@ -27,6 +27,15 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 		body {
 			background: #fff;
 		}
+	}
+
+	#imgpos {
+		margin-left: -140%;
+		top: 30%;
+		/* posiciona a 70px para baixo */
+		display: none;
+		z-index: 10 !important;
+		position: absolute;
 	}
 </style>
 
@@ -100,7 +109,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 					<td colspan="3" align="right">
 
 						<input type="button" value="VOLTAR" class="btn btn-primary" onclick="window.close();">
-						<input type="submit" value="ENVIAR" id="myP" onclick="myFunction()" class="btn btn-success">
+						<input type="submit" value="ENVIAR" id="myP" onclick="myFunction();" class="btn btn-success">
 					</td>
 
 
@@ -108,7 +117,9 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 				<script>
 					function myFunction() {
-						document.getElementById("myP").style.cursor = "wait";
+
+						$('#imgpos').show();
+
 					}
 				</script>
 
@@ -118,6 +129,71 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 		<div id="consulta5" class="toggle div-inline">
 			<label class="text-justify text-danger" for="id_produto" style="margin-left: -200px;">Para a efetivação do contrato de parcelamento e confissão de dívida é necessário que o mesmo seja lido e assinado, pelo consumidor, em duas vias. Para visualizar/imprimir o contrato <a data-toggle="modal" data-target="#myModal"><span class="text-success" style="cursor: pointer;"><u>CLIQUE AQUI.</u></span></a><br><br></label>
 		</div>
+
+		<?php if ($nParcelas > 10) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 40%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 20) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 50%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 30) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 60%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 40) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 70%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+		<?php if ($nParcelas > 50) { ?>
+			<style>
+				#imgpos {
+					margin-left: -140%;
+					top: 80%;
+					/* posiciona a 70px para baixo */
+					display: none;
+					z-index: 10 !important;
+					position: absolute;
+				}
+			</style>
+		<?php } ?>
+
+
+
+
 	<?php } ?>
 
 
@@ -126,6 +202,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 		$parcela	    = intval($_POST['parcela']); // nr. parcelas
 		$valorTotal     = $_POST['valorTotal']; // valor a ser parcelado
 		$valorEntrada   = $_POST['valorEntrada']; // valor da entrada
+
 
 		$data 		    = $_POST['data']; // data
 
@@ -234,7 +311,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 		echo "<p class='sucesso'><strong>Sucesso!</strong> Dados cadastrados corretamente.<br> Não esqueça de gerar o <strong>boleto</strong> para pagamento da entrada de seu acordo!!!</p>";
 		echo "<input type='submit' class='btn btn-danger' name='submit' value='Voltar' onClick='window.close();' style='margin-right: 20px;'>";
-		echo "<a class='btn btn-success' title='Gerar Boleto' target='_blank' href='../lib/boleto_a/boleto_cef.php?id=$id&valor=$valorEntrada&acordo=$id_acordo_firmado&id_localidade=$id_localidade'>Gerar Boleto</a>";
+		echo "<a class='btn btn-success' title='Gerar Boleto' target='_blank' href='../lib/boleto/boleto_cef_entrada.php?id=$id&valor=$valorEntrada&acordo=$id_acordo_firmado&id_localidade=$id_localidade'>Gerar Boleto</a>";
 
 
 		// usado para exibir os valores na tela
@@ -273,7 +350,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 		$extenso_entrada = convert_number_to_words($valorEntrada2);
 
 		$decimal = substr($valorEntrada, 2, 2);
-		@$decExtenso = $valorEntrada - substr($valorEntrada, 2, 2);
+		$decExtenso = (int)$valorEntrada - (int)substr($valorEntrada, 2, 2);
 
 		$extenso_entrada2 = convert_number_to_words($decExtenso) . ' reais';
 
@@ -291,7 +368,10 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 		$soma = str_replace(',', '.', $soma3);
 		$extenso = convert_number_to_words($soma);
 
-		$id_localidade2 = $_SESSION['id_localidade'];
+		$query_n = "SELECT * from unidade_consumidora where id_unidade_consumidora = '$id' ";
+		$result_n = mysqli_query($conexao, $query_n);
+		$row_n = mysqli_fetch_array($result_n);
+		$id_localidade2 = $row_n["id_localidade"];
 
 		//executa o store procedure info consumidor
 		$result_sp = mysqli_query(
@@ -391,7 +471,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 									<u><b>Cláusula 3ª</b></u>: Em acordo firmado no escritório ou balcão eletrônico do: SERVIÇO AUT. DE ÁGUA E ESGOTO DE <?php echo $nome_municipio; ?> fica acertado entre as partes o parcelamento total da dívida do cliente devedor que é de: <span><b>R$ <?php echo $soma2; ?></b></span> (<?php echo $extenso; ?>). Constituido de:<br>
 
-									- ENTRADA: <b><span>R$ <?php echo $valorEntrada; ?></span> (<?php echo $extenso_entrada2; ?>), à vencer em: <span> <?php echo date("d/m/Y", time() + (5 * 86400)); ?></span>;</b><br>
+									- ENTRADA: <b><span>R$ <?php echo $valorEntrada; ?></span>, à vencer em: <span> <?php echo date("d/m/Y", time() + (5 * 86400)); ?></span>;</b><br>
 
 									- PARCELAMENTO: <b>
 
@@ -475,3 +555,6 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 		}
 	}
 </script>
+
+
+<img src="../img/load.gif" width="100%" alt="logo do site Maujor" id="imgpos" />

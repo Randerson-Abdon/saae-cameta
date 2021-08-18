@@ -80,11 +80,11 @@ while ($row = mysqli_fetch_assoc($result_cp)) {
         $query_ba = "SELECT * FROM boleto_avulso WHERE id_localidade = '$localidade' AND id_unidade_consumidora = '$id_unidade_consumidora' AND total_geral_faturado = '$total_pagamento_fatura' AND data_vencimento_boleto = '$data_vencimento_fatura' ";
         $result_ba = mysqli_query($conexao, $query_ba);
         $res_ba = mysqli_fetch_array($result_ba);
-        @$id_boleto_avulso = $res_ba["id_boleto_avulso"];
+        $id_boleto_avulso = $res_ba["id_boleto_avulso"];
 
-        //echo $data . ', ' . $id_banco_arrecadador . ', ' . $id_sequencial_documento . ', ' . $id_usuario_editor . ', ' . $id_boleto_avulso;
+        echo $data . ', ' . $id_banco_arrecadador . ', ' . $id_sequencial_documento . ', ' . $id_usuario_editor . ', ' . $id_boleto_avulso;
 
-        $query_up = "UPDATE historico_financeiro SET data_pagamento_fatura = '$data', id_banco_arrecadador = '$id_banco_arrecadador', id_sequencial_arquivo = '$id_sequencial_documento', id_usuario_editor_registro = '$id_usuario_editor' where id_boleto_avulso = '$id_boleto_avulso' ";
+        $query_up = "UPDATE historico_financeiro SET data_pagamento_fatura = '$data', id_banco_conveniado = '$id_banco_arrecadador', id_sequencial_arquivo = '$id_sequencial_documento', id_usuario_editor_registro = '$id_usuario_editor' where id_boleto_avulso = '$id_boleto_avulso' ";
 
         $result_up = mysqli_query($conexao, $query_up);
     } elseif ($ta1 == '2') {
@@ -96,12 +96,12 @@ while ($row = mysqli_fetch_assoc($result_cp)) {
         $result_up = mysqli_query($conexao, $query_up);
     } elseif ($ta1 == '3') {
         // BAIXANDO SERVIÇOS
-        $query_up = "UPDATE boleto_servico SET data_pagamento_boleto = '$data', gerador_controle_boleto = '$id_usuario_editor' where id_unidade_consumidora = '$id_unidade_consumidora' AND data_vencimento_boleto = '$data_vencimento_fatura' AND valor_boleto = '$total_pagamento_fatura' ";
+        $query_up = "UPDATE controle_boleto_servico SET data_pagamento_boleto = '$data', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$id_unidade_consumidora' AND data_vencimento_boleto = '$data_vencimento_fatura' AND valor_boleto = '$total_pagamento_fatura' ";
 
         $result_up = mysqli_query($conexao, $query_up);
     } else {
         //baixa na tabela de historico_financeiro
-        $query = "UPDATE historico_financeiro SET data_pagamento_fatura = '$data', total_pagamento_fatura = '$total_pagamento_fatura', id_banco_arrecadador = '$id_banco_arrecadador', id_sequencial_arquivo = '$id_sequencial_documento', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$id_unidade_consumidora' AND mes_faturado = '$mes_fatura_arrecadada' ";
+        $query = "UPDATE historico_financeiro SET data_pagamento_fatura = '$data', total_pagamento_fatura = '$total_pagamento_fatura', id_banco_conveniado = '$id_banco_arrecadador', id_sequencial_arquivo = '$id_sequencial_documento', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$id_unidade_consumidora' AND mes_faturado = '$mes_fatura_arrecadada' ";
 
         $result = mysqli_query($conexao, $query);
     }

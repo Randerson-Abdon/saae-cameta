@@ -29,12 +29,12 @@ function calculaDias($data_final, $data_inicial, $fatura)
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
 
-$id_unidade_consumidora = $_GET['id'];
+$id_unidade_consumidora = $_SESSION['id'];
 @$id_localidade = $_GET['localidade'];
 
 @$mes_faturado1 = $_GET['mes_faturado1'];
@@ -62,7 +62,7 @@ $mes_faturado1 = str_pad($mes_faturado1, 2, '0', STR_PAD_LEFT);
         <?php
 
         //monta dados do combo 1
-        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade where id_localidade = '$id_localidade' ";
+        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade where id_localidade = '$id_localidade' ";
 
         $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 
@@ -321,12 +321,13 @@ if (@$_GET['func'] == 'baixa') {
 
   while ($res = mysqli_fetch_array($result)) {
 
-    $data_vencimento_fatura = $res["data_vencimento_fatura"];
+    $data_vencimento_fatura  = $res["data_vencimento_fatura"];
     $data_vencimento_fatura2 = date("d/m/Y", strtotime($data_vencimento_fatura));
-    $total_geral_faturado = $res["total_geral_faturado"];
-    $mes_faturado = $res["mes_faturado"];
-    $id_localidade = $res["id_localidade"];
-    $id_usuario_editor = $_SESSION['id_usuario'];
+    $total_geral_faturado    = $res["total_geral_faturado"];
+    $mes_faturado            = $res["mes_faturado"];
+    $id_localidade           = $res["id_localidade"];
+    $total_parcela_acordo    = $res["total_parcela_acordo"];
+    $id_usuario_editor       = $_SESSION['id_usuario'];
 
     $rData = explode("/", $mes_faturado);
     $rData = $rData[1] . '/' . $rData[0];
@@ -381,13 +382,13 @@ if (@$_GET['func'] == 'baixa') {
                     <?php
 
                     //recuperando dados da tabela bancos para o select
-                    $query = "select * from banco_arrecadador order by nome_banco asc";
+                    $query = "select * from banco_conveniado order by nome_banco asc";
                     $result = mysqli_query($conexao, $query);
                     while ($res = mysqli_fetch_array($result)) {
 
                     ?>
                       <!--relacionamento com base no id gravando só o mesmo mas visualizando o nome-->
-                      <option value="<?php echo $res['id_banco'] ?>"><?php echo $res['nome_banco'] ?></option>
+                      <option value="<?php echo $res['id_febraban'] ?>"><?php echo $res['nome_banco'] ?></option>
 
                     <?php
                     }
@@ -427,13 +428,30 @@ if (@$_GET['func'] == 'baixa') {
       $mes_gerador = date("Y/m");
       $mes_lancamento = date('Y/m', strtotime('+30 days'));
 
-      $query = "UPDATE historico_financeiro SET data_pagamento_fatura = '$data_pagamento_fatura', total_pagamento_fatura = '$total_geral_faturado', id_banco_arrecadador = '$id_banco_arrecadador', id_sequencial_arquivo = '$id_sequencial_documento', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$id' AND mes_faturado = '$mes_faturado' ";
+      //consulta para numeração automatica
+      $query_baixa = "select * from baixa_provisoria_debito order by id_baixa_provisoria desc ";
+      $result_baixa = mysqli_query($conexao, $query_baixa);
+      $res_baixa = mysqli_fetch_array($result_baixa);
+      $ultimo_baixa = $res_baixa["id_baixa_provisoria"];
+      $ultimo_baixa = $ultimo_baixa + 1;
+
+      echo $data_pagamento_fatura . ', ' . $total_geral_faturado . ', ' . $id_banco_arrecadador . ', ' . $id_sequencial_documento . ', ' . $id_usuario_editor;
+
+      //baixa na tabela de historico_financeiro
+      $query = "UPDATE historico_financeiro SET data_pagamento_fatura = '$data_pagamento_fatura', total_pagamento_fatura = '$total_geral_faturado', id_banco_conveniado = '$id_banco_arrecadador', id_sequencial_arquivo = '$id_sequencial_documento', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$id' AND mes_faturado = '$mes_faturado' ";
       $result = mysqli_query($conexao, $query);
 
       //inserção na tabela de baixa_provisoria_arrecadacao
-      $query_bpa = "INSERT INTO baixa_provisoria_arrecadacao (id_unidade_consumidora, mes_faturado, id_banco_arrecadador, data_pagamento_fatura, valor_pagamento_fatura, id_usuario_editor_registro) values ('$id', '$mes_faturado', '$id_banco_arrecadador', '$data_pagamento_fatura', '$total_geral_faturado', '$id_usuario_editor')";
+      $query_bpa = "INSERT INTO baixa_provisoria_debito (id_baixa_provisoria, id_localidade, id_unidade_consumidora, mes_faturado, id_banco_conveniado, data_pagamento_fatura, valor_pagamento_fatura, id_usuario_editor_registro) values ('$ultimo_baixa', '$id_localidade', '$id', '$mes_faturado', '$id_banco_arrecadador', '$data_pagamento_fatura', '$total_geral_faturado', '$id_usuario_editor')";
       $result_bpa = mysqli_query($conexao, $query_bpa);
 
+      if ($total_parcela_acordo > 0) {
+        //baixa na tabela de acordos
+        $query_acordo = "UPDATE acordo_parcelamento SET data_pagamento_parcela = '$data_pagamento_fatura', id_banco_conveniado = '$id_banco_arrecadador', id_sequencial_arquivo = '$id_sequencial_documento', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$id' AND valor_parcela = '$total_parcela_acordo' AND mes_lancamento_parcela = '$mes_faturado' ";
+        $result_acordo = mysqli_query($conexao, $query_acordo);
+      } else {
+        $result_acordo = '0';
+      }
 
       // apenas de a data de pagamento for mair que o vencimento
       //if ($data_pagamento_fatura > $data_vencimento_fatura) {
@@ -446,8 +464,8 @@ if (@$_GET['func'] == 'baixa') {
       //$result_in_juros = mysqli_query($conexao, $query_in_juros);
       //}
 
-      if ($result == '') {
-        echo "<script language='javascript'>window.alert('Ocorreu um erro ao faturar, favor verificar os dados informados!'); </script>";
+      if ($result == '' && $result_bpa == '' && $result_acordo == '') {
+        echo "<script language='javascript'>window.alert('Ocorreu um erro ao faturar, favor verificar os dados informados!!!'); </script>";
       } else {
         echo "<script language='javascript'>window.alert('Baixa Realizada com Sucesso!!!'); </script>";
         echo "<script language='javascript'>window.location='atendimento.php?acao=faturamento'; </script>";

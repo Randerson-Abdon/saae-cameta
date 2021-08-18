@@ -7,15 +7,12 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
 
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +49,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
   if (@$_GET['func'] == 'imprime') {
     $id = $_GET['id'];
 
-    $query = "select * from requerimento where id_requerimento = '$id' ";
+    $query = "select * from requerimento_servico where id_requerimento = '$id' ";
     $result = mysqli_query($conexao, $query);
 
     while ($res = mysqli_fetch_array($result)) {
@@ -65,7 +62,6 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       $numero_rg = $res['numero_rg'];
       $orgao_emissor_rg = $res['orgao_emissor_rg'];
       $uf_rg = $res['uf_rg'];
-      $id_usuario_editor = $res['id_usuario_editor_registro'];
 
       $fone_fixo = $res['fone_fixo'];
       $fone_movel = $res['fone_movel'];
@@ -76,49 +72,45 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       $status_requerimento = $res['status_requerimento'];
       $data_requerimento = $res['data_requerimento'];
 
+      $data_requerimento = substr($data_requerimento, 0, 10);
+
       $data_requerimento2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
       //RECUPERAÇÃO DE ENDEREÇAMENTO
-      //trazendo nome de bairro que esta relacionado com o id , semelhante ao INNER JOIN
-      $query_end = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
-      $result_end = mysqli_query($conexao, $query_end);
-      $row_end = mysqli_fetch_array($result_end);
-      $id_localidade = $row_end["id_localidade"];
-      $id_bairro = $row_end["id_bairro"];
-      $id_logradouro = $row_end["id_logradouro"];
-      $numero_logradouro = $row_end["numero_logradouro"];
-      $complemento_logradouro = $row_end["complemento_logradouro"];
+      $localidade = '01';
 
-      //trazendo info localidade
-      $query_lo = "SELECT * from localidade where id_localidade = '$id_localidade' ";
-      $result_lo = mysqli_query($conexao, $query_lo);
-      $row_lo = mysqli_fetch_array($result_lo);
-      $nome_localidade = $row_lo["nome_localidade"];
-
-      //trazendo info bairro
-      $query_ba = "SELECT * from bairro where id_bairro = '$id_bairro' ";
-      $result_ba = mysqli_query($conexao, $query_ba);
-      $row_ba = mysqli_fetch_array($result_ba);
-      $nome_bairro = $row_ba["nome_bairro"];
-
-      //trazendo info logradouro
-      $query_log = "SELECT * from logradouro where id_logradouro = '$id_logradouro' ";
-      $result_log = mysqli_query($conexao, $query_log);
-      $row_log = mysqli_fetch_array($result_log);
-      $nome_logradouro = $row_log["nome_logradouro"];
-      $id_tipo_logradouro = $row_log["tipo_logradouro"];
-
-      //trazendo tipo_enderecamento de unidade_consumidora que esta relacionado com o id, semelhante ao INNER JOIN
-      $query_tp = "SELECT * from tipo_logradouro where id_tipo_logradouro = '$id_tipo_logradouro' ";
-      $result_tp = mysqli_query($conexao, $query_tp);
-      $row_tp = mysqli_fetch_array($result_tp);
-      $tipo = $row_tp['abreviatura_tipo_logradouro'];
-
-      //trazendo info usuario
-      $query_usuario = "SELECT * from usuario_sistema where id_usuario = '$id_usuario_editor' ";
-      $result_usuario = mysqli_query($conexao, $query_usuario);
-      $row_usuario = mysqli_fetch_array($result_usuario);
-      $nome_usuario = $row_usuario["nome_usuario"];
+      //executa o store procedure info consumidor
+      $result_sp2 = mysqli_query(
+        $conexao,
+        "CALL sp_seleciona_unidade_consumidora($localidade,$id_unidade_consumidora);"
+      ) or die("Erro na query da procedure: " . mysqli_error($conexao));
+      mysqli_next_result($conexao);
+      $row_uc = mysqli_fetch_array($result_sp2);
+      $nome_razao_social        = $row_uc['NOME'];
+      $tipo_juridico            = $row_uc['TIPO_JURIDICO'];
+      $numero_cpf_cnpj          = $row_uc['CPF_CNPJ'];
+      $numero_rg                = $row_uc['N.º RG'];
+      $orgao_emissor_rg         = $row_uc['ORGAO_EMISSOR'];
+      $uf_rg                    = $row_uc['UF'];
+      $fone_fixo                = $row_uc['FONE_FIXO'];
+      $fone_movel               = $row_uc['CELULAR'];
+      $fone_zap                 = $row_uc['ZAP'];
+      $email                    = $row_uc['EMAIL'];
+      $tipo_consumo             = $row_uc['TIPO_CONSUMO'];
+      $faixa_consumo            = $row_uc['FAIXA'];
+      $tipo_medicao             = $row_uc['MEDICAO'];
+      //$id_unidade_hidrometrica  = $row_uc['id_unidade_hidrometrica'];
+      $valor_faixa_consumo      = $row_uc['VALOR'];
+      $nome_localidade          = $row_uc['LOCALIDADE'];
+      $nome_bairro              = $row_uc['BAIRRO'];
+      $nome_logradouro          = $row_uc['LOGRADOURO'];
+      $numero_logradouro        = $row_uc['NUMERO'];
+      $complemento_logradouro   = $row_uc['COMPLEMENTO'];
+      $cep_logradouro           = $row_uc['CEP'];
+      $tipo_enderecamento       = $row_uc['CORRESPONDENCIA'];
+      $status_ligacao           = $row_uc['STATUS'];
+      $data_cadastro            = $row_uc['CADASTRO'];
+      $observacoes_text         = $row_uc['OBSERVAÇÕES'];
 
       //trazendo info perfil_saae
       $query_ps = "SELECT * from perfil_saae";
@@ -140,7 +132,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       @$uf_saae = $row_ps['uf_saae'];
       @$nome_saae = $row_ps['nome_saae'];
       @$email_saae = $row_ps['email_saae'];
-      @$logo_orgao = $row_ps['logo_orgao'];
+      $logo_orgao = $row_ps['logo_orgao'];
 
       $data = date('d/m/Y');
 
@@ -152,16 +144,12 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       <table style="margin-bottom: 15px;">
         <thead>
           <tr>
-            <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+            <th style="width: 20%;"><img width="80%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
             <th>
-              <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+              <p><?php echo $nome_prefeitura ?> <br>
                 SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                 SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
-                RELATÓRIO DA COMPOSIÇÃO DO FATURAMENTO <?php if ($status == '1') {
-                                                          echo 'EM ABERTO';
-                                                        } else {
-                                                          echo 'PAGO';
-                                                        } ?> ‐ <?php echo $data ?></p>
+                SOLICITAÇÃO DE REQUERIMENTO</p>
             </th>
           </tr>
         </thead>
@@ -240,7 +228,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
           <div class="form-group col-md-5">
             <label for="id_produto"><b>Logradouro: </b></label>
-            <label for="id_produto"><?php echo $tipo; ?> <?php echo $nome_logradouro ?></label>
+            <label for="id_produto"><?php echo $nome_logradouro ?></label>
           </div>
 
           <div class="form-group col-md-2">
@@ -410,14 +398,27 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         </div>
 
         <div class="row">
-          <div class="form-group text-center col-md-12" style="margin-top: 50px;">
-            <label class="ml-20" for="fornecedor"> <?php echo $nome_usuario; ?></label>
+          <div class="form-group text-center col-md-6" style="margin-top: 50px;">
+            <label for="fornecedor">_________________________________________________________</label>
+          </div>
+
+          <div class="form-group text-center col-md-6" style="margin-top: 50px;">
+            <label for="fornecedor">_________________________________________________________</label>
           </div>
         </div>
 
         <div class="row">
-          <div class="form-group text-center col-md-12" style="margin-top: -30px;">
-            <label class="ml-20" for="fornecedor">Atendente Responsável</label>
+          <div class="form-group text-center col-md-6" style="margin-top: -30px;">
+            <label class="ml-20" for="fornecedor"> <?php echo $nome_razao_social; ?></label>
+          </div>
+          <div class="form-group text-center col-md-6" style="margin-top: -30px;">
+            <label class="ml-20" for="fornecedor"> Atendente Responsável</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group text-center col-md-6" style="margin-top: -30px;">
+            <label class="ml-20" for="fornecedor"> C.P.F.: <?php echo $numero_cpf_cnpj; ?></label>
           </div>
         </div>
 

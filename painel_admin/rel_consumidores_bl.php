@@ -70,6 +70,18 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                 $id_bairro      = $_POST['id_bairro'];
                 $status         = $_POST['status'];
 
+                if ($id_localidade == '---Escolha uma opção---') {
+                  echo "<script language='javascript'>window.alert('Selecione a localidade!!!');</script>";
+                  echo "<script language='javascript'>window.close();</script>";
+                  exit();
+                }
+                if ($id_logradouro == '---Escolha uma opção---') {
+                  $id_logradouro = '0';
+                }
+                if ($id_bairro == '---Escolha uma opção---') {
+                  $id_bairro = '0';
+                }
+
                 //executa o store procedure info corte
                 $result_sp = mysqli_query(
                   $conexao,
@@ -81,6 +93,27 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                 //$result = mysqli_query($conexao, $query);
                 //$result2 = mysqli_query($conexao, $query);
 
+                //consulta para recuperação do nome do bairro
+                $query_ba = "SELECT * FROM enderecamento_bairro WHERE id_localidade = '$id_localidade' AND id_bairro = '$id_bairro' ";
+                $result_ba = mysqli_query($conexao, $query_ba);
+                $row_ba = mysqli_fetch_array($result_ba);
+                //vai para a modal
+                $nome_bairro = $row_ba['nome_bairro'];
+
+                //consulta para recuperação do nome do logradouro
+                $query_log = "SELECT * FROM enderecamento_logradouro WHERE id_localidade = '$id_localidade' AND id_logradouro = '$id_logradouro' AND id_bairro = '$id_bairro' ";
+                $result_log = mysqli_query($conexao, $query_log);
+                $row_log = mysqli_fetch_array($result_log);
+                //vai para a modal
+                $nome_logradouro = $row_log['nome_logradouro'];
+                $id_tipo_logradouro = $row_log['tipo_logradouro'];
+
+                //trazendo tipo_enderecamento de unidade_consumidora que esta relacionado com o id, semelhante ao INNER JOIN
+                $query_u = "SELECT * FROM tipo_logradouro WHERE id_tipo_logradouro = '$id_tipo_logradouro' ";
+                $result_u = mysqli_query($conexao, $query_u);
+                $row_u = mysqli_fetch_array($result_u);
+                $abreviatura = $row_u['abreviatura_tipo_logradouro'];
+
                 $linha = mysqli_num_rows($result_sp);
                 $linha_count = mysqli_num_rows($result_sp);
 
@@ -89,26 +122,26 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                 } else {
 
                   //trazendo info perfil_saae
-                  $query_ps = "SELECT * from perfil_saae";
-                  $result_ps = mysqli_query($conexao, $query_ps);
-                  $row_ps = mysqli_fetch_array($result_ps);
-                  @$nome_prefeitura = $row_ps['nome_prefeitura'];
+                  $query_p = "SELECT * from perfil_saae";
+                  $result_p = mysqli_query($conexao, $query_p);
+                  $row_p = mysqli_fetch_array($result_p);
+                  @$nome_prefeitura     = $row_p['nome_prefeitura'];
                   //mascarando cnpj
-                  @$cnpj_saae = $row_ps['cnpj_saae'];
+                  @$cnpj_saae = $row_p['cnpj_saae'];
                   $p1 = substr($cnpj_saae, 0, 2);
                   $p2 = substr($cnpj_saae, 2, 3);
                   $p3 = substr($cnpj_saae, 5, 3);
                   $p4 = substr($cnpj_saae, 8, 4);
                   $p5 = substr($cnpj_saae, 12, 2);
                   $saae_cnpj = $p1 . '.' . $p2 . '.' . $p3 . '/' . $p4 . '-' . $p5;
-                  @$nome_bairro_saae = $row_ps['nome_bairro_saae'];
-                  @$nome_logradouro_saae = $row_ps['nome_logradouro_saae'];
-                  @$numero_imovel_saae = $row_ps['numero_imovel_saae'];
-                  @$nome_municipio_saae = $row_ps['nome_municipio_saae'];
-                  @$uf_saae = $row_ps['uf_saae'];
-                  @$nome_saae = $row_ps['nome_saae'];
-                  @$email_saae = $row_ps['email_saae'];
-                  @$logo_orgao = $row_ps['logo_orgao'];
+
+                  @$nome_bairro_saae      = $row_p['nome_bairro_saae'];
+                  @$nome_logradouro_saae  = $row_p['nome_logradouro_saae'];
+                  @$numero_imovel_saae    = $row_p['numero_imovel_saae'];
+                  @$nome_municipio_saae   = $row_p['nome_municipio_saae'];
+                  @$uf_saae               = $row_p['uf_saae'];
+                  @$nome_saae             = $row_p['nome_saae'];
+                  @$email_saae            = $row_p['email_saae'];
 
                   $data = date('d/m/Y');
 
@@ -117,12 +150,16 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                   <table style="margin-bottom: 15px;">
                     <thead>
                       <tr>
-                        <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+                        <th style="width: 20%;"><img width="80%" src="../img/sIzabel/saae_sIzabel_logo.png" alt=""></th>
                         <th>
-                          <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+                          <p><?php echo $nome_prefeitura ?> <br>
                             SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                             SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
-                            RELATÓRIO DE CONSUMIDORES POR BAIRRO E LOGRADOURO ‐ <?php echo $data ?></p>
+                            RELATÓRIO DE CONSUMIDORES DE SANTA IZABEL <br><?php if ($id_bairro != '0') {
+                                                                            echo 'BAIRRO ' . $nome_bairro;
+                                                                          } ?><?php if ($id_logradouro != '0') {
+                                                                                echo ' - ' . $abreviatura . $nome_logradouro;
+                                                                              } ?> ‐ <?php echo $data ?></p>
                         </th>
                       </tr>
                     </thead>
@@ -134,54 +171,20 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                       <thead class="text-secondary">
 
-                        <?php
-
-                        //trazendo info localidade
-                        $query_lo = "SELECT * from localidade where id_localidade = '$id_localidade' ";
-                        $result_lo = mysqli_query($conexao, $query_lo);
-                        $row_lo = mysqli_fetch_array($result_lo);
-                        @$nome_localidade = $row_lo["nome_localidade"];
-
-                        //trazendo info bairro
-                        $query_ba = "SELECT * from bairro where id_localidade = '$id_localidade' and id_bairro = '$id_bairro' ";
-                        $result_ba = mysqli_query($conexao, $query_ba);
-                        $row_ba = mysqli_fetch_array($result_ba);
-                        @$nome_bairro = $row_ba["nome_bairro"];
-
-                        //trazendo info logradouro
-                        $query_log = "SELECT * from logradouro where id_bairro = '$id_bairro' and id_logradouro = '$id_logradouro' ";
-                        $result_log = mysqli_query($conexao, $query_log);
-                        $row_log = mysqli_fetch_array($result_log);
-                        @$nome_logradouro = $row_log["nome_logradouro"];
-                        @$tipo_logradouro = $row_log["tipo_logradouro"];
-                        @$cep = $row_log["cep_logradouro"];
-
-                        //trazendo info tipo_logradouro
-                        $query_tp = "SELECT * from tipo_logradouro where id_tipo_logradouro = '$tipo_logradouro' ";
-                        $result_tp = mysqli_query($conexao, $query_tp);
-                        $row_tp = mysqli_fetch_array($result_tp);
-                        @$tipo = $row_tp['abreviatura_tipo_logradouro'];
-
-                        ?>
-
-                        <ul>
-                          <li><strong>LOCALIDADE: <?php echo $nome_localidade; ?>, BAIRRO: <?php echo $nome_bairro; ?>, LOGRADOURO: <?php echo $tipo . ' ' . $nome_logradouro ?></strong></li>
-                        </ul>
-
                         <th>
-                          Matrícula
+                          N° U.C.
                         </th>
                         <th>
                           Nome
                         </th>
                         <th>
-                          Complemento
-                        </th>
-                        <th>
-                          N°
+                          CPF/CNPJ
                         </th>
                         <th>
                           Data de Cadastro
+                        </th>
+                        <th>
+                          Contato
                         </th>
                         <th>
                           Status
@@ -193,13 +196,16 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                         <?php
                         while ($res = mysqli_fetch_array($result_sp)) {
 
-                          $uc            = $res["UC"];
-                          $nome_razao_social   = $res["NOME"];
+                          $uc                 = $res["UC"];
+                          $nome_razao_social  = $res["NOME"];
                           $numero_cpf_cnpj    = $res["CPF_CNPJ"];
-                          $data_cadastro     = $res["CADASTRO"];
-                          $complemento       = $res["COMPLEMENTO"];
+                          $data_cadastro      = $res["CADASTRO"];
+                          $fone_movel         = $res["CELULAR"];
+                          if ($fone_movel == null) {
+                            $fone_movel = 'INEXISTENTE';
+                          }
+
                           $status_ligacao     = $res["STATUS"];
-                          $numero          = $res["NUMERO"];
 
                           $id_usuario_editor = $_SESSION['id_usuario'];
 
@@ -209,9 +215,9 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                             <td class="text-danger"><?php echo $uc; ?></td>
                             <td><?php echo $nome_razao_social; ?></td>
-                            <td><?php echo $complemento; ?></td>
-                            <td><?php echo $numero; ?></td>
+                            <td><?php echo $numero_cpf_cnpj; ?></td>
                             <td><?php echo $data_cadastro; ?></td>
+                            <td><?php echo $fone_movel; ?></td>
                             <td><?php echo $status_ligacao; ?></td>
 
 

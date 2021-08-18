@@ -30,11 +30,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
             <label for="fornecedor">Localidade</label>
 
             <select class="form-control mr-2" id="category" name="id_localidade" onchange=javascript:Atualizar(this.value); required>
-              <option value="">---Escolha uma opção---</option>";
+
               <?php
 
               //monta dados do combo 1
-              $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+              $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
               $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 
@@ -147,7 +147,7 @@ if (@$_GET['func'] == 'valida') {
 
           <div class="row">
             <div class="form-group text-center col-md-12">
-              <h5>Consumidor com débitos em atraso, não é possivel a emissão de certidão de quitação.</h5>
+              <h5>Consumidor com débitos em atraso, não é possivel a emissão da certidão de quitação.</h5>
             </div>
           </div>
         </div>
@@ -161,7 +161,6 @@ if (@$_GET['func'] == 'valida') {
 <?php
 
 } ?>
-
 
 
 

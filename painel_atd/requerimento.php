@@ -6,7 +6,7 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -76,14 +76,15 @@ function limparTexto($conteudo)
 
                 $nome = '%' . $_GET['txtpesquisarRequerimento'] . '%';
                 $numero_cpf_cnpj = $_GET['txtpesquisarRequerimento'];
+                $numero_rec = $_GET['txtpesquisarRequerimento'];
 
-                $query = "SELECT * from requerimento where nome_razao_social LIKE '$nome' OR numero_cpf_cnpj LIKE '$numero_cpf_cnpj' and status_requerimento != 'C' order by id_requerimento asc ";
+                $query = "SELECT * from requerimento_servico where nome_razao_social LIKE '$nome' OR numero_cpf_cnpj = '$numero_cpf_cnpj' OR id_requerimento = '$numero_rec' and status_requerimento != 'C' order by id_requerimento asc ";
 
                 $result_count = mysqli_query($conexao, $query);
               } else {
-                $query = "SELECT * from requerimento where status_requerimento != 'C' order by id_requerimento desc limit 10";
+                $query = "SELECT * from requerimento_servico where status_requerimento != 'C' order by id_requerimento desc limit 10";
 
-                $query_count = "SELECT * from requerimento";
+                $query_count = "SELECT * from requerimento_servico";
                 $result_count = mysqli_query($conexao, $query_count);
               }
 
@@ -93,10 +94,13 @@ function limparTexto($conteudo)
               $linha_count = mysqli_num_rows($result_count);
 
               if ($linha == '') {
-                echo "<h3 class='text-danger'> Não foram encontrados dados Cadastrados!!! </h3>";
+                echo "<h3> Não foram encontrados dados Cadastrados no Banco!! </h3>";
               } else {
 
               ?>
+
+
+
 
                 <table class="table table-sm">
                   <thead class="text-secondary">
@@ -151,6 +155,8 @@ function limparTexto($conteudo)
                       $status_requerimento = $res["status_requerimento"];
                       $data_requerimento = $res["data_requerimento"];
                       $observacoes = $res["observacoes"];
+
+                      $data_requerimento = substr($data_requerimento, 0, 10);
 
                       $data2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
@@ -259,7 +265,7 @@ function limparTexto($conteudo)
                     <option value="">selecione</option>
                     <option value="cpf">Tipo Jurídico</option>
                     <option value="nome">Nome</option>
-                    <option value="uc">Matrícula</option>
+                    <option value="uc">U. C.</option>
                     <option value="endereco">Endereço</option>
 
                   </select>
@@ -308,7 +314,7 @@ function limparTexto($conteudo)
 
 
 
-                <!-- CONSULTA POR Matrícula-->
+                <!-- CONSULTA POR UNIDADE CONSUMIDORA-->
                 <div id="uc" name="uc" style="display: none;">
                   <div class="row">
 
@@ -329,18 +335,17 @@ function limparTexto($conteudo)
 
 
                 <!-- CONSULTA POR ENDEREÇO-->
-                <div id="endereco" name="endereco" style="display: none;">
+                <div class="ml-3 mr-3" id="endereco" name="endereco" style="display: none;">
                   <div class="row">
-
-                    <div class="form-group col-md-3 ml-3">
+                    <div class="form-group col-md-4">
                       <label for="fornecedor">Localidade</label>
 
-                      <select class="form-control mr-2" id="category" name="id_localidade" onchange=javascript:Atualizar(this.value); required>
+                      <select class="form-control" id="category" name="id_localidade2" onchange=javascript:Atualizar01(this.value); required>
                         <option value="">---Escolha uma opção---</option>";
                         <?php
 
                         //monta dados do combo 1
-                        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+                        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
                         $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 
@@ -351,9 +356,9 @@ function limparTexto($conteudo)
                       </select>
                     </div>
 
-                    <div class="form-group col-md-3" id="atualiza"></div>
+                    <div class="form-group col-md-4" id="atualiza0"></div>
 
-                    <div class="form-group col-md-3" id="atualiza2"></div>
+                    <div class="form-group col-md-4" id="atualiza02"></div>
 
                     <div class="form-group col-md-2">
                       <label for="id_produto">Nº</label>
@@ -453,7 +458,7 @@ function limparTexto($conteudo)
   if (@$_GET['func'] == 'req') {
     $id = $_GET['id'];
 
-    $query_req = "select * from requerimento where id_requerimento = '$id' ";
+    $query_req = "select * from requerimento_servico where id_requerimento = '$id' ";
     $result_req = mysqli_query($conexao, $query_req);
 
     while ($res = mysqli_fetch_array($result_req)) {
@@ -466,7 +471,6 @@ function limparTexto($conteudo)
       $numero_rg = $res['numero_rg'];
       $orgao_emissor_rg = $res['orgao_emissor_rg'];
       $uf_rg = $res['uf_rg'];
-      $localidade = $res['id_localidade'];
 
       $fone_fixo = $res['fone_fixo'];
       $fone_movel = $res['fone_movel'];
@@ -477,7 +481,12 @@ function limparTexto($conteudo)
       $status_requerimento = $res['status_requerimento'];
       $data_requerimento = $res['data_requerimento'];
 
+      $data_requerimento = substr($data_requerimento, 0, 10);
+
       $data_requerimento2 = implode('/', array_reverse(explode('-', $data_requerimento)));
+
+      //RECUPERAÇÃO DE ENDEREÇAMENTO
+      $localidade = '01';
 
       //executa o store procedure info consumidor
       $result_sp = mysqli_query(
@@ -749,7 +758,7 @@ function limparTexto($conteudo)
 
               <?php if (@$soma2 > 0 and @$status_requerimento != 'D') { ?>
                 <div style="margin-top: -16px;">
-                  <a class="btn btn-info" target="_blank" href="../lib/boleto_s/boleto_cef_servico.php?func=boleto&id=<?php echo $id_unidade_consumidora; ?>&id_localidade=<?php echo $localidade; ?>&total_fatura=<?php echo $soma2; ?>&id_requerimento=<?php echo $id_requerimento; ?>">Boleto de Pagamento</a>
+                  <a class="btn btn-info" target="_blank" href="../lib/boleto/boleto_cef_servico.php?func=boleto&id=<?php echo $id_unidade_consumidora; ?>&id_localidade=<?php echo $localidade; ?>&total_fatura=<?php echo $soma2; ?>&id_requerimento=<?php echo $id_requerimento; ?>">Boleto de Pagamento</a>
                 </div>
               <?php } ?>
 
@@ -778,6 +787,8 @@ function limparTexto($conteudo)
 
       if (isset($_POST['gerar'])) {
 
+        $id_usuario_editor_registro = $_SESSION['id_usuario'];
+
         $id_requerimento2 = $id;
         //consulta para numeração automatica
         $query_num_os = "select * from ordem_servico order by id_ordem_servico desc ";
@@ -804,7 +815,7 @@ function limparTexto($conteudo)
         }
 
         // insert requerimento
-        $query_r2 = "INSERT INTO ordem_servico (id_requerimento, id_ordem_servico) values ('$id_requerimento2', '$id_ordem_servico')";
+        $query_r2 = "INSERT INTO ordem_servico (id_requerimento, id_ordem_servico, id_usuario_editor_registro) values ('$id_requerimento2', '$id_ordem_servico', '$id_usuario_editor_registro')";
         $result_r2 = mysqli_query($conexao, $query_r2);
 
         if ($result_r2 == '') {
@@ -818,7 +829,7 @@ function limparTexto($conteudo)
           $id_usuario_editor = $_SESSION['id_usuario'];
 
           // insert servico_faturado
-          $query_sf = "INSERT INTO servico_faturado (id_localidade, id_unidade_consumidora, mes_lancamento_servico, id_requerimento, data_lancamento_servico, valor_lancamento_servico, id_usuario_editor_registro) values ('$id_localidade', '$id_unidade_consumidora', '$mes_lancamento', '$id_requerimento2', curDate(), '$valor_lancamento_servico', '$id_usuario_editor')";
+          $query_sf = "INSERT INTO servico_faturado (id_localidade, id_unidade_consumidora, mes_lancamento_servico, id_requerimento, data_lancamento_servico, valor_lancamento_servico, id_usuario_editor) values ('$id_localidade', '$id_unidade_consumidora', '$mes_lancamento', '$id_requerimento2', curDate(), '$valor_lancamento_servico', '$id_usuario_editor')";
           $result_sf = mysqli_query($conexao, $query_sf);
 
           echo "<script language='javascript'>window.alert('Gerado com Sucesso!'); </script>";
@@ -837,8 +848,9 @@ function limparTexto($conteudo)
   <!-- EXIBIÇÃO PERFIL -->
   <?php
   if (@$_GET['func'] == 'perfil') {
-    $id         = $_GET['id'];
-    $localidade =  $_GET['id_localidade'];
+    $id = $_GET['id'];
+
+    $localidade = '01';
 
     //executa o store procedure info consumidor
     $result_sp2 = mysqli_query(
@@ -909,7 +921,7 @@ function limparTexto($conteudo)
                   <label id="numero_cpf_cnpj" for="id_produto"><?php echo $numero_cpf_cnpj ?></label>
                 </div>
 
-                <div class="form-group col-md-5">
+                <div class="form-group col-md-6">
                   <label for="id_produto"><b>Nome/Razão Social: </b></label>
                   <label for="id_produto"><?php echo $nome_razao_social ?></label>
                 </div>
@@ -1033,7 +1045,7 @@ function limparTexto($conteudo)
 
           <div class="modal-footer">
             <div style="margin-top: -16px;">
-              <a class="btn btn-info" target="_blank" href="rel_perfil.php?func=imprime&id=<?php echo $id; ?>&id_localidade=<?php echo $localidade; ?>">Imprimir</a>
+              <a class="btn btn-info" target="_blank" href="rel_perfil.php?func=imprime&id=<?php echo $id; ?>">Imprimir</a>
             </div>
             <button type="button" class="btn btn-danger mb-3" data-dismiss="modal">Sair </button>
             </form>
@@ -1073,7 +1085,7 @@ function limparTexto($conteudo)
 
 
       //trazendo id_unidade_consumidora de unidade_consumidora que esta relacionado com o cpf/cnpj, semelhante ao INNER JOIN
-      $query_e = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id' ";
+      $query_e = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id' ";
       $result_e = mysqli_query($conexao, $query_e);
       $row_e = mysqli_fetch_array($result_e);
       $id_localidade = $row_e['id_localidade'];
@@ -1083,21 +1095,21 @@ function limparTexto($conteudo)
       $complemento_logradouro = $row_e['complemento_logradouro'];
 
       //consulta para recuperação do nome da localidade
-      $query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+      $query_loc = "select * from enderecamento_localidade where id_localidade = '$id_localidade' ";
       $result_loc = mysqli_query($conexao, $query_loc);
       $row_loc = mysqli_fetch_array($result_loc);
       //vai para a modal
       $nome_loc = $row_loc['nome_localidade'];
 
       //consulta para recuperação do nome do bairro
-      $query_ba = "select * from bairro where id_localidade = '$id_localidade' and id_bairro = '$id_bairro' ";
+      $query_ba = "select * from enderecamento_bairro where id_bairro = '$id_bairro' ";
       $result_ba = mysqli_query($conexao, $query_ba);
       $row_ba = mysqli_fetch_array($result_ba);
       //vai para a modal
       $nome_ba = $row_ba['nome_bairro'];
 
       //consulta para recuperação do nome do logradouro
-      $query_log = "select * from logradouro where id_localidade = '$id_localidade' and id_logradouro = '$id_logradouro' and id_bairro = '$id_bairro' ";
+      $query_log = "select * from enderecamento_logradouro where id_logradouro = '$id_logradouro' AND id_bairro = '$id_bairro' ";
       $result_log = mysqli_query($conexao, $query_log);
       $row_log = mysqli_fetch_array($result_log);
       //vai para a modal
@@ -1118,7 +1130,7 @@ function limparTexto($conteudo)
       <?php
 
       //consulta para numeração automatica
-      $query_num_req = "select * from requerimento order by id_requerimento desc ";
+      $query_num_req = "select * from requerimento_servico order by id_requerimento desc ";
       $result_num_req = mysqli_query($conexao, $query_num_req);
       $res_num_req = mysqli_fetch_array($result_num_req);
       $ultimo_req = $res_num_req["id_requerimento"];
@@ -1158,33 +1170,33 @@ function limparTexto($conteudo)
                     <label for="fornecedor">Tipo Jurídico</label>
                     <select class="form-control mr-2" id="category" name="tipo_juridico" style="text-transform:uppercase;" readonly>
                       <option value="" <?php if ($tipo_juridico == '') { ?> selected <?php } ?>>selecione</option>
-                      <option value="J" <?php if ($tipo_juridico == 'J') { ?> selected <?php } ?>>Pessoa Jurídica</option>
-                      <option value="P" <?php if ($tipo_juridico == 'P') { ?> selected <?php } ?>>Pessoa Física</option>
+                      <option value="J" <?php if ($tipo_juridico == 'J') { ?> selected <?php } ?>>Jurídica</option>
+                      <option value="F" <?php if ($tipo_juridico == 'F') { ?> selected <?php } ?>>Física</option>
 
                     </select>
                   </div>
 
                   <div class="form-group col-md-4">
-                    <label for="id_produto">Informe seu CPF/CNPJ</label>
+                    <label for="id_produto">CPF/CNPJ</label>
                     <input type="text" id="numero_cpf_cnpj" class="form-control mr-2" name="numero_cpf_cnpj" placeholder="CPF/CNPJ" value="<?php echo $numero_cpf_cnpj ?>" readonly>
                   </div>
 
-                  <div class="form-group col-md-8">
+                  <div class="form-group col-md-6">
                     <label for="id_produto">Nome/Razão Social</label>
                     <input type="text" class="form-control mr-2" name="nome_razao_social" placeholder="Nome/Razão Social" value="<?php echo $nome_razao_social ?>" style="text-transform:uppercase;" readonly>
                   </div>
 
-                  <div class="form-group col-md-3">
+                  <div class="form-group col-md-2">
                     <label for="id_produto">RG</label>
                     <input type="text" class="form-control mr-2" name="numero_rg" placeholder="RG" id="rg" value="<?php echo $numero_rg ?>" style="text-transform:uppercase;" readonly>
                   </div>
 
-                  <div class="form-group col-md-3">
+                  <div class="form-group col-md-2">
                     <label for="id_produto">Orgão Emissor</label>
                     <input type="text" class="form-control mr-2" name="orgao_emissor_rg" placeholder="Orgão Emissor" style="text-transform:uppercase;" value="<?php echo $orgao_emissor_rg ?>" readonly>
                   </div>
 
-                  <div class="form-group col-md-3">
+                  <div class="form-group col-md-2">
                     <label for="fornecedor">UF RG</label>
                     <select class="form-control mr-2" id="category" name="uf_rg" style="text-transform:uppercase;" readonly>
 
@@ -1244,7 +1256,7 @@ function limparTexto($conteudo)
                     <input type="text" class="form-control mr-2" name="fone_movel" placeholder="Celular" id="cel" value="<?php echo $fone_movel ?>" style="text-transform:uppercase;" readonly>
                   </div>
 
-                  <div class="form-group col-md-3">
+                  <div class="form-group col-md-2">
                     <label for="fornecedor">WhatsApp</label>
                     <select class="form-control mr-2" id="category" name="fone_zap" style="text-transform:uppercase;" readonly>
 
@@ -1255,7 +1267,7 @@ function limparTexto($conteudo)
                     </select>
                   </div>
 
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label for="id_produto">E-mail</label>
                     <input type="email" class="form-control mr-2" name="email" placeholder="E-mail" value="<?php echo $email ?>" readonly>
                   </div>
@@ -1310,7 +1322,7 @@ function limparTexto($conteudo)
         $numero_rg = mb_strtoupper($_POST['numero_rg']);
         $orgao_emissor_rg = mb_strtoupper($_POST['orgao_emissor_rg']);
         $uf_rg = mb_strtoupper($_POST['uf_rg']);
-        $id_usuario_editor = $_SESSION['id_usuario'];
+        $id_usuario_editor_registro = $_SESSION['id_usuario'];
 
         $id_localidade = $row_e['id_localidade'];
         $id_bairro = $row_e['id_bairro'];
@@ -1335,11 +1347,11 @@ function limparTexto($conteudo)
         //tratamento para celular
         $cel = preg_replace("/[^0-9]/", "", $fone_movel);
 
-        //echo $tipo_juridico;
+        //echo $id_localidade . ', ' . $n_req . ', ' . $existe_unidade_consumidora . ', ' . $uc . ', ' . $tipo_juridico . ', ' . $ncc3 . ', ' . $nome_razao_social . ', ' . $numero_rg . ', ' . $orgao_emissor_rg . ', ' . $uf_rg . ', ' . $tel . ', ' . $cel . ', ' . $fone_zap . ', ' . $email . ', ' . $observacoes . ', ' . $id_usuario_editor_registro;
 
 
         // insert requerimento
-        $query2 = "INSERT INTO requerimento (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes, id_usuario_editor_registro) values ('$id_localidade', '$n_req', '$existe_unidade_consumidora', '$uc', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes', '$id_usuario_editor')";
+        $query2 = "INSERT INTO requerimento_servico (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes, id_usuario_editor_registro) values ('$id_localidade', '$n_req', '$existe_unidade_consumidora', '$uc', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes', '$id_usuario_editor_registro')";
 
         $result2 = mysqli_query($conexao, $query2);
 
@@ -1363,8 +1375,6 @@ function limparTexto($conteudo)
 
 
 
-
-
   <!-- MODAL CADASTRO NOVO -->
 
   <?php
@@ -1377,7 +1387,7 @@ function limparTexto($conteudo)
   $ultimo_cad = $ultimo_cad + 1;
 
   //consulta para numeração automatica
-  $query_num_req = "select * from requerimento order by id_requerimento desc ";
+  $query_num_req = "select * from requerimento_servico order by id_requerimento desc ";
   $result_num_req = mysqli_query($conexao, $query_num_req);
   $res_num_req = mysqli_fetch_array($result_num_req);
   @$ultimo_req = $res_num_req["id_requerimento"];
@@ -1400,7 +1410,7 @@ function limparTexto($conteudo)
             <div class="row">
               <div class="form-group col-md-2">
                 <label for="id_produto">Nº Rec.</label>
-                <input type="number" class="form-control mr-2" name="id_requerimento" value="<?php echo str_pad($ultimo_req, 6, '0', STR_PAD_LEFT); ?>" readonly>
+                <input type="number" class="form-control mr-2" name="id_requerimento" value="<?php echo $ultimo_req; ?>" readonly>
               </div>
 
               <div class="form-group col-md-2">
@@ -1421,7 +1431,7 @@ function limparTexto($conteudo)
                   <?php
 
                   //monta dados do combo 1
-                  $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+                  $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
                   $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 
@@ -1619,7 +1629,6 @@ function limparTexto($conteudo)
 
       </div>
 
-      <!-- PROCESSAMENTO PARA FAIXA DE CONSUMO-->
       <script>
         $("#tipo_consumo").change(function() {
           var estadoSelecionado = $(this).children("option:selected").val();
@@ -1694,7 +1703,7 @@ function limparTexto($conteudo)
     $tipo_medicao                = mb_strtoupper($_POST['tipo_medicao']);
     $observacoes                = mb_strtoupper($_POST['observacoes']);
 
-    $id_usuario_editor = $_SESSION['id_usuario'];
+    $id_usuario_editor_registro = $_SESSION['id_usuario'];
 
     //tratamento para numero_cpf_cnpj
     $ncc = str_replace("/", "", $numero_cpf_cnpj);
@@ -1707,24 +1716,27 @@ function limparTexto($conteudo)
     //tratamento para celular
     $cel = preg_replace("/[^0-9]/", "", $fone_movel);
 
-    $query = "INSERT INTO requerimento (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes, id_usuario_editor_registro) values ('$id_localidade', '$numero_rec', '$existe_unidade_consumidora', '$id_unidade_consumidora', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes', '$id_usuario_editor')";
-
+    $query = "INSERT INTO requerimento_servico (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes, id_usuario_editor_registro) values ('$id_localidade', '$numero_rec', '$existe_unidade_consumidora', '$id_unidade_consumidora', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes', '$id_usuario_editor_registro')";
     $result = mysqli_query($conexao, $query);
 
-    $query_con = "INSERT INTO unidade_consumidora (id_unidade_consumidora, status_ligacao, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, id_localidade, fone_fixo, fone_movel, fone_zap, email, tipo_consumo, faixa_consumo, tipo_medicao, tipo_enderecamento, id_usuario_editor_registro) values ('$id_unidade_consumidora', 'P', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$id_localidade', '$tel', '$cel', '$fone_zap', '$email', '$tipo_consumo', '$faixa_consumo', '$tipo_medicao', 'I', '$id_usuario_editor')";
+    $query_con = "INSERT INTO unidade_consumidora (id_unidade_consumidora, status_ligacao, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, id_localidade, fone_fixo, fone_movel, fone_zap, email, tipo_consumo, faixa_consumo, tipo_medicao, tipo_enderecamento, id_usuario_editor_registro) values ('$id_unidade_consumidora', 'P', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$id_localidade', '$tel', '$cel', '$fone_zap', '$email', '$tipo_consumo', '$faixa_consumo', '$tipo_medicao', 'I', '$id_usuario_editor_registro')";
     $result_con = mysqli_query($conexao, $query_con);
 
     //inserindo serviço para nova ligação
     $query_serv = "INSERT INTO servico_requerido (id_servico_requerido, id_requerimento) values ('11', '$numero_rec')";
     $result_serv = mysqli_query($conexao, $query_serv);
 
-    $query_end = "INSERT INTO endereco_instalacao (id_unidade_consumidora, id_localidade, id_bairro, id_logradouro, numero_logradouro, complemento_logradouro) values ('$id_unidade_consumidora', '$id_localidade', '$id_bairro', '$id_logradouro', '$numero_logradouro', '$complemento_logradouro')";
+    $query_end = "INSERT INTO enderecamento_instalacao (id_unidade_consumidora, id_localidade, id_bairro, id_logradouro, numero_logradouro, complemento_logradouro, id_usuario_editor_registro) values ('$id_unidade_consumidora', '$id_localidade', '$id_bairro', '$id_logradouro', '$numero_logradouro', '$complemento_logradouro', '$id_usuario_editor_registro')";
     $result_end = mysqli_query($conexao, $query_end);
 
 
+    if ($result == '' && $result_serv == '' && $result_end == ''  && $result_con == '') {
+      echo "<script language='javascript'>window.alert('Ocorreu um erro ao Salvar!'); </script>";
+    } else {
 
-    echo "<script language='javascript'>window.alert('Salvo com Sucesso!'); </script>";
-    echo "<script language='javascript'>window.location='atendimento.php?acao=requerimento'; </script>";
+      echo "<script language='javascript'>window.alert('Salvo com Sucesso!'); </script>";
+      echo "<script language='javascript'>window.location='atendimento.php?acao=requerimento'; </script>";
+    }
   }
   ?>
 
@@ -1939,7 +1951,7 @@ function limparTexto($conteudo)
       $id_requerimento = $id;
 
       //trazendo info REQUERIMENTO
-      $query_rec_uc = "SELECT * from requerimento where id_requerimento = '$id_requerimento' ";
+      $query_rec_uc = "SELECT * from requerimento_servico where id_requerimento = '$id_requerimento' ";
       $result_rec_uc = mysqli_query($conexao, $query_rec_uc);
       $row_rec_uc = mysqli_fetch_array($result_rec_uc);
       $id_unidade_consumidora = $row_rec_uc['id_unidade_consumidora'];
@@ -1950,16 +1962,16 @@ function limparTexto($conteudo)
       $row_verificar_uc = mysqli_fetch_array($result_verificar_uc);
       $status_ligacao = $row_verificar_uc['status_ligacao'];
       if (($id_servico_requerido == '12') and ($status_ligacao == 'A')) {
-        echo "<script language='javascript'>window.alert('Matrícula Ativa !!!'); </script>";
+        echo "<script language='javascript'>window.alert('Unidade Consumidora Ativa !!!'); </script>";
         exit();
       } elseif (($id_servico_requerido == '13') and ($status_ligacao == 'A')) {
-        echo "<script language='javascript'>window.alert('Matrícula Ativa !!!'); </script>";
+        echo "<script language='javascript'>window.alert('Unidade Consumidora Ativa !!!'); </script>";
         exit();
       } elseif (($id_servico_requerido == '07') and ($status_ligacao == 'I')) {
-        echo "<script language='javascript'>window.alert('Matrícula Inativa !!!'); </script>";
+        echo "<script language='javascript'>window.alert('Unidade Consumidora Inativa !!!'); </script>";
         exit();
       } elseif (($id_servico_requerido == '16') and ($status_ligacao == 'I')) {
-        echo "<script language='javascript'>window.alert('Matrícula Inativa !!!'); </script>";
+        echo "<script language='javascript'>window.alert('Unidade Consumidora Inativa !!!'); </script>";
         exit();
       }
 
@@ -1977,20 +1989,20 @@ function limparTexto($conteudo)
 
       if ($id_servico_requerido == '01') {
 
-        $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+        $query_mensagem = "UPDATE requerimento_servico set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
         mysqli_query($conexao, $query_mensagem);
       }
 
       if ($id_servico_requerido == '04') {
 
-        $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+        $query_mensagem = "UPDATE requerimento_servico set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
         mysqli_query($conexao, $query_mensagem);
       }
 
 
       if ($id_servico_requerido == '17') {
 
-        $query_mensagem = "UPDATE requerimento set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
+        $query_mensagem = "UPDATE requerimento_servico set mensagem = '$mensagem' where id_requerimento = '$id_requerimento'";
         mysqli_query($conexao, $query_mensagem);
       }
 
@@ -2207,7 +2219,7 @@ if (@$_GET['func'] == 'excluir') {
 <?php if (@$_GET['func4'] == 'ativa') {
   $id = $_GET['id'];
 
-  $sql = "UPDATE requerimento SET status_requerimento = 'C' WHERE id_requerimento = '$id'";
+  $sql = "UPDATE requerimento_servico SET status_requerimento = 'C' WHERE id_requerimento = '$id'";
   mysqli_query($conexao, $sql);
 
   echo "<script language='javascript'>window.alert('Requerimento Cancelado com Sucesso!'); </script>";

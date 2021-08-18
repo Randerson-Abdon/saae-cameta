@@ -2,7 +2,7 @@
 @session_start(); # Deve ser a primeira linha do arquivo
 date_default_timezone_set('America/Belem');
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
     header('Location: ../login.php');
     exit();
 }
@@ -42,7 +42,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
     $_SESSION['mes_faturado'] = $mes_faturado;
     $_SESSION['id'] = $id;
-    $_SESSION['id_localidade'] = $id_localidade;
+
 
     @$linha = count($mes_faturado);
 
@@ -121,7 +121,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
         <ul class="linha bg-primary text-white">
             <li>
-                <b>Matrícula:</b> <?php echo $id; ?></b>
+                <b>U.C:</b> <?php echo $id; ?></b>
             </li>
             <li>
                 <b>Nome /Razão Social:</b> <?php echo $nome_razao_social; ?></b>
@@ -145,7 +145,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                     </div>
 
                     <div class="form-group">
-                        <label for="data">Matrícula n°</label>
+                        <label for="data">Unidade Consumidora n°</label>
                         <input class="bg-primary text-white" type="text" name="id" value="<?php echo $id ?>" class="form-control" readonly>
                     </div>
 
@@ -170,7 +170,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                             <option selected="selected" value="0">selecione o número de parcelas</option>
                             <?php
 
-                            for ($i = 1; $i <= 60; $i++) { ?>
+                            for ($i = 1; $i <= 12; $i++) { ?>
                                 <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
 
                             <?php } ?>

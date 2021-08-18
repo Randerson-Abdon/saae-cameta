@@ -59,13 +59,14 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     $valor_p          = $_GET['valor_p'];
     $valor_total      = $_GET['valor_total'];
     $nParcelas        = $_GET['nParcelas'];
-    $localidade       = $_GET['id_localidade'];
+
+    $localidade = '01';
 
     //executa o store procedure info consumidor
     $result_sp = mysqli_query(
       $conexao,
       "CALL sp_seleciona_unidade_consumidora($localidade,$id);"
-    ) or die("Erro na query da procedure y: " . mysqli_error($conexao));
+    ) or die("Erro na query da procedure: " . mysqli_error($conexao));
     mysqli_next_result($conexao);
     $row_uc = mysqli_fetch_array($result_sp);
     $nome_razao_social        = $row_uc['NOME'];
@@ -94,33 +95,6 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     $data_cadastro            = $row_uc['CADASTRO'];
     $observacoes_text         = $row_uc['OBSERVAÇÕES'];
 
-    //trazendo info perfil_saae
-    $query_ps = "SELECT * from perfil_saae";
-    $result_ps = mysqli_query($conexao, $query_ps);
-    $row_ps = mysqli_fetch_array($result_ps);
-    @$nome_prefeitura = $row_ps['nome_prefeitura'];
-    //mascarando cnpj
-    @$cnpj_saae = $row_ps['cnpj_saae'];
-    $p1 = substr($cnpj_saae, 0, 2);
-    $p2 = substr($cnpj_saae, 2, 3);
-    $p3 = substr($cnpj_saae, 5, 3);
-    $p4 = substr($cnpj_saae, 8, 4);
-    $p5 = substr($cnpj_saae, 12, 2);
-    $saae_cnpj = $p1 . '.' . $p2 . '.' . $p3 . '/' . $p4 . '-' . $p5;
-    @$nome_bairro_saae = $row_ps['nome_bairro_saae'];
-    @$nome_logradouro_saae = $row_ps['nome_logradouro_saae'];
-    @$numero_imovel_saae = $row_ps['numero_imovel_saae'];
-    @$nome_municipio = $row_ps['nome_municipio'];
-    @$uf_saae = $row_ps['uf_saae'];
-    @$nome_saae = $row_ps['nome_saae'];
-    @$email_saae = $row_ps['email_saae'];
-    @$logo_orgao = $row_ps['logo_orgao'];
-    @$cep_saae = $row_ps['cep_saae'];
-    @$fone_saae = $row_ps['fone_saae'];
-    @$email_saae = $row_ps['email_saae'];
-
-    $data = date('d/m/Y');
-
 
   ?>
 
@@ -129,20 +103,17 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
     <div class="modal-body">
 
-
-      <table style="margin-bottom: 15px;">
-        <thead>
-          <tr>
-            <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
-            <th>
-              <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
-                SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
-                SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
-                CONTRATO DE CONFISSÃO E PARCELAMENTO DE DÍVIDAS - <?php echo $data; ?></p>
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <!-- IMAGEM -->
+      <section class="page-section" id="imagem2">
+        <div class="container">
+          <!-- linha -->
+          <div class="row text-center">
+            <div class="slider" style="width: 100%;">
+              <img width="92%" src="../img/cabecalho.JPG" alt="">
+            </div>
+          </div>
+        </div>
+      </section>
 
 
       <p class="text-justify" style="padding-left: 5%; padding-right: 5%; font-size: 10pt;">
@@ -151,13 +122,13 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         <b><u>DEVEDOR:</u></b><br>
         <span>NOME: <b><?php echo $nome_razao_social; ?></b></span>
         <span style="margin-left: 20px;">CPF: <b><?php echo $numero_cpf_cnpj; ?></b></span>
-        <span style="margin-left: 20px;"> Matrícula: <b><?php echo $id; ?></b></span><br>
+        <span style="margin-left: 20px;"> U.C: <b><?php echo $id; ?></b></span><br>
 
         <span>BAIRRO: <b><?php echo $nome_bairro; ?></b></span>
         <span style="margin-left: 20px;">LOGRADOURO: <b><?php echo $nome_logradouro; ?></b></span>
         <span style="margin-left: 20px;">Nº: <b><?php echo $numero_logradouro; ?></b></span>
         <span style="margin-left: 20px;">CEP: <b><?php echo $cep_logradouro; ?></b></span><br>
-        <span>CREDOR: <b>SERVIÇO AUT. DE ÁGUA E ESGOTO DE <?php echo $nome_municipio; ?></b><br><br>
+        <span>CREDOR: <b>SERVIÇO AUT. DE ÁGUA E ESGOTO DE SANTA IZABEL</b><br><br>
 
           As partes acima identificadas têm, entre sí, justo e acertado o presente <b>Contrato de Confissão e Parcelamento de Dívida</b>, que se regerá pelas cláusulas seguintes e pelas condições descritas no presente.<br>
 
@@ -169,7 +140,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
           <u><b>DO PARCELAMENTO, INTERRUPÇÃO DO FORNECIMENTO E PENALIDADES:</b></u><br><br>
 
-          <u><b>Cláusula 3ª</b></u>: Em acordo firmado no escritório ou balcão eletrônico do: SERVIÇO AUT. DE ÁGUA E ESGOTO DE <?php echo $nome_municipio; ?> fica acertado entre as partes o parcelamento total da dívida do cliente devedor que é de: <span><b>R$ <?php echo $soma2; ?></b></span> (<?php echo $extenso; ?>). Constituido de:<br>
+          <u><b>Cláusula 3ª</b></u>: Em acordo firmado no escritório ou balcão eletrônico do: SERVIÇO AUT. DE ÁGUA E ESGOTO DE SANTA IZABEL fica acertado entre as partes o parcelamento total da dívida do cliente devedor que é de: <span><b>R$ <?php echo $soma2; ?></b></span> (<?php echo $extenso; ?>). Constituido de:<br>
 
           - ENTRADA: <b><span>R$ <?php echo $valorEntrada; ?></span> (<?php echo $extenso_entrada2; ?>), à vencer em: <span> <?php echo date("d/m/Y", time() + (5 * 86400)); ?></span>;</b><br>
 
@@ -208,11 +179,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         <b><u>PARÁGRAFO 1º</u></b>: Além das sansões previstas no Regulamento aprovado pelo Decreto Municipal nº 63 de 11/05/2012, fica o cliente ciente da pena no Art. 157 do Código Penal Brasileiro que diz: "Subtrair coisa móvel alheia, para sí ou para outrem, mediante grave ameaça ou violência a pessoa, ou depois de havê-la, por qualquer meio, de reduzido resistência".<br>
         PENA: Reclusão de 4 (quatro) a 10 (dez) anos, e multa.<br><br>
         <b><u>PARÁGRAFO 2º</u></b>: O Regulamento do SAAE, através do Decreto 63 de 11/05/2012 dá a esta Autarquia Municipal o pleno poder para aplicar as medidas necessárias estabecelidas neste contrato, inclusive no que tange a interrupção do fornecimento de água como prevê o Art. 72, incisos I, IV e VIII, atendendo o prazo estabelecido pelos incisos I e II do do parágrafo 1º do Art. 72.<br><br>
-        <b><u>Cláusula 7ª</u></b>: FICA ELEITO O FORO DA COMARCA DE: <?php echo $nome_municipio; ?> para dirimir qualquer assunto referente ao presente contrato.<br><br><br>
+        <b><u>Cláusula 7ª</u></b>: FICA ELEITO O FORO DA COMARCA DE: S IZABEL para dirimir qualquer assunto referente ao presente contrato.<br><br><br>
 
-        <span style="float: right;"><?php echo $nome_municipio; ?> (PA), <?php setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-                                                                          date_default_timezone_set('America/Sao_Paulo');
-                                                                          echo strftime('%d de %B de %Y', strtotime('today')); ?>.</span><br><br>
+        <span style="float: right;">Santa Izabel (PA), <?php setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+                                                        date_default_timezone_set('America/Sao_Paulo');
+                                                        echo strftime('%d de %B de %Y', strtotime('today')); ?>.</span><br><br>
 
       <div class="row">
         <div class="form-group text-center col-md-6" style="margin-top: 50px;">
@@ -239,10 +210,10 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         </div>
       </div>
 
-      <div class="text-center" style="font-size: 10pt; margin-top: 10;"><span><?php echo $nome_logradouro_saae; ?>, <?php echo $numero_imovel_saae; ?> <br>
-          <?php echo $nome_bairro_saae; ?> - <?php echo $nome_municipio; ?> - <?php echo $uf_saae; ?> CEP.: <?php echo $cep_saae; ?> <br>
-          Fone: <?php echo $fone_saae; ?> E-Mail: <?php echo $email_saae; ?> <br>
-          CNPJ.: <?php echo $saae_cnpj; ?></span></div>
+      <div class="text-center" style="font-size: 10pt; margin-top: 10;"><span>AVENIDA BARÃO DO RIO BRANCO, 1059 <br>
+          CENTRO - S IZABEL - PA C.e.p.: 68.790-000 <br>
+          Fone: (91) 3744-1373 e-Mail: saaesi@gmail.com <br>
+          CNPJ.: 05.696.125.0001/11</span></div>
 
 
       </p>

@@ -40,7 +40,7 @@ $data = "$mes/$ano";
 $data2 = "$mes$ano";
 
 //trazendo info Bancos
-$query_ban = "SELECT * from banco_arrecadador where status_convenio = 'A' ";
+$query_ban = "SELECT * from banco_conveniado where status_convenio = 'A' ";
 $result_ban = mysqli_query($conexao, $query_ban);
 $lista_bancos = '';
 while ($res = mysqli_fetch_array($result_ban)) {
@@ -69,10 +69,7 @@ $saae_cnpj = $p1 . '.' . $p2 . '.' . $p3 . '/' . $p4 . '-' . $p5;
 @$uf_saae = $row_ps['uf_saae'];
 @$nome_saae = $row_ps['nome_saae'];
 @$email_saae = $row_ps['email_saae'];
-@$home_page_saae = $row_ps['home_page_saae'];
 @$logo_orgao = $row_ps['logo_orgao'];
-
-//echo $logo_orgao;
 
 //função para tipo de boleto
 $query = "select * from historico_financeiro where id_unidade_consumidora = '$id' and mes_faturado = '$mes_faturado' ";
@@ -168,7 +165,7 @@ while ($res = mysqli_fetch_array($result)) {
 	$dadosboleto["id_localidade"] = $id_localidade;	// identificação 
 	$dadosboleto["tipo_boleto"] = $tipo_boleto;	// identificação 
 	$dadosboleto["bancos"] = $lista_bancos;	// local de pagamento 
-	$dadosboleto["logo_orgao"] = $logo_orgao;	// logo do saae
+	$dadosboleto["logo_orgao"] = $logo_orgao;
 
 	// DADOS DO SEU CLIENTE
 	$dadosboleto["sacado"] = "$nome_razao_social";
@@ -184,7 +181,7 @@ while ($res = mysqli_fetch_array($result)) {
 	//$dadosboleto["instrucoes1"] = "- Sr. Caixa, cobrar multa de 2% após o vencimento";
 	//$dadosboleto["instrucoes2"] = "- Receber até 10 dias após o vencimento";
 	$dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: saaesi@gmail.com";
-	$dadosboleto["instrucoes4"] = "- Emitido pelo sistema SAAENET - www." . $home_page_saae;
+	$dadosboleto["instrucoes4"] = "- Emitido pelo sistema SAAENET - www.saaesantaizabel.com.br";
 
 	// DADOS OPCIONAIS DE ACORDO COM O BANCO OU CLIENTE
 	$dadosboleto["quantidade"] = "";

@@ -19,7 +19,7 @@ session_start(); # Deve ser a primeira linha do arquivo
 
 include_once('../conexao.php');
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
 	header('Location: ../login.php');
 	exit();
 }
@@ -47,20 +47,14 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 	$query_hfd = "SELECT * FROM historico_financeiro WHERE id_unidade_consumidora = '$id_unidade_consumidora' AND mes_faturado = '$rData' ";
 	$result_hfd = mysqli_query($conexao, $query_hfd);
 	$row_hfd = mysqli_fetch_array($result_hfd);
-	$linhas = mysqli_num_rows($result_hfd);
-	@$id_acordo_firmado = $row_hfd['id_acordo_parcelamento'];
+	@$id_acordo_parcelamento = $row_hfd['id_acordo_parcelamento'];
 
-	$sql = "SELECT * FROM unidade_consumidora WHERE id_unidade_consumidora LIKE '$id_unidade_consumidora' ";
-	$query = mysqli_query($conexao, $sql);
-	$row = mysqli_num_rows($query);
-	$row_uc = mysqli_fetch_array($query);
-	$id = $row_uc['id_unidade_consumidora'];
 
-	if ($linhas < 1) { ?>
+	if ($id_acordo_parcelamento = null) { ?>
 		<p class="h5 text-danger">Fatura <?php echo $mes_faturado; ?> não se encontra em aberto !!!</p>
 
-	<?php } elseif ($id_acordo_firmado > 000000) { ?>
-		<p class="h5 text-danger">Fatura <?php echo $mes_faturado; ?> em acordo sob N° <?php echo $id_acordo_firmado; ?> !!!</p>
+	<?php } elseif ($id_acordo_parcelamento != null) { ?>
+		<p class="h5 text-danger">Fatura <?php echo $mes_faturado; ?> em acordo sob N° <?php echo $id_acordo_parcelamento; ?> !!!</p>
 
 	<?php } else {
 
@@ -113,7 +107,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 													$id_usuario_editor = $_SESSION['id_usuario'];
 
 													//consulta para recuperação do nome da localidade
-													$query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+													$query_loc = "select * from enderecamento_localidade where id_localidade = '$id_localidade' ";
 													$result_loc = mysqli_query($conexao, $query_loc);
 													$row = mysqli_fetch_array($result_loc);
 													//vai para a modal

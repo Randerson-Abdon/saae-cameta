@@ -1,18 +1,15 @@
 <style>
-    section .content{
-        margin-top: -150px;
-        margin-bottom: -320px !important;
-
-	
-    }
+	section .content {
+		margin-top: -150px;
+		margin-bottom: -170px;
+	}
 
 
-	p{
+	p {
 		color: #d70000;
 		margin-left: 20px;
 
 	}
-
 </style>
 
 <?php
@@ -22,149 +19,112 @@ include_once('../conexao.php');
 ?>
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>post4</title>
-	</head>
-	<body>
+
+<head>
+	<meta charset="utf-8">
+	<title>Busca poe endereço dinamica2</title>
+</head>
+
+<body>
 
 	<?php
 
-		$logradouro = $_POST['id_logradouro'] . '%';
-		$bairro = $_POST['id_bairro'] . '%';
+	$id_localidade		= $_POST['id_localidade2'];
+	$id_bairro			= $_POST['id_bairro2'];
+	$id_logradouro		= $_POST['id_logradouro2'];
+	$numero_logradouro  = $_POST['numero_logradouro2'];
+
+	//executa o store procedure info endereço
+	$result = mysqli_query(
+		$conexao,
+		"CALL sp_lista_unidade_consumidora_logradouro($id_localidade,$id_bairro,$id_logradouro,'$numero_logradouro','');"
+	) or die("Erro na query da procedure5: " . mysqli_error($conexao));
+	mysqli_next_result($conexao);
+	$row = mysqli_num_rows($result);
 
 	?>
 
-	<?php
-
-		$sql = "SELECT * FROM endereco_instalacao WHERE id_logradouro LIKE '$logradouro' AND id_bairro LIKE '$bairro' ";
-		$query = mysqli_query($conexao, $sql);
-		$row = mysqli_num_rows($query);
-	?>
-<section>
-    	<?php
-		if($row > 0){
+	<section>
+		<?php
+		if ($row > 0) {
 		?>
 
-	  <div class="content">
-		<div class="row mr-3">
-		  <div class="col-md-12">
-			<div class="card">
-			  <div class="card-body">
-				<div class="table-responsive">
-				<table class="table table-striped table-sm">
-					<thead class="text-secondary">
-										
-						<th>
-							UC
-						</th>
-						<th >
-							Nome/Razão Social
-						</th>
-						<th>
-							CPF/CNPJ
-						</th>
-						<th>
-							Bairro
-						</th>
-						<th>
-							Logradouro
-						</th>
-					
-				
-				
-											
-										
-						<th>
-							Ações
-						</th>
-						</thead>
-						<tbody>
-				
-				<?php 
-					while($sqlline = mysqli_fetch_array($query)){
+			<div class="content">
+				<div class="row mr-3">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-body">
+								<div class="table-responsive">
+									<table class="table table-striped">
+										<thead class="text-secondary">
 
-				
-						$logradouro_id = $sqlline["id_logradouro"];
-						$bairro_id = $sqlline["id_bairro"];
-						$numero = $sqlline["numero_logradouro"];
-
-
-						$uc = $sqlline["id_unidade_consumidora"];
-						//trazendo dados de unidade_consumidora que esta relacionado com o id, semelhante ao INNER JOIN
-						$query_u = "SELECT * from unidade_consumidora where id_unidade_consumidora = '$uc' ";
-						$result_u = mysqli_query($conexao, $query_u);
-						$row_u = mysqli_fetch_array($result_u);
-						$cpfcnpj = $row_u["numero_cpf_cnpj"];
-						$nome_user = $row_u['nome_razao_social'];
-						$nome_rg = $row_u['numero_rg'];
-						$nome_om = $row_u['orgao_emissor_rg'];
-						$nome_ufrg = $row_u['uf_rg'];
-						$nome_tf = $row_u['fone_fixo'];
-						$nome_tfm = $row_u['fone_movel'];
-						$nome_tfz = $row_u['fone_zap'];
-						$nome_email = $row_u['email'];
-						$data = $row_u['data_cadastro'];
-
-						//trabalhando a data
-						$data2 = implode('/', array_reverse(explode('-', $data)));
-
-						//trazendo nome de bairro que esta relacionado com o id , semelhante ao INNER JOIN
-						$query_b2 = "SELECT * from bairro where id_bairro = '$bairro_id' ";
-						$result_b2 = mysqli_query($conexao, $query_b2);
-						$row_b2 = mysqli_fetch_array($result_b2);
-						$nome_bairro = $row_b2["nome_bairro"];	
-
-						//trazendo nome de logradouro que esta relacionado com o id, semelhante ao INNER JOIN
-						$query_l2 = "SELECT * from logradouro where id_logradouro = '$logradouro_id' AND id_bairro = '$bairro_id' ";
-						$result_l2 = mysqli_query($conexao, $query_l2);
-						$row_l2 = mysqli_fetch_array($result_l2);
-						$nome_logradouro = $row_l2["nome_logradouro"];							
+											<th>
+												UC
+											</th>
+											<th>
+												Nome/Razão Social
+											</th>
+											<th>
+												CPF/CNPJ
+											</th>
+											<th>
+												N°
+											</th>
 
 
 
-						?>
+											<th>
+												Ações
+											</th>
+										</thead>
+										<tbody>
 
-						<tr>
+											<?php
+											while ($row_u = mysqli_fetch_array($result)) {
 
-						<td><?php echo $uc; ?></td>
+												$uc 				= $row_u["UC"];
+												$id_localidade		= $row_u["LOCALIDADE"];
+												$id_bairro 			= $row_u['BAIRRO'];
+												$nome_razao_social  = $row_u['NOME'];
+												$numero_cpf_cnpj	= $row_u['CPF_CNPJ'];
+												$id_logradouro	    = $row_u['LOGRADOURO'];
+												$numero_logradouro  = $row_u['NUMERO'];
 
-													
-						<td><?php echo $nome_user; ?></td>
-						<td><?php echo $cpfcnpj; ?></td>
-						<td><?php echo $nome_bairro; ?></td>
-						<td><?php echo $nome_logradouro; ?></td>
-						<td><?php echo $numero; ?></td>								
-					
-																				
-														
-						<td>
-						<!--chamando modal para envio de mensagem-->
-						<a class="text-primary" title="Ver Perfil"href="atendimento.php?acao=requerimento&func=perfil&id=<?php echo $uc; ?>" ><i class="fas fa-id-card"></i></a>
+											?>
 
-						<a class="text-secondary" title="Criar Requerimento" href="atendimento.php?acao=requerimento&func=criar&id=<?php echo $uc; ?>" ><i class="fas fa-plus-square"></i></a>
-						</td>
-						</tr>
-						</tr>
+												<tr>
 
-													
-						<?php }?>
-						</tbody>
-						</table>				
-									
-				
-		</div>
-		<?php }else{?>
-			
-		<p class="danger">Não foram encontrados registros com esses parametros!</p>
+													<td><?php echo $uc; ?></td>
+													<td><?php echo $nome_razao_social; ?></td>
+													<td><?php echo $numero_cpf_cnpj; ?></td>
+													<td><?php echo $numero_logradouro; ?></td>
 
-		<?php }?>
-		</div>
-          </div>
-        </div>
-	  </div>
-	  </div>
+													<td>
+														<!--chamando modal para envio de mensagem-->
+														<a class="text-primary" title="Ver Perfil" href="admin.php?acao=requerimento&func=perfil&id=<?php echo $uc; ?>"><i class="fas fa-id-card"></i></a>
+
+														<a class="text-secondary" title="Criar Requerimento" href="admin.php?acao=requerimento&func=criar&id=<?php echo $uc; ?>"><i class="fas fa-plus-square"></i></a>
+													</td>
+												</tr>
+												</tr>
+
+											<?php } ?>
+										</tbody>
+									</table>
+
+								</div>
+							<?php } else { ?>
+
+								<p class="danger">Não foram encontrados registros com esses parametros!</p>
+
+							<?php } ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 	</section>
-		
-	</body>
+
+</body>
+
 </html>

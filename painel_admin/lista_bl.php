@@ -6,7 +6,7 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
   header('Location: ../login.php');
   exit();
 }
@@ -19,15 +19,15 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 <form method="post" action="rel_consumidores_bl.php" target="_blank">
   <div class="row">
 
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-4">
       <label for="fornecedor">Localidade</label>
 
-      <select class="form-control mr-2" id="category" name="id_localidade" onchange=javascript:Atualizar(this.value);>
+      <select class="form-control mr-2" id="category" name="id_localidade2" onchange=javascript:Atualizar01(this.value); required>
         <option value="">---Escolha uma opção---</option>";
         <?php
 
         //monta dados do combo 1
-        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
         $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 
@@ -38,9 +38,9 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       </select>
     </div>
 
-    <div class="form-group col-md-3" id="atualiza"></div>
+    <div class="form-group col-md-4" id="atualiza0"></div>
 
-    <div class="form-group col-md-3" id="atualiza2"></div>
+    <div class="form-group col-md-4" id="atualiza02"></div>
 
   </div>
 
@@ -51,17 +51,18 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       <select class="form-control mr-2" id="status" name="status" style="text-transform:uppercase;">
 
         <option value="">Todas</option>
-        <option value="A">Ativas</option>
-        <option value="I">Inativas</option>
+        <option value="ATIVA">Ativas</option>
+        <option value="INATIVA">Inativas</option>
+        <option value="PROVISORIA">Provisória</option>
 
       </select>
     </div>
 
-    <div class="form-group col-md-2" style="margin-top: 30px;">
+    <div class="form-group col-md-3" style="margin-top: 30px;">
       <button type="button" class="btn btn-success mb-3" id="buscar" name="buscar">Buscar </button>
     </div>
 
-    <div class="form-group col-md-2" style="margin-left: -100px; margin-top: 30px;">
+    <div class="form-group col-md-3" style="margin-left: -100px; margin-top: 30px;">
       <button type="button" class="btn btn-primary mb-3" id="imprimir" onclick="javascript:submitForm(this.form, 'rel_consumidores_bl.php');" name="imprimir" style="display: none">Imprimir </button>
     </div>
 

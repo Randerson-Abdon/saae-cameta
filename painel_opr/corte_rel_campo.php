@@ -65,7 +65,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       $status_ordem_servico   = $res['status_ordem_servico'];
 
       //trazendo info do requerimento
-      $query_rq = "SELECT * from requerimento where id_requerimento = '$id_requerimento' ";
+      $query_rq = "SELECT * from requerimento_servico where id_requerimento = '$id_requerimento' ";
       $result_rq = mysqli_query($conexao, $query_rq);
       $row_rq = mysqli_fetch_array($result_rq);
       $nome_razao_social      = $row_rq['nome_razao_social'];

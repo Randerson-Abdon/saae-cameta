@@ -3,7 +3,7 @@
 
 session_start(); # Deve ser a primeira linha do arquivo
 
-if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -81,7 +81,6 @@ include_once('../conexao.php');
 
                 <?php
                 $id_unidade_consumidora = $_POST['id_unidade_consumidora'];
-                $localidade = $_POST['localidade'];
                 $status = $_POST['slStatus3'];
 
                 $_SESSION['id_unidade_consumidora'] = $id_unidade_consumidora;
@@ -90,27 +89,29 @@ include_once('../conexao.php');
                 //completando com zeros a esquerda
                 $uc = str_pad($id_unidade_consumidora, 5, '0', STR_PAD_LEFT);
 
+                $localidade = $_POST['localidade'];
+
                 //se o status fou igual a todos
                 if ($status == '1') {
                   //executa o store procedure info devedor
                   $result = mysqli_query(
                     $conexao,
                     "CALL sp_lista_financeiro_devedor($localidade,$uc);"
-                  ) or die("Erro na query da procedure 1 : " . $localidade . mysqli_error($conexao));
+                  ) or die("Erro na query da procedure: " . mysqli_error($conexao));
                   mysqli_next_result($conexao);
                 } elseif ($status == '2') {
                   //executa o store procedure info pago
                   $result = mysqli_query(
                     $conexao,
                     "CALL sp_lista_financeiro_pago($localidade,$uc);"
-                  ) or die("Erro na query da procedure 2: " . mysqli_error($conexao));
+                  ) or die("Erro na query da procedure: " . mysqli_error($conexao));
                   mysqli_next_result($conexao);
                 } else {
                   //executa o store procedure info pago
                   $result = mysqli_query(
                     $conexao,
                     "CALL sp_lista_financeiro_devedor_vencido($localidade,$uc);"
-                  ) or die("Erro na query da procedure 3: " . mysqli_error($conexao));
+                  ) or die("Erro na query da procedure: " . mysqli_error($conexao));
                   mysqli_next_result($conexao);
                 }
 
@@ -122,6 +123,73 @@ include_once('../conexao.php');
                 $linha_count = mysqli_num_rows($result);
 
                 if ($linha == '') {
+
+                ?>
+
+                  <ul class="text-secondary">
+
+                    <?php
+
+                    $id = $uc;
+
+                    //trazendo info acordos
+                    $query_ac = "SELECT * from acordo_parcelamento where id_unidade_consumidora = '$uc' and data_pagamento_parcela is null order by id_acordo_parcelamento desc ";
+                    $result_ac = mysqli_query($conexao, $query_ac);
+                    $row_ac = mysqli_fetch_array($result_ac);
+                    $linha_acordo = mysqli_num_rows($result_ac);
+                    @$id_acordo_parcelamento = $row_ac['id_acordo_parcelamento'];
+
+                    //executa o store procedure info consumidor
+                    $result_sp = mysqli_query(
+                      $conexao,
+                      "CALL sp_seleciona_unidade_consumidora($localidade,$id);"
+                    ) or die("Erro na query da procedure: " . mysqli_error($conexao));
+                    mysqli_next_result($conexao);
+                    $row_uc = mysqli_fetch_array($result_sp);
+                    $nome_razao_social        = $row_uc['NOME'];
+                    $tipo_juridico            = $row_uc['TIPO_JURIDICO'];
+                    $numero_cpf_cnpj          = $row_uc['CPF_CNPJ'];
+                    $numero_rg                = $row_uc['N.º RG'];
+                    $orgao_emissor_rg         = $row_uc['ORGAO_EMISSOR'];
+                    $uf_rg                    = $row_uc['UF'];
+                    $fone_fixo                = $row_uc['FONE_FIXO'];
+                    $fone_movel               = $row_uc['CELULAR'];
+                    $fone_zap                 = $row_uc['ZAP'];
+                    $email                    = $row_uc['EMAIL'];
+                    $tipo_consumo             = $row_uc['TIPO_CONSUMO'];
+                    $faixa_consumo            = $row_uc['FAIXA'];
+                    $tipo_medicao             = $row_uc['MEDICAO'];
+                    $id_unidade_hidrometrica  = '';
+                    $valor_faixa_consumo      = $row_uc['VALOR'];
+                    $nome_localidade          = $row_uc['LOCALIDADE'];
+                    $nome_bairro              = $row_uc['BAIRRO'];
+                    $nome_logradouro          = $row_uc['LOGRADOURO'];
+                    $numero_logradouro        = $row_uc['NUMERO'];
+                    $complemento_logradouro   = $row_uc['COMPLEMENTO'];
+                    $cep_logradouro           = $row_uc['CEP'];
+                    $tipo_enderecamento       = $row_uc['CORRESPONDENCIA'];
+                    $status_ligacao           = $row_uc['STATUS'];
+                    $data_cadastro            = $row_uc['CADASTRO'];
+                    $observacoes_text         = $row_uc['OBSERVAÇÕES'];
+
+                    ?>
+
+
+                    <li>
+                      <b>UC:</b> <?php echo $uc; ?>
+                      &nbsp;&nbsp;<b>CPF/CNPJ: </b><?php echo $numero_cpf_cnpj ?>
+                      &nbsp;&nbsp;<b>Status da Ligação:</b> <?php echo $status_ligacao ?>
+                    </li>
+
+                    <li>
+                      <b>Nome /Razão Social:</b> <?php echo $nome_razao_social; ?>
+                      &nbsp;&nbsp;<b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro ?>
+                    </li>
+
+                  </ul>
+
+                <?php
+
                   echo "<button type='button' id='ver' class='btn btn-info form-control mr-2' data-toggle='modal' data-target='.bd-example-modal-lg'>Ver Acordos</button>";
                   echo "<h3 class='text-danger'> Não foram encontrados registros com esses parametros. <br>
                           Verifique a possibilidade da existência de acordos no botão acordos!!! </h3>";
@@ -147,7 +215,7 @@ include_once('../conexao.php');
                             $result_ac = mysqli_query($conexao, $query_ac);
                             $row_ac = mysqli_fetch_array($result_ac);
                             $linha_acordo = mysqli_num_rows($result_ac);
-                            @$id_acordo_firmado = $row_ac['id_acordo_parcelamento'];
+                            @$id_acordo_parcelamento = $row_ac['id_acordo_parcelamento'];
 
                             //executa o store procedure info consumidor
                             $result_sp = mysqli_query(
@@ -182,18 +250,22 @@ include_once('../conexao.php');
                             $data_cadastro            = $row_uc['CADASTRO'];
                             $observacoes_text         = $row_uc['OBSERVAÇÕES'];
 
+                            if ($complemento_logradouro == "") {
+                              $complemento_logradouro = "INEXISTENTE";
+                            }
+
                             ?>
 
 
                             <li>
                               <b>UC:</b> <?php echo $uc; ?>
-                              &nbsp;&nbsp;<b>CPF/ CNPJ: </b><?php echo $numero_cpf_cnpj ?>
-                              &nbsp;&nbsp;<b>Status da Ligação:</b> <?php echo $status_ligacao ?>
+                              &nbsp;&nbsp;<b>CPF/CNPJ: </b><?php echo $numero_cpf_cnpj ?>
+                              &nbsp;&nbsp;<b>Status:</b> <?php echo $status_ligacao ?>
+                              &nbsp;&nbsp;<b>Nome/Razão Social:</b> <?php echo $nome_razao_social; ?>
                             </li>
 
                             <li>
-                              <b>Nome /Razão Social:</b> <?php echo $nome_razao_social; ?>
-                              &nbsp;&nbsp;<b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro ?>
+                              <b>Endereço:</b> <?php echo $nome_logradouro . ' Nº ' . $numero_logradouro . ', BAIRRO ' . $nome_bairro . ', COMPLEMENTO ' . $complemento_logradouro; ?>
                             </li>
 
                           </ul>
@@ -205,7 +277,7 @@ include_once('../conexao.php');
                               </div>
                             <?php } ?>
 
-                            <?php if ($id_acordo_firmado != '') { ?>
+                            <?php if ($id_acordo_parcelamento != '') { ?>
                               <div class="form-group col-md-3">
                                 <button type="button" id="ver" class="btn btn-info form-control mr-2" data-toggle="modal" data-target=".bd-example-modal-lg">Ver Acordos</button>
                               </div>
@@ -213,7 +285,7 @@ include_once('../conexao.php');
 
                             <?php if ($linha_count > 1 and $status == 1 or $status == 3) { ?>
                               <div class="form-group col-md-3">
-                                <input type="button" class="btn btn-info form-control mr-2" value="Boleto Avulso" onclick="javascript:submitForm(this.form, '../lib/boleto_a/boleto_cef_avulso.php');" />
+                                <input type="button" class="btn btn-info form-control mr-2" value="Boleto Avulso" onclick="javascript:submitForm(this.form, '../lib/boleto/boleto_cef_avulso.php');" />
                               </div>
                             <?php } ?>
 
@@ -231,14 +303,6 @@ include_once('../conexao.php');
 
                           </div>
 
-                          <div id="noprint" class="row">
-                            <?php if ($status == '1') { ?>
-                              <div class="form-group col-md-4" style="margin-bottom: -4px;">
-                                <label class="text-danger" for="id_produto">* M/J Soma das multas e juros.</label>
-                              </div>
-                            <?php } ?>
-                          </div>
-
 
                           <th>
                             <?php if ($status == 1 or $status == 3) { ?>
@@ -247,6 +311,7 @@ include_once('../conexao.php');
                               </div>
                             <?php } ?>
                           </th>
+
                           <th class="text-danger">
                             Competência
                           </th>
@@ -275,6 +340,9 @@ include_once('../conexao.php');
 
                           <?php if ($status == '2') { ?>
                             <th>
+                              Arrecadador
+                            </th>
+                            <th>
                               Pagamento
                             </th>
                           <?php } ?>
@@ -296,14 +364,15 @@ include_once('../conexao.php');
                             $mes_faturado              = $res['COMPETENCIA'];
                             @$mes_faturado2            = $res['COMPETENCIAII'];
                             @$vencimento               = $res["VENCTOII"];
-                            @$vencimento2              = $res["VENCTO"];
+                            $vencimento2               = $res["VENCTO"];
                             $total_multas_faturadas    = $res["MULTA"];
                             $total_juros_faturados     = $res["JUROS"];
-                            $total_servicos_requeridos = $res["SERVICOS"];
+                            $total_servicos_requeridos = $res["SERVIÇOS"];
                             $total_parcela_acordo      = $res["ACORDO"];
                             $id_localidade             = $res["ID_LOC"];
                             @$total_m_j                = $res["M/J*"];
                             @$data_pagamento           = $res["PGTO"];
+                            @$banco                    = $res["BANCO"];
 
                             $_SESSION['id'] = $id;
                             $_SESSION['total_geral_faturado'] = $total_geral_faturado;
@@ -316,6 +385,8 @@ include_once('../conexao.php');
 
                             // Recria a data invertida
                             //$data = "$mes/$ano";
+
+                            //echo $id;
 
                           ?>
 
@@ -342,6 +413,7 @@ include_once('../conexao.php');
                               <td><?php echo $vencimento2; ?></td>
 
                               <?php if ($status == '2') { ?>
+                                <td><?php echo $banco; ?></td>
                                 <td><?php echo $data_pagamento; ?></td>
                               <?php } ?>
 
@@ -350,6 +422,10 @@ include_once('../conexao.php');
 
                                 <?php if ($status == 1 or $status == 3) { ?>
                                   <a class="btn btn-success btn-sm" title="Gerar Boleto" target="_blank" href="../lib/boleto/boleto_cef.php?id=<?php echo $id; ?>&mes_faturado=<?php echo $mes_faturado2; ?>&id_localidade=<?php echo $id_localidade; ?>&vencimento=<?php echo $vencimento; ?>&vencimento2=<?php echo $vencimento2; ?>"><i class="fas fa-file-invoice"></i></a>
+                                <?php } ?>
+
+                                <?php if ($_SESSION['nivel_usuario'] != '77' && $status == 1 or $status == 3) { ?>
+                                  <a class="btn btn-danger btn-sm" title="Baixa Manual" href="admin.php?acao=confirma&id=<?php echo $id; ?>&mes_faturado=<?php echo $mes_faturado2; ?>&id_localidade=<?php echo $id_localidade; ?>"><i class="fas fa-donate"></i></a>
                                 <?php } ?>
 
                                 <?php if ($status == 2) { ?>
@@ -365,6 +441,7 @@ include_once('../conexao.php');
                               <input type="text" class="form-control mr-2" name="mes_faturado[]" value="<?php echo @$mes_faturado2; ?>" style="text-transform:uppercase; display: none;">
                               <input type="text" name="id" id="id" value="<?php echo $id; ?>" style="display: none;">
                               <input type="text" name="status" id="id" value="<?php echo $status; ?>" style="display: none;">
+
 
                             </tr>
 
@@ -609,7 +686,7 @@ include_once('../conexao.php');
                                 Parcela Nº
                               </th>
                               <th>
-                                Competência
+                                Data de Vencimento
                               </th>
                               <th>
                                 Valor
@@ -621,9 +698,9 @@ include_once('../conexao.php');
                               <?php
                               while ($res = mysqli_fetch_array($result)) {
                                 $id = $res["N.º UC"];
-                                $id_acordo_firmado = $res["N.º CONTRATO"];
+                                $id_acordo_parcelamento = $res["N.º CONTRATO"];
                                 $numero_parcela = $res["N.º PARC."];
-                                $competencia = $res["COMPETÊNCIA"];
+                                $data_vencimento_parcela = $res["VENCTO"];
                                 $valor_parcela = $res["VALOR"];
 
 
@@ -631,9 +708,9 @@ include_once('../conexao.php');
 
                                 <tr>
 
-                                  <td class="text-danger"><?php echo $id_acordo_firmado; ?></td>
+                                  <td class="text-danger"><?php echo $id_acordo_parcelamento; ?></td>
                                   <td><?php echo $numero_parcela; ?></td>
-                                  <td><?php echo $competencia; ?></td>
+                                  <td><?php echo $data_vencimento_parcela; ?></td>
                                   <td><?php echo $valor_parcela; ?></td>
 
                                 </tr>

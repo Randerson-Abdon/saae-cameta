@@ -38,16 +38,30 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 	@$id_localidade  = $_POST['id_localidade'];
 	@$id_logradouro  = $_POST['id_logradouro'];
 	@$id_bairro	    = $_POST['id_bairro'];
-	@$status	   		= $_POST['status'];
+	@$status	   	= $_POST['status'];
+
+	if ($id_localidade == '---Escolha uma opção---') {
+		echo "<script language='javascript'>window.alert('Selecione a localidade!!!');</script>";
+		echo "<script language='javascript'>window.close();</script>";
+		exit();
+	}
+	if ($id_logradouro == '---Escolha uma opção---') {
+		$id_logradouro = '0';
+	}
+	if ($id_bairro == '---Escolha uma opção---') {
+		$id_bairro = '0';
+	}
 
 	//executa o store procedure info corte
 	$result_sp = mysqli_query(
 		$conexao,
-		"CALL sp_lista_unidade_consumidora_logradouro($id_localidade,$id_bairro,$id_logradouro,'','$status');"
-	) or die("<p class='h5 text-danger'>Verifique se a seleção dos dados para consulta esta correta!!!</p>");
+		"CALL sp_lista_unidade_consumidora_logradouro('$id_localidade',$id_bairro,$id_logradouro,'','$status');"
+	) or die("Erro na query da procedure sp_lista_unidade_consumidora_logradouro: " . mysqli_error($conexao));
 	mysqli_next_result($conexao);
 
 	$row = mysqli_num_rows($result_sp);
+
+	//echo $id_localidade . ', ' . $id_logradouro . ', ' . $id_bairro . ', ' . $status;
 
 	?>
 	<section>
@@ -65,19 +79,19 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 										<thead class="text-secondary">
 
 											<th>
-												Matrícula
+												N° U.C.
 											</th>
 											<th>
 												Nome
 											</th>
 											<th>
-												Complemento
-											</th>
-											<th>
-												N°
+												CPF/CNPJ
 											</th>
 											<th>
 												Data de Cadastro
+											</th>
+											<th>
+												Contato
 											</th>
 											<th>
 												Status
@@ -93,9 +107,12 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 												$nome_razao_social	 = $res["NOME"];
 												$numero_cpf_cnpj 	 = $res["CPF_CNPJ"];
 												$data_cadastro		 = $res["CADASTRO"];
-												$complemento 	 	 = $res["COMPLEMENTO"];
+												$fone_movel	 	 	 = $res["CELULAR"];
+												if ($fone_movel == null) {
+													$fone_movel = 'INEXISTENTE';
+												}
+
 												$status_ligacao		 = $res["STATUS"];
-												$numero		 		 = $res["NUMERO"];
 
 												$id_usuario_editor = $_SESSION['id_usuario'];
 
@@ -105,9 +122,9 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 													<td class="text-danger"><?php echo $uc; ?></td>
 													<td><?php echo $nome_razao_social; ?></td>
-													<td><?php echo $complemento; ?></td>
-													<td><?php echo $numero; ?></td>
+													<td><?php echo $numero_cpf_cnpj; ?></td>
 													<td><?php echo $data_cadastro; ?></td>
+													<td><?php echo $fone_movel; ?></td>
 													<td><?php echo $status_ligacao; ?></td>
 
 													<td>

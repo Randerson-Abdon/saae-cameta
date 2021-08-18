@@ -85,8 +85,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       <a class="navbar-brand js-scroll-trigger" href="../index.php" target="_blank">
         <!-- personalização da logo -->
         <img src="../img/logo.png" class="img_logo">
-        <span class="texto_logo">PORTAL SAAE</span>
-      </a>
+        <span class="texto_logo">PORTAL SAAE</span></a>
 
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle Navigation">
         Menu <i class="fas fa-bars"></i>

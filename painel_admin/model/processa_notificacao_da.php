@@ -91,7 +91,7 @@ if ($slBuscar == 'uc') {
                 margin: 0px 10px 10px 0px;
                 max-width: 1386px;
                 margin-left: 1270px;
-                margin-top: -160px;
+                margin-top: -100px;
             }
 
             img.face2 {
@@ -204,7 +204,7 @@ if ($slBuscar == 'uc') {
 
                                                                 <?php echo $nome_prefeitura . ' - ' . $uf_saae; ?> <br>
                                                                 <?php echo $nome_saae; ?> <br>
-                                                                SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
+                                                                S DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
                                                                 <span style="font-size: 30pt;">NOTIFICAÇÃO EXTRAJUDICIAL</span> <br>
                                                             </p>
 
@@ -459,7 +459,7 @@ if ($slBuscar == 'uc') {
                 margin: 0px 10px 10px 0px;
                 max-width: 1386px;
                 margin-left: 1270px;
-                margin-top: -160px;
+                margin-top: -100px;
             }
 
             img.face2 {
@@ -733,7 +733,7 @@ if ($slBuscar == 'uc') {
                                                             Endereço: <?php echo $logradouro . ' N° ' . $numero . ', ' . $localidade; ?><br><br><br>
                                                             EU, ________________________________________________________________________________________________________________, recebi a presente notificação em ___/___/______ às ___:___ horas. <br><br>
                                                             ASSINATURA: _________________________________________________________________________________________________________________ <br><br>
-                                                            CPF.:_______________________________________________________________________ <span class="espaco"></span> RG.:_______________________________________________________________________ <br><br><br><br>
+                                                            CPF.:_______________________________________________________________________ <span class="espaco"></span> RG.:_______________________________________________________________________ <br><br><br><br><br><br>
 
                                                         <div class="row">
                                                             <div class="form-group text-center col-md-12" style="margin-top: 50px;">

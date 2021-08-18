@@ -101,7 +101,7 @@ include_once('../conexao.php');
 
 													<td>
 														<!--chamando modal para envio de mensagem-->
-														<a class="text-primary" title="Ver Perfil" href="atendimento.php?acao=requerimento&func=perfil&id=<?php echo $uc; ?>&id_localidade=<?php echo $id_localidade; ?>"><i class="fas fa-id-card"></i></a>
+														<a class="text-primary" title="Ver Perfil" href="atendimento.php?acao=requerimento&func=perfil&id=<?php echo $uc; ?>"><i class="fas fa-id-card"></i></a>
 
 														<a class="text-secondary" title="Criar Requerimento" href="atendimento.php?acao=requerimento&func=criar&id=<?php echo $uc; ?>"><i class="fas fa-plus-square"></i></a>
 													</td>

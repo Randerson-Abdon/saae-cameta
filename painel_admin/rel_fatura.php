@@ -120,7 +120,6 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                   @$uf_saae = $row_ps['uf_saae'];
                   @$nome_saae = $row_ps['nome_saae'];
                   @$email_saae = $row_ps['email_saae'];
-                  @$logo_orgao = $row_ps['logo_orgao'];
 
                   $data = date('d/m/Y');
 
@@ -129,9 +128,9 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                   <table style="margin-bottom: 15px;">
                     <thead>
                       <tr>
-                        <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+                        <th style="width: 20%;"><img width="80%" src="../img/sIzabel/saae_sIzabel_logo.png" alt=""></th>
                         <th>
-                          <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+                          <p><?php echo $nome_prefeitura ?> <br>
                             SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                             SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
                             RELATÓRIO DA COMPOSIÇÃO DO FATURAMENTO <?php if ($status == '1') {
@@ -213,23 +212,36 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                           Competência
                         </th>
                         <th>
-                          Total Tarifa
+                          Tarifa
+                        </th>
+
+                        <?php if ($status == '1') { ?>
+                          <th>
+                            *M/J
+                          </th>
+                        <?php } ?>
+
+                        <th>
+                          Serviços
                         </th>
                         <th>
-                          Total Multa
-                        </th>
-                        <th>
-                          Total Juros
-                        </th>
-                        <th>
-                          Total Serviços
-                        </th>
-                        <th>
-                          Total Parcelas
+                          Parcelas
                         </th>
                         <th>
                           Faturado
                         </th>
+                        <th>
+                          Vencimento
+                        </th>
+
+                        <?php if ($status == '2') { ?>
+                          <th>
+                            Arrecadador
+                          </th>
+                          <th>
+                            Pagamento
+                          </th>
+                        <?php } ?>
 
 
 
@@ -241,24 +253,22 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                           $id                        = $res["ID_UC"];
                           $total_geral_tarifa        = $res["TARIFA"];
                           $total_geral_faturado      = $res["TOTAL"];
-                          @$total_geral_faturado2     = $res["TOTALII"];
+                          @$total_geral_faturado2    = $res["TOTALII"];
                           $mes_faturado              = $res['COMPETENCIA'];
-                          @$mes_faturado2             = $res['COMPETENCIAII'];
-                          //$data_pagamento_fatura   = $res["PGTO"];
+                          @$mes_faturado2            = $res['COMPETENCIAII'];
+                          @$vencimento               = $res["VENCTOII"];
+                          $vencimento2               = $res["VENCTO"];
                           $total_multas_faturadas    = $res["MULTA"];
                           $total_juros_faturados     = $res["JUROS"];
                           $total_servicos_requeridos = $res["SERVICOS"];
                           $total_parcela_acordo      = $res["ACORDO"];
                           $id_localidade             = $res["ID_LOC"];
+                          @$total_m_j                = $res["M/J*"];
+                          @$data_pagamento           = $res["PGTO"];
+                          @$banco                    = $res["BANCO"];
 
-                          // Explode a barra e retorna três arrays
-                          //$data = explode("/", $mes_faturado);
-
-                          // Cria três variáveis $dia $mes $ano
-                          //list($ano, $mes) = $data;
-
-                          // Recria a data invertida
-                          //$data = "$mes/$ano";
+                          $_SESSION['id'] = $id;
+                          $_SESSION['total_geral_faturado'] = $total_geral_faturado;
 
                         ?>
 
@@ -266,12 +276,20 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                             <td class="text-danger"><?php echo $mes_faturado; ?></td>
                             <td><?php echo $total_geral_tarifa; ?></td>
-                            <td><?php echo $total_multas_faturadas; ?></td>
-                            <td><?php echo $total_juros_faturados; ?></td>
+
+                            <?php if ($status == '1') { ?>
+                              <td><?php echo $total_m_j; ?></td>
+                            <?php } ?>
+
                             <td><?php echo $total_servicos_requeridos; ?></td>
                             <td><?php echo $total_parcela_acordo; ?></td>
                             <td><?php echo $total_geral_faturado; ?></td>
+                            <td><?php echo $vencimento2; ?></td>
 
+                            <?php if ($status == '2') { ?>
+                              <td><?php echo $banco; ?></td>
+                              <td><?php echo $data_pagamento; ?></td>
+                            <?php } ?>
 
                           </tr>
 

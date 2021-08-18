@@ -85,19 +85,19 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
   $data = date('d/m/Y');
 
   //trazendo info localidade
-  $query_lo = "SELECT * from localidade where id_localidade = '$id_localidade' ";
+  $query_lo = "SELECT * from enderecamento_localidade where id_localidade = '$id_localidade' ";
   $result_lo = mysqli_query($conexao, $query_lo);
   $row_lo = mysqli_fetch_array($result_lo);
   @$nome_localidade = $row_lo["nome_localidade"];
 
   //trazendo info bairro
-  $query_ba = "SELECT * from bairro where id_localidade = '$id_localidade' and id_bairro = '$id_bairro' ";
+  $query_ba = "SELECT * from enderecamento_bairro where id_localidade = '$id_localidade' and id_bairro = '$id_bairro' ";
   $result_ba = mysqli_query($conexao, $query_ba);
   $row_ba = mysqli_fetch_array($result_ba);
   @$nome_bairro = $row_ba["nome_bairro"];
 
   //trazendo info logradouro
-  $query_log = "SELECT * from logradouro where id_bairro = '$id_bairro' and id_logradouro = '$id_logradouro' ";
+  $query_log = "SELECT * from enderecamento_logradouro where id_bairro = '$id_bairro' and id_logradouro = '$id_logradouro' ";
   $result_log = mysqli_query($conexao, $query_log);
   $row_log = mysqli_fetch_array($result_log);
   @$nome_logradouro = $row_log["nome_logradouro"];

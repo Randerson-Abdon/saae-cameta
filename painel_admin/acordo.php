@@ -2,7 +2,7 @@
 @session_start(); # Deve ser a primeira linha do arquivo
 date_default_timezone_set('America/Belem');
 
-if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
     header('Location: ../login.php');
     exit();
 }
@@ -42,7 +42,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
     $_SESSION['mes_faturado'] = $mes_faturado;
     $_SESSION['id'] = $id;
-    $_SESSION['id_localidade'] = $id_localidade;
+
 
     @$linha = count($mes_faturado);
 
@@ -121,7 +121,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
         <ul class="linha bg-primary text-white">
             <li>
-                <b>Matrícula:</b> <?php echo $id; ?></b>
+                <b>U.C:</b> <?php echo $id; ?></b>
             </li>
             <li>
                 <b>Nome /Razão Social:</b> <?php echo $nome_razao_social; ?></b>
@@ -145,7 +145,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     </div>
 
                     <div class="form-group">
-                        <label for="data">Matrícula n°</label>
+                        <label for="data">Unidade Consumidora n°</label>
                         <input class="bg-primary text-white" type="text" name="id" value="<?php echo $id ?>" class="form-control" readonly>
                     </div>
 
@@ -168,18 +168,12 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                         <label for="valorEntrada">Parcelas</label>
                         <select id="parcelas" name="parcelas" class="form-control">
                             <option selected="selected" value="0">selecione o número de parcelas</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
+                            <?php
+
+                            for ($i = 1; $i <= 12; $i++) { ?>
+                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+
+                            <?php } ?>
                         </select>
                     </div>
                 </div>

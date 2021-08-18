@@ -191,7 +191,7 @@ include_once('../controller/controller_acordos.php');
 														<td>
 
 															<?php if ($numero_parcela == '00/00') { ?>
-																<a class="btn btn-success btn-sm" title="Gerar Boleto" target="_blank" href="../lib/boleto_a/boleto_cef.php?id=<?php echo $id; ?>&competencia=<?php echo $competencia; ?>&valor=<?php echo $valor; ?>&vencimento=<?php echo $vencimento; ?>&acordo=<?php echo $id_acordo_firmado2; ?>&numero_parcela=<?php echo $numero_parcela; ?>&id_localidade=<?php echo $localidade; ?>"><i class="fas fa-file-invoice"></i></a>
+																<a class="btn btn-success btn-sm" title="Gerar Boleto" target="_blank" href="../lib/boleto/boleto_cef_entrada.php?id=<?php echo $id; ?>&competencia=<?php echo $competencia; ?>&valor=<?php echo $valor; ?>&vencimento=<?php echo $vencimento; ?>&acordo=<?php echo $id_acordo_firmado; ?>&numero_parcela=<?php echo $numero_parcela; ?>&id_localidade=<?php echo $localidade; ?>"><i class="fas fa-file-invoice"></i></a>
 															<?php } ?>
 
 															<?php if ($numero_parcela != '00/00') { ?>

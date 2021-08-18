@@ -35,7 +35,7 @@ session_start();
         <div class="area_logo">
 
           <!-- COLOCA IMG / width é a largura-->
-          <a href="index.php"><img src="img/logo.png" width="150px" class="logo_circular"></a>
+          <a href="index.php"><img src="img/logo22.png" width="150px" class="logo_circular"></a>
 
         </div>
 
@@ -100,10 +100,16 @@ session_start();
 
         </div>
 
+
+
       </div>
 
 
     </div>
+
+    <p style="font-size: 25pt; color: #0f51ff; font-weight: bold; margin-top: -100px;"><i class="fas fa-tint fa-blink"></i> <a href="#"><img src="img/titulo.png" width="400" height="54" alt="SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL - SAAENET" /></a> <i class="fas fa-tint fa-blink"></i></p>
+
+
 
   </div>
 
@@ -125,12 +131,12 @@ session_start();
 
             <div class="form-group">
               <label for="id_produto">Nome</label>
-              <input type="text" class="form-control mr-2" name="nome" placeholder="Nome" style="text-transform:uppercase;" required>
+              <input type="text" class="form-control mr-2" name="nome" placeholder="Nome" required>
             </div>
 
             <div class="form-group">
               <label for="id_produto">CPF</label>
-              <input type="text" class="form-control mr-2" maxlength="11" name="cpf" placeholder="CPF" id="cpf" required>
+              <input type="text" class="form-control mr-2" name="cpf" placeholder="CPF" id="cpf" required>
             </div>
 
             <div class="form-group">
@@ -150,11 +156,9 @@ session_start();
               <select class="form-control mr-2" id="category" name="nivel">
 
                 <option value="1">Administrativo</option>
-                <option value="2">Operacional</option>
                 <option value="3">Atendente</option>
-                <option value="4">Caixa</option>
-                <option value="5">Financeiro</option>
-                <option value="0">Master</option>
+                <option value="2">Operacional</option>
+                <option value="0">Admin./Atend./Operac.</option>
 
               </select>
             </div>
@@ -189,7 +193,7 @@ session_start();
 
             <div class="form-group">
               <label for="id_produto">CPF</label>
-              <input type="text" class="form-control mr-2" maxlength="11" name="cpf" placeholder="Seu CPF aqui" id="cpf" required>
+              <input type="text" class="form-control mr-2" name="cpf" placeholder="Seu CPF aqui" id="cpf" required>
               <label class="text-danger" for="id_produto" style="font-size: 8pt;">* Digite apenas números</label>
             </div>
 
@@ -307,7 +311,7 @@ unset($_SESSION['nao_autenticado']);
 // QUANDO FOR CLICADO O BOTÃO SALVAR
 if (isset($_POST['salvar'])) {
   //RECUPERAÇÃO DE DADOS DOS FORMULARIOS
-  $nome = mb_strtoupper($_POST['nome']);
+  $nome = $_POST['nome'];
   $cpf = $_POST['cpf'];
   $usuario = $_POST['usuario'];
   $senha = $_POST['senha'];

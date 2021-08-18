@@ -39,6 +39,8 @@ if ($slBuscar == 'uc') {
     $id_bairro     = $_POST['id_bairro'];
     $id_logradouro = $_POST['id_logradouro'];
 
+    //echo $excluir . ', ' . $id_localidade . ', ' . $id_bairro . ', ' . $id_logradouro . ', ' . $id_operador;
+
     //executa o store procedure para gerar notificação
     $result_gera_notificacao = mysqli_query(
         $conexao,

@@ -123,7 +123,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     $data2 = implode('/', array_reverse(explode('-', $data_cadastro)));
 
                     //trazendo info endereco_instalação
-                    $query_eu = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id' ";
+                    $query_eu = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id' ";
                     $result_eu = mysqli_query($conexao, $query_eu);
                     $row_eu = mysqli_fetch_array($result_eu);
                     @$id_unidade_consumidora_e = $row_eu['id_unidade_consumidora'];
@@ -153,19 +153,35 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                       <td>
 
-                        <?php if ($status_ligacao == 'I' and $temp != '') { ?>
+                        <!-- excluir botoes no inicio do ano de 2020 -->
+
+                        <a class="btn btn-info btn-sm" title="Editar Endereçamento" href="admin.php?acao=consumidores&func=edita2&id=<?php echo $id; ?>"><i class="fas fa-list-alt"></i></a>
+
+                        <a class="btn btn-info btn-sm" title="Editar Consumidor" href="admin.php?acao=consumidores&func=editar&id=<?php echo $id; ?>"><i class="fas fa-edit"></i></a>
+
+                        <!-- voltar a parte comentada no inicio do ano de 2020 -->
+
+                        <?php //if ($status_ligacao == 'I' and $temp != '') { 
+                        ?>
+                        <?php if ($status_ligacao == 'I') { ?>
                           <a class="btn btn-success btn-sm" href="admin.php?acao=consumidores&func=ativa&id=<?php echo $id; ?>&rec=<?php echo $id_requerimento; ?>"><i title="Ativar Usuário(a)" class="fas fa-check-square"></i></a>
                         <?php } ?>
 
-                        <?php if ($status_ligacao == 'P' and $temp != '') { ?>
+                        <?php //if ($status_ligacao == 'P' and $temp != '') { 
+                        ?>
+                        <?php if ($status_ligacao == 'P') { ?>
                           <a class="btn btn-success btn-sm" href="admin.php?acao=consumidores&func=ativa&id=<?php echo $id; ?>&rec=<?php echo $id_requerimento; ?>"><i title="Ativar Usuário(a)" class="fas fa-check-square"></i></a>
                         <?php } ?>
 
-                        <?php if ($status_ligacao == 'F' and $temp != '') { ?>
+                        <?php //if ($status_ligacao == 'F' and $temp != '') { 
+                        ?>
+                        <?php if ($status_ligacao == 'F') { ?>
                           <a class="btn btn-success btn-sm" href="admin.php?acao=consumidores&func=ativa&id=<?php echo $id; ?>&rec=<?php echo $id_requerimento; ?>"><i title="Ativar Usuário(a)" class="fas fa-check-square"></i></a>
                         <?php } ?>
 
-                        <?php if ($status_ligacao == 'A' and $temp != '') { ?>
+                        <?php //if ($status_ligacao == 'A' and $temp != '') { 
+                        ?>
+                        <?php if ($status_ligacao == 'A') { ?>
                           <a class="btn btn-danger btn-sm" href="admin.php?acao=consumidores&func=inativa&id=<?php echo $id; ?>&rec=<?php echo $id_requerimento; ?>"><i title="Inativar Usuário(a)" class="fa fa-minus-square"></i></a>
                         <?php } ?>
 
@@ -216,9 +232,10 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 <!--EDITAR -->
 <?php
 if (@$_GET['func'] == 'editar') {
-  $id              = $_GET['id'];
-  $id_requerimento = $_GET['rec'];
-  $localidade      = $_GET['id_localidade'];
+  $id = $_GET['id'];
+  @$id_requerimento = $_GET['rec'];
+
+  $localidade = '01';
 
   //executa o store procedure info consumidor
   $result_sp = mysqli_query(
@@ -293,8 +310,8 @@ if (@$_GET['func'] == 'editar') {
                 <label for="fornecedor">Tipo Jurídico</label>
                 <select class="form-control mr-2" id="category" name="tipo_juridico" style="text-transform:uppercase;">
                   <option value="" <?php if ($tipo_juridico == '') { ?> selected <?php } ?>>selecione</option>
-                  <option value="J" <?php if ($tipo_juridico == 'J') { ?> selected <?php } ?>>Pessoa Jurídica</option>
-                  <option value="P" <?php if ($tipo_juridico == 'P') { ?> selected <?php } ?>>Pessoa Física</option>
+                  <option value="J" <?php if ($tipo_juridico == 'PESSOA JURÍDICA') { ?> selected <?php } ?>>Jurídica</option>
+                  <option value="P" <?php if ($tipo_juridico == 'PESSOA FÍSICA') { ?> selected <?php } ?>>Física</option>
 
                 </select>
               </div>
@@ -353,8 +370,8 @@ if (@$_GET['func'] == 'editar') {
                 <select class="form-control mr-2" id="category" name="fone_zap" style="text-transform:uppercase;">
 
                   <option value="" <?php if ($fone_zap == '') { ?> selected <?php } ?>>SELECIONE</option>
-                  <option value="S" <?php if ($fone_zap == 'S') { ?> selected <?php } ?>>SIM</option>
-                  <option value="N" <?php if ($fone_zap == 'N') { ?> selected <?php } ?>>NÃO</option>
+                  <option value="S" <?php if ($fone_zap == 'SIM') { ?> selected <?php } ?>>SIM</option>
+                  <option value="N" <?php if ($fone_zap == 'NÃO') { ?> selected <?php } ?>>NÃO</option>
 
                 </select>
               </div>
@@ -426,7 +443,7 @@ if (@$_GET['func'] == 'editar') {
 
                   <option value="" <?php if ($tipo_medicao == '') { ?> selected <?php } ?>>SELECIONE</option>
                   <option value="E" <?php if ($tipo_medicao == 'ESTIMADA') { ?> selected <?php } ?>>ESTIMADA</option>
-                  <option value="M" <?php if ($tipo_medicao == 'HIDROMETRADA') { ?> selected <?php } ?>>HIDROMETRADA</option>
+                  <option value="M" <?php if ($tipo_medicao == 'MEDIDA') { ?> selected <?php } ?>>HIDROMETRADA</option>
 
                 </select>
               </div>
@@ -526,7 +543,7 @@ if (@$_GET['func'] == 'editar') {
     //tratamento para celular
     $cel = preg_replace("/[^0-9]/", "", $fone_movel);
 
-    //echo $tipo_juridico . ', ' . $ncc3 . ', ' . $nome_razao_social . ', ' . $numero_rg . ', ' . $orgao_emissor_rg . ', ' . $uf_rg . ', ' . $tel . ', ' . $cel . ', ' . $fone_zap . ', ' . $email . ', ' . $tipo_consumo . ', ' . $faixa_consumo . ', ' . $tipo_medicao . ', ' . $id_unidade_hidrometrica . ', ' . $observacoes . ', ' . $id_usuario_editor . ', ' . $id;
+    //echo $tipo_juridico . ',' . $ncc3 . ',' . $nome_razao_social . ',' . $numero_rg . ',' . $orgao_emissor_rg . ',' . $uf_rg . ',' . $tel . ',' . $cel . ',' . $fone_zap . ',' . $email . ',' . $tipo_consumo . ',' . $faixa_consumo . ',t' . $tipo_medicao . ',' . $id_unidade_hidrometrica . ',' . $observacoes . ',' . $id_usuario_editor;
 
 
     $query_consum = "UPDATE unidade_consumidora set tipo_juridico = '$tipo_juridico', numero_cpf_cnpj = '$ncc3', nome_razao_social = '$nome_razao_social', numero_rg = '$numero_rg', orgao_emissor_rg = '$orgao_emissor_rg', uf_rg = '$uf_rg', fone_fixo = '$tel', fone_movel = '$cel', fone_zap = '$fone_zap', email = '$email', tipo_consumo = '$tipo_consumo', faixa_consumo = '$faixa_consumo', tipo_medicao = '$tipo_medicao', id_unidade_hidrometrica = '$id_unidade_hidrometrica', observacoes = '$observacoes', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$id'";
@@ -537,7 +554,7 @@ if (@$_GET['func'] == 'editar') {
       echo "<script language='javascript'>window.alert('Ocorreu um erro ao Editar!'); </script>";
     } else {
 
-      $query_mensagem = "UPDATE requerimento set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
+      $query_mensagem = "UPDATE requerimento_servico set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
       mysqli_query($conexao, $query_mensagem);
 
       echo "<script language='javascript'>window.alert('Salvo com Sucesso!'); </script>";
@@ -554,8 +571,9 @@ if (@$_GET['func'] == 'editar') {
 <?php
 if (@$_GET['func'] == 'edita2') {
   $id              = $_GET['id'];
-  $id_requerimento = $_GET['rec'];
-  $localidade      = $_GET['id_localidade'];
+  @$id_requerimento = $_GET['rec'];
+
+  $localidade = '01';
 
   //executa o store procedure info consumidor
   $result_sp3 = mysqli_query(
@@ -720,7 +738,7 @@ if (@$_GET['func'] == 'edita2') {
     $complemento_logradouro = mb_strtoupper($_POST['complemento_logradouro']);
 
     // upgrade endereço de instalação
-    $query = "UPDATE endereco_instalacao SET id_logradouro = '$id_logradouro', numero_logradouro = '$numero_logradouro', complemento_logradouro = '$complemento_logradouro' where id_unidade_consumidora = '$id' ";
+    $query = "UPDATE enderecamento_instalacao SET id_logradouro = '$id_logradouro', numero_logradouro = '$numero_logradouro', complemento_logradouro = '$complemento_logradouro' where id_unidade_consumidora = '$id' ";
 
     $result = mysqli_query($conexao, $query);
 
@@ -744,7 +762,7 @@ if (@$_GET['func'] == 'edita2') {
       echo "<script language='javascript'>window.alert('Ocorreu um erro ao Editar!'); </script>";
     } else {
 
-      $query_mensagem = "UPDATE requerimento set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
+      $query_mensagem = "UPDATE requerimento_servico set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
       mysqli_query($conexao, $query_mensagem);
 
       echo "<script language='javascript'>window.alert('Salvo com Sucesso!'); </script>";
@@ -768,7 +786,7 @@ if (@$_GET['func'] == 'edita2') {
   $sql = "UPDATE unidade_consumidora SET status_ligacao = 'A' WHERE id_unidade_consumidora = '$id'";
   mysqli_query($conexao, $sql);
 
-  $query_mensagem = "UPDATE requerimento set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
+  $query_mensagem = "UPDATE requerimento_servico set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
   mysqli_query($conexao, $query_mensagem);
 
   echo "<script language='javascript'>window.alert('Ativado Sucesso!'); </script>";
@@ -784,7 +802,7 @@ if (@$_GET['func'] == 'edita2') {
   $sql = "UPDATE unidade_consumidora SET status_ligacao = 'I' WHERE id_unidade_consumidora = '$id'";
   mysqli_query($conexao, $sql);
 
-  $query_mensagem = "UPDATE requerimento set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
+  $query_mensagem = "UPDATE requerimento_servico set mensagem = '', status_requerimento = 'D' where id_requerimento = '$id_requerimento'";
   mysqli_query($conexao, $query_mensagem);
 
 

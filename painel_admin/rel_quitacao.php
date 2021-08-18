@@ -10,7 +10,7 @@ require "config/funcoes.php";
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
   header('Location: ../login.php');
   exit();
 }
@@ -40,13 +40,13 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 <body>
 
 
-  <!--   <script>
+  <script>
     window.print();
     window.addEventListener("afterprint", function(event) {
       window.close();
     });
     window.onafterprint();
-  </script> -->
+  </script>
 
   <!-- EXIBIÇÃO PERFIL -->
   <?php
@@ -55,7 +55,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     $localidade = $_GET['localidade'];
     $id_usuario_editor = $_SESSION['id_usuario'];
 
-    echo $localidade . ', ' . $id;
+    //echo $localidade . ', ' . $id;
 
     //executa o store procedure info consumidor
     $result_sp = mysqli_query(
@@ -118,11 +118,11 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     $data = date('d/m/Y');
 
     //consulta para numeração automatica declaracao_quitacao
-    $query_num_dq = "select * from declaracao_quitacao order by id_declaracao_quitacao desc ";
+    $query_num_dq = "select * from certidao_quitacao_debito order by id_certidao desc ";
     $result_num_dq = mysqli_query($conexao, $query_num_dq);
     $res_num_dq = mysqli_fetch_array($result_num_dq);
-    @$ultimo_dq = $res_num_dq["id_declaracao_quitacao"];
-    $id_declaracao_quitacao = $ultimo_dq + 1;
+    @$ultimo_dq = $res_num_dq["id_certidao"];
+    $id_certidao = $ultimo_dq + 1;
 
     $data_emissao = date('Y-m-d');
 
@@ -137,10 +137,10 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
       $string .= $alphaNumeric[rand(0, strlen($alphaNumeric) - 1)];
     }
 
-    $codigo_autenticacao = ltrim($id_declaracao_quitacao, "0") . $string;
+    $codigo_autenticacao = ltrim($id_certidao, "0") . $string;
 
     // insert declaracao_quitacao
-    $query_dq = "INSERT INTO declaracao_quitacao (id_declaracao_quitacao, data_emissao, codigo_autenticacao, id_unidade_consumidora, 	id_localidade, id_requerimento, id_usuario_editor_registro) values ('$id_declaracao_quitacao', '$data_emissao', '$codigo_autenticacao', '$id', '$localidade', '0', '$id_usuario_editor')";
+    $query_dq = "INSERT INTO certidao_quitacao_debito (id_certidao, data_emissao, codigo_autenticacao, id_unidade_consumidora, id_localidade, id_requerimento_servicos, id_usuario_editor_registro) values ('$id_certidao', '$data_emissao', '$codigo_autenticacao', '$id', '$localidade', '0', '$id_usuario_editor')";
     $result_dq = mysqli_query($conexao, $query_dq);
 
     if ($result_dq == '') {
@@ -173,10 +173,12 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
           </tr>
         </thead>
       </table>
-      <br><br><br><br>
+      <br><br><br>
+
+      <p class="text-center"><strong>DECLARAÇÃO DE QUITAÇÃO DE DÉBITO</strong></p><br><br>
 
       <p class="text-justify" style="padding-left: 5%; padding-right: 5%; font-size: 10pt;">
-        <span style="margin-left: 25%;"><strong>DECLARAÇÃO DE QUITAÇÃO DE DÉBITO</strong></span><br><br>
+
 
         <b><u>CONSUMIDOR:</u></b><br>
         <span>NOME: <b><?php echo $nome_razao_social; ?></b></span>
@@ -223,12 +225,12 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
       <div class="text-center" style="font-size: 10pt; margin-top: 10;"><span><?php echo $nome_logradouro_saae; ?>, <?php echo $numero_imovel_saae; ?> <br>
           <?php echo $nome_bairro_saae; ?> - <?php echo $nome_municipio; ?> - <?php echo $uf_saae; ?> CEP.: <?php echo $cep_saae; ?> <br>
           Fone: <?php echo $fone_saae; ?> E-Mail: <?php echo $email_saae; ?> <br>
-          CNPJ.: <?php echo $saae_cnpj; ?></span></div><br><br>
+          CNPJ.: <?php echo $saae_cnpj; ?></span></div><br>
 
 
       </p>
 
-      <p class="text-center" style="font-size: 9pt;">Para autenticação deste documento entre no endereço eletrônico: www.saaecameta.com.br, no menu AUTENTICAÇÃO DE CERTIDÕES, use o código: <?php echo $codigo_autenticacao; ?> para validação. </p>
+      <p class="text-center" style="font-size: 9pt;">Para autenticação deste documento entre no endereço eletrônico: www.saaesantaizabel.com.br, no menu AUTENTICAÇÃO DE CERTIDÕES, use o código: <?php echo $codigo_autenticacao; ?> para validação. </p>
 
     </div>
 

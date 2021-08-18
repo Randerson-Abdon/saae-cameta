@@ -53,13 +53,14 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                 $nome = '%' . $_GET['txtpesquisarRequerimento'] . '%';
                 $numero_cpf_cnpj = $_GET['txtpesquisarRequerimento'];
-                $query = "SELECT * from requerimento where nome_razao_social LIKE '$nome' OR numero_cpf_cnpj LIKE '$numero_cpf_cnpj' and status_requerimento != 'C' order by id_requerimento asc ";
+                $numero_requerimento = $_GET['txtpesquisarRequerimento'];
+                $query = "SELECT * from requerimento_servico where nome_razao_social LIKE '$nome' OR numero_cpf_cnpj = '$numero_cpf_cnpj' OR id_requerimento = '$numero_requerimento' and status_requerimento != 'C' order by id_requerimento asc ";
 
                 $result_count = mysqli_query($conexao, $query);
               } else {
-                $query = "SELECT * from requerimento where status_requerimento != 'C' order by id_requerimento desc limit 10";
+                $query = "SELECT * from requerimento_servico where status_requerimento != 'C' order by id_requerimento desc limit 10";
 
-                $query_count = "SELECT * from requerimento";
+                $query_count = "SELECT * from requerimento_servico";
                 $result_count = mysqli_query($conexao, $query_count);
               }
 
@@ -129,6 +130,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                       $observacoes = $res["observacoes"];
                       $mensagem = $res["mensagem"];
 
+                      $data_requerimento = substr($data_requerimento, 0, 10);
                       $data2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
                     ?>
@@ -240,7 +242,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     <option value="">selecione</option>
                     <option value="cpf">Tipo Jurídico</option>
                     <option value="nome">Nome</option>
-                    <option value="uc">Matrícula</option>
+                    <option value="uc">U. C.</option>
                     <option value="endereco">Endereço</option>
 
                   </select>
@@ -289,7 +291,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
 
-                <!-- CONSULTA POR Matrícula-->
+                <!-- CONSULTA POR UNIDADE CONSUMIDORA-->
                 <div id="uc" name="uc" style="display: none;">
                   <div class="row">
 
@@ -405,7 +407,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
   if (@$_GET['func'] == 'req') {
     $id = $_GET['id'];
 
-    $query_req = "select * from requerimento where id_requerimento = '$id' ";
+    $query_req = "select * from requerimento_servico where id_requerimento = '$id' ";
     $result_req = mysqli_query($conexao, $query_req);
 
     while ($res = mysqli_fetch_array($result_req)) {
@@ -428,11 +430,12 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       $status_requerimento = $res['status_requerimento'];
       $data_requerimento = $res['data_requerimento'];
 
+      $data_requerimento = substr($data_requerimento, 0, 10);
       $data_requerimento2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
       //RECUPERAÇÃO DE ENDEREÇAMENTO
       //trazendo nome de bairro que esta relacionado com o id , semelhante ao INNER JOIN
-      $query_end = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
+      $query_end = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
       $result_end = mysqli_query($conexao, $query_end);
       $row_end = mysqli_fetch_array($result_end);
       $id_localidade = $row_end["id_localidade"];
@@ -442,19 +445,19 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       $complemento_logradouro = $row_end["complemento_logradouro"];
 
       //trazendo info localidade
-      $query_lo = "SELECT * from localidade where id_localidade = '$id_localidade' ";
+      $query_lo = "SELECT * from enderecamento_localidade where id_localidade = '$id_localidade' ";
       $result_lo = mysqli_query($conexao, $query_lo);
       $row_lo = mysqli_fetch_array($result_lo);
       $nome_localidade = $row_lo["nome_localidade"];
 
       //trazendo info bairro
-      $query_ba = "SELECT * from bairro where id_bairro = '$id_bairro' ";
+      $query_ba = "SELECT * from enderecamento_bairro where id_bairro = '$id_bairro' ";
       $result_ba = mysqli_query($conexao, $query_ba);
       $row_ba = mysqli_fetch_array($result_ba);
       $nome_bairro = $row_ba["nome_bairro"];
 
       //trazendo info logradouro
-      $query_log = "SELECT * from logradouro where id_logradouro = '$id_logradouro' AND id_bairro = '$id_bairro' ";
+      $query_log = "SELECT * from enderecamento_logradouro where id_logradouro = '$id_logradouro' AND id_bairro = '$id_bairro' ";
       $result_log = mysqli_query($conexao, $query_log);
       $row_log = mysqli_fetch_array($result_log);
       $nome_logradouro = $row_log["nome_logradouro"];
@@ -465,8 +468,6 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       $result_tp = mysqli_query($conexao, $query_tp);
       $row_tp = mysqli_fetch_array($result_tp);
       $tipo = $row_tp['abreviatura_tipo_logradouro'];
-
-
 
   ?>
 
@@ -513,12 +514,12 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     <label for="id_produto"><?php echo $id_unidade_consumidora ?></label>
                   </div>
 
-                  <div class="form-group col-md-4">
+                  <div class="form-group col-md-3">
                     <label for="id_produto"><b>Tipo Jurídico: </b></label>
                     <label for="id_produto"><?php if ($tipo_juridico == 'F') {
-                                              echo 'Pessoa Física';
+                                              echo 'Física';
                                             } else {
-                                              echo 'Pessoa Juridica';
+                                              echo 'Juridica';
                                             } ?></label>
                   </div>
 
@@ -809,12 +810,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       $status_ligacao = $res["status_ligacao"];
       $observacoes = $res["observacoes"];
       $data_cadastro = $res["data_cadastro"];
-      $id_localidade2 = $res["id_localidade"];
 
 
       //RECUPERAÇÃO DE ENDEREÇAMENTO
       //trazendo nome de bairro que esta relacionado com o id , semelhante ao INNER JOIN
-      $query_en = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id' ";
+      $query_en = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id' ";
       $result_en = mysqli_query($conexao, $query_en);
       $row_en = mysqli_fetch_array($result_en);
       $id_localidade = $row_en["id_localidade"];
@@ -824,19 +824,19 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       $complemento_logradouro = $row_en["complemento_logradouro"];
 
       //trazendo info localidade
-      $query_lo = "SELECT * from localidade where id_localidade = '$id_localidade' ";
+      $query_lo = "SELECT * from enderecamento_localidade where id_localidade = '$id_localidade' ";
       $result_lo = mysqli_query($conexao, $query_lo);
       $row_lo = mysqli_fetch_array($result_lo);
       $nome_localidade = $row_lo["nome_localidade"];
 
       //trazendo info bairro
-      $query_ba = "SELECT * from bairro where id_bairro = '$id_bairro' ";
+      $query_ba = "SELECT * from enderecamento_bairro where id_bairro = '$id_bairro' ";
       $result_ba = mysqli_query($conexao, $query_ba);
       $row_ba = mysqli_fetch_array($result_ba);
       $nome_bairro = $row_ba["nome_bairro"];
 
       //trazendo info logradouro
-      $query_log = "SELECT * from logradouro where id_logradouro = '$id_logradouro' ";
+      $query_log = "SELECT * from enderecamento_logradouro where id_logradouro = '$id_logradouro' ";
       $result_log = mysqli_query($conexao, $query_log);
       $row_log = mysqli_fetch_array($result_log);
       $nome_logradouro = $row_log["nome_logradouro"];
@@ -1031,7 +1031,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
             <div class="modal-footer">
               <div style="margin-top: -16px;">
-                <a class="btn btn-info" target="_blank" href="rel_perfil.php?func=imprime&id=<?php echo $id; ?>id_localidade=<?php echo $id_localidade2; ?>">Imprimir</a>
+                <a class="btn btn-info" target="_blank" href="rel_perfil.php?func=imprime&id=<?php echo $id; ?>">Imprimir</a>
               </div>
               <button type="button" class="btn btn-danger mb-3" data-dismiss="modal">Sair </button>
               </form>
@@ -1070,7 +1070,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
       //trazendo id_unidade_consumidora de unidade_consumidora que esta relacionado com o cpf/cnpj, semelhante ao INNER JOIN
-      $query_e = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id' ";
+      $query_e = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id' ";
       $result_e = mysqli_query($conexao, $query_e);
       $row_e = mysqli_fetch_array($result_e);
       $id_localidade = $row_e['id_localidade'];
@@ -1080,25 +1080,26 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       $complemento_logradouro = $row_e['complemento_logradouro'];
 
       //consulta para recuperação do nome da localidade
-      $query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+      $query_loc = "select * from enderecamento_localidade where id_localidade = '$id_localidade' ";
       $result_loc = mysqli_query($conexao, $query_loc);
       $row_loc = mysqli_fetch_array($result_loc);
       //vai para a modal
       $nome_loc = $row_loc['nome_localidade'];
 
       //consulta para recuperação do nome do bairro
-      $query_ba = "select * from bairro where id_bairro = '$id_bairro' ";
+      $query_ba = "select * from enderecamento_bairro where id_bairro = '$id_bairro' ";
       $result_ba = mysqli_query($conexao, $query_ba);
       $row_ba = mysqli_fetch_array($result_ba);
       //vai para a modal
       $nome_ba = $row_ba['nome_bairro'];
 
       //consulta para recuperação do nome do logradouro
-      $query_log = "select * from logradouro where id_logradouro = '$id_logradouro' ";
+      $query_log = "select * from enderecamento_logradouro where id_logradouro = '$id_logradouro' ";
       $result_log = mysqli_query($conexao, $query_log);
       $row_log = mysqli_fetch_array($result_log);
       //vai para a modal
       $nome_log = $row_log['nome_logradouro'];
+      $id_tipo_logradouro = $row_log['tipo_logradouro'];
 
       $id_tipo_logradouro = $row_log['id_tipo_logradouro'];
       //trazendo tipo_enderecamento de unidade_consumidora que esta relacionado com o id, semelhante ao INNER JOIN
@@ -1115,9 +1116,8 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       <?php
 
       //consulta para numeração automatica
-      $query_num_req = "select * from requerimento order by id_requerimento desc ";
+      $query_num_req = "select * from requerimento_servico order by id_requerimento desc ";
       $result_num_req = mysqli_query($conexao, $query_num_req);
-
       $res_num_req = mysqli_fetch_array($result_num_req);
       $ultimo_req = $res_num_req["id_requerimento"];
       $ultimo_req = $ultimo_req + 1;
@@ -1325,7 +1325,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
         // insert requerimento
-        $query2 = "INSERT INTO requerimento (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes) values ('$id_localidade', '$n_req', '$existe_unidade_consumidora', '$uc', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes')";
+        $query2 = "INSERT INTO requerimento_servico (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes) values ('$id_localidade', '$n_req', '$existe_unidade_consumidora', '$uc', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes')";
 
         $result2 = mysqli_query($conexao, $query2);
 
@@ -1364,7 +1364,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
   $ultimo_cad = $ultimo_cad + 1;
 
   //consulta para numeração automatica
-  $query_num_req = "select * from requerimento order by id_requerimento desc ";
+  $query_num_req = "select * from requerimento_servico order by id_requerimento desc ";
   $result_num_req = mysqli_query($conexao, $query_num_req);
 
   $res_num_req = mysqli_fetch_array($result_num_req);
@@ -1409,7 +1409,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                   <?php
 
                   //monta dados do combo 1
-                  $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+                  $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
                   $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 
@@ -1605,7 +1605,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     $cel = preg_replace("/[^0-9]/", "", $fone_movel);
 
 
-    $query = "INSERT INTO requerimento (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes) values ('$id_localidade', '$numero_rec', '$existe_unidade_consumidora', '$id_unidade_consumidora', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes')";
+    $query = "INSERT INTO requerimento_servico (id_localidade, id_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, observacoes) values ('$id_localidade', '$numero_rec', '$existe_unidade_consumidora', '$id_unidade_consumidora', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$observacoes')";
 
     $result = mysqli_query($conexao, $query);
 
@@ -1620,7 +1620,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     //INSERINDO NA TABELA DE endereçamento
     if ($existe_unidade_consumidora == 'N') {
 
-      $query_end = "INSERT INTO endereco_instalacao (id_unidade_consumidora, id_localidade, id_bairro, id_logradouro, numero_logradouro, complemento_logradouro) values ('$id_unidade_consumidora', '$id_localidade', '$id_bairro', '$id_logradouro', '$numero_logradouro', '$complemento_logradouro')";
+      $query_end = "INSERT INTO enderecamento_instalacao (id_unidade_consumidora, id_localidade, id_bairro, id_logradouro, numero_logradouro, complemento_logradouro) values ('$id_unidade_consumidora', '$id_localidade', '$id_bairro', '$id_logradouro', '$numero_logradouro', '$complemento_logradouro')";
 
       $result_end = mysqli_query($conexao, $query_end);
     }
@@ -1644,8 +1644,6 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
   //se func for igual a servico recupere o id
   if (@$_GET['func'] == 'servico') {
     $id = $_GET['id'];
-
-
 
   ?>
 
@@ -1756,31 +1754,23 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                       $soma2 = number_format($soma, 2, ",", ".");
 
-
-
                     ?>
 
                       <tr>
 
-
                         <td><?php echo $descricao_servico; ?></td>
                         <td><?php echo $valor_servico; ?></td>
-
-
 
                         <td>
                           <!--- botão com função dupla na modal, sem isso não fica na mesma tela-->
                           <a class="text-info" title="Editar" href="#"><i class="fas fa-edit"></i></a>
 
-
                           <a class="text-danger" title="Excluir" href="#"><i class="fa fa-minus-square"></i></a>
-
 
                         </td>
                       </tr>
 
                     <?php } ?>
-
 
                   </tbody>
                   <tfoot>
@@ -1788,7 +1778,6 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                       <td></td>
                       <td></td>
-
 
                       <td>
                         <span class="text-muted">Total: <?php echo $soma2 ?> </span>
@@ -1800,17 +1789,12 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
               <?php
               }
-
               ?>
 
             </div>
 
-
-
             <!--fim da linha-->
           </div>
-
-
 
         </div>
 
@@ -1824,188 +1808,21 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     //salvando seviços do requerimento, se tiver post no botão salvar aula, recupera o nome e o link
     if (isset($_POST['salvar_sevico'])) {
 
-      //RECUPERAR QUANTIDADE DE AULAS DO CURSO
-      //$query_quant_aula = "select * from cursos where id = '$id' ";
-      //$result_quant_aula = mysqli_query($conexao, $query_quant_aula);
-
-      //conferindo linhas
-      //$res_quant_aula = mysqli_fetch_array($result_quant_aula);
-      //$quant_aula = $res_quant_aula["aulas"];
-
-
-
       $id_servico_requerido = $_POST['id_servico'];
       $id_requerimento = $id;
 
-
       $query = "INSERT INTO servico_requerido (id_servico_requerido, id_requerimento) values ('$id_servico_requerido', '$id_requerimento')";
-
       $result = mysqli_query($conexao, $query);
 
       if ($result == '') {
         echo "<script language='javascript'>window.alert('Ocorreu um erro ao Salvar!'); </script>";
       } else {
-
-        //altere cursos onde o campo aulas receba a variavel aulas onde o id do curso seja igual ao id acima, atualização no campo de numero de aulas no curso
-        //$quant_aula = $quant_aula + 1;
-        //$query_aulas = "UPDATE cursos set aulas = '$quant_aula' where id = '$id'";
-
-        //mysqli_query($conexao, $query_aulas);
-
         echo "<script language='javascript'>window.location='admin.php?acao=requerimento&func=servico&id=$id'; </script>";
       }
     }
 
 ?>
-
-
 <?php } ?>
-
-
-
-<!--EDITAR AULAS-->
-<?php
-//se func for igual a aulas recupere o id
-if (@$_GET['func2'] == 'editar') {
-  $id = $_GET['id_aula'];
-  $id_curso = $_GET['id_curso'];
-
-  $query = "select * from aulas where id = '$id' ";
-  $result = mysqli_query($conexao, $query);
-
-  while ($res = mysqli_fetch_array($result)) {
-    $nome = $res["nome"];
-    $num_aula = $res["num_aula"];
-    $link = $res["link"];
-
-?>
-
-
-    <!-- Modal Editar Aulas -->
-    <div id="modalEditarAulas" class="modal fade" role="dialog">
-      <div class="modal-dialog modal-lg">
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-
-            <h5 class="modal-title">Editar Aulas</h5>
-
-          </div>
-          <div class="modal-body">
-            <form method="POST" action="">
-
-              <div class="row">
-
-                <div class="form-group col-md-2">
-                  <label for="id_produto">Aula</label>
-                  <input type="number" class="form-control" name="num_aula" value="<?php echo $num_aula; ?>" required />
-                </div>
-
-                <div class="form-group col-md-3">
-                  <label for="id_produto">Nome</label>
-                  <input type="text" class="form-control" name="nome" maxlength="35" value="<?php echo $nome; ?>" required />
-                </div>
-
-                <div class="form-group col-md-7">
-                  <label for="id_produto">Link</label>
-                  <input type="text" class="form-control" name="link" maxlength="300" value="<?php echo $link; ?>" required />
-                </div>
-
-
-
-
-                <!--fim da linha-->
-              </div>
-
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-success mb-3" name="editar_aulas">Editar </button>
-
-
-                <button type="submit" class="btn btn-info mb-3" name="fechar_editar_aulas">Fechar</button>
-            </form>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-
-    <?php
-    //se tiver click no botão editar aulas faça a atualização nos campos
-    if (isset($_POST['editar_aulas'])) {
-      $nome = $_POST['nome'];
-      $num_aula = $_POST['num_aula'];
-      $link = $_POST['link'];
-
-      $query = "UPDATE aulas SET nome = '$nome', num_aula = '$num_aula', link = '$link' where id = '$id' ";
-
-      $result = mysqli_query($conexao, $query);
-
-      if ($result == '') {
-        echo "<script language='javascript'>window.alert('Ocorreu um erro ao Editar!'); </script>";
-      } else {
-        //redirecionamento para modal
-        echo "<script language='javascript'>window.location='professor.php?acao=cursos&func=aulas&id=$id_curso'; </script>";
-      }
-    }
-
-    ?>
-
-
-    <?php
-    //se tiver click no botão fechar aulas faça a atualização nos campos
-    if (isset($_POST['fechar_editar_aulas'])) {
-
-      echo "<script language='javascript'>window.location='professor.php?acao=cursos&func=aulas&id=$id_curso'; </script>";
-    }
-    ?>
-
-
-
-<?php }
-} ?>
-
-
-<!--EXCLUSÃO DE AULAS DA MODAL AULAS-->
-<?php
-//se func for igual a aulas recupere o id
-if (@$_GET['func2'] == 'excluir') {
-  $id = $_GET['id_aula'];
-  $id_curso = $_GET['id_curso'];
-
-
-  //RECUPERAR QUANTIDADE DE AULAS DO CURSO PARA EXCLUSÃO
-  $query_quant_aula = "select * from cursos where id = '$id_curso' ";
-  $result_quant_aula = mysqli_query($conexao, $query_quant_aula);
-
-  //conferindo linhas
-  $res_quant_aula = mysqli_fetch_array($result_quant_aula);
-  $quant_aula = $res_quant_aula["aulas"];
-
-
-
-
-  $query = "delete from aulas where id = '$id'";
-  $result = mysqli_query($conexao, $query);
-
-  if ($result == '') {
-    echo "<script language='javascript'>window.alert('Ocorreu um erro ao Editar!'); </script>";
-  } else {
-
-
-    //altere cursos onde o campo aulas receba a variavel aulas onde o id do curso seja igual ao id acima, atualização no campo de numero de aulas no curso, DECREMENTANDO UMA
-    $quant_aula = $quant_aula - 1;
-    $query_aulas = "UPDATE cursos set aulas = '$quant_aula' where id = '$id_curso'";
-
-    mysqli_query($conexao, $query_aulas);
-
-
-    //redirecionamento para modal
-    echo "<script language='javascript'>window.location='professor.php?acao=cursos&func=aulas&id=$id_curso'; </script>";
-  }
-}
-
-?>
 
 
 
@@ -2016,13 +1833,12 @@ if (@$_GET['func'] == 'mensagem') {
   $id = $_GET['id'];
 
   //consulta para recuperação da mensagem no while
-  $query = "select * from requerimento where id_requerimento = '$id' ";
+  $query = "select * from requerimento_servico where id_requerimento = '$id' ";
   $result = mysqli_query($conexao, $query);
 
   while ($res = mysqli_fetch_array($result)) {
     $mensagem = $res["mensagem"];
     $unidade_consumidora = $res["id_unidade_consumidora"];
-    $id_localidade = $res["id_localidade"];
 
 ?>
 
@@ -2059,7 +1875,6 @@ if (@$_GET['func'] == 'mensagem') {
                 $result_sm = mysqli_query($conexao, $query_sm);
                 while ($res = mysqli_fetch_array($result_sm)) {
                   $id_servico_requerido = $res["id_servico_requerido"];
-
 
                   //trazendo info servico_disponivel 
                   $query_smd = "SELECT * from servico_disponivel where id_servico = '$id_servico_requerido' ";
@@ -2098,15 +1913,15 @@ if (@$_GET['func'] == 'mensagem') {
             <div class="modal-footer">
 
               <?php if ($id_servico_requerido == '04') { ?>
-                <a class="btn btn-info btn-sm" href="admin.php?acao=consumidores&func=editar&id=<?php echo $unidade_consumidora; ?>&rec=<?php echo $id; ?>&id_localidade=<?php echo $id_localidade; ?>">Atender</a>
+                <a class="btn btn-info btn-sm" href="admin.php?acao=consumidores&func=editar&id=<?php echo $unidade_consumidora; ?>&rec=<?php echo $id; ?>">Atender</a>
               <?php } ?>
 
               <?php if ($id_servico_requerido == '17') { ?>
-                <a class="btn btn-info btn-sm" href="admin.php?acao=consumidores&func=editar&id=<?php echo $unidade_consumidora; ?>&rec=<?php echo $id; ?>&id_localidade=<?php echo $id_localidade; ?>">Atender</a>
+                <a class="btn btn-info btn-sm" href="admin.php?acao=consumidores&func=editar&id=<?php echo $unidade_consumidora; ?>&rec=<?php echo $id; ?>">Atender</a>
               <?php } ?>
 
               <?php if ($id_servico_requerido == '01') { ?>
-                <a class="btn btn-info btn-sm" href="admin.php?acao=consumidores&func=edita2&id=<?php echo $unidade_consumidora; ?>&rec=<?php echo $id; ?>&id_localidade=<?php echo $id_localidade; ?>">Atender</a>
+                <a class="btn btn-info btn-sm" href="admin.php?acao=consumidores&func=edita2&id=<?php echo $unidade_consumidora; ?>&rec=<?php echo $id; ?>">Atender</a>
               <?php } ?>
 
               <?php if ($id_servico_requerido == '07') { ?>
@@ -2142,8 +1957,6 @@ if (@$_GET['func'] == 'mensagem') {
 
 
 
-
-
 <!--EXCLUIR -->
 <?php
 if (@$_GET['func'] == 'excluir') {
@@ -2159,19 +1972,6 @@ if (@$_GET['func'] == 'excluir') {
 
     $id = $res["id"];
     $nome_razao_social = $res["nome_razao_social"];
-
-
-
-    //exclusao dos alunos
-    //if($nivel == 'Aluno'){
-    // $query_alunos = "DELETE FROM alunos where cpf = '$cpf' ";
-
-    // $result_alunos = mysqli_query($conexao, $query_alunos);
-    // } 
-
-    //} 
-
-
 
     $query = "DELETE FROM consumidores where id = '$id' ";
     $result = mysqli_query($conexao, $query);
@@ -2191,8 +1991,6 @@ if (@$_GET['func'] == 'excluir') {
   echo "<script language='javascript'>window.alert('Ativado Sucesso!'); </script>";
   echo "<script language='javascript'>window.location='admin.php?acao=consumidores'; </script>";
 } ?>
-
-
 
 
 <!--INATIVAR O USUÁRIO-->

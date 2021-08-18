@@ -73,12 +73,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                   <label for="fornecedor">Localidade</label>
 
                   <select class="form-control mr-2" id="category" name="localidade">
-                    <option value="">---Escolha uma opção---</option>
 
                     <?php
 
                     //recuperando dados da tabela localidade para o select
-                    $query = "select * from localidade order by id_localidade asc";
+                    $query = "select * from enderecamento_localidade order by id_localidade asc";
                     $result = mysqli_query($conexao, $query);
                     while ($res = mysqli_fetch_array($result)) {
 
@@ -115,7 +114,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     <?php
 
                     //monta dados do combo 1
-                    $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+                    $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
                     $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 

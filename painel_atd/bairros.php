@@ -5,7 +5,7 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -55,13 +55,13 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 
                 $nome = '%' . $_GET['txtpesquisarBairros'] . '%';
-                $query = "SELECT * from bairro where nome_bairro LIKE '$nome' order by nome_bairro asc ";
+                $query = "SELECT * from enderecamento_bairro where nome_bairro LIKE '$nome' order by nome_bairro asc ";
 
                 $result_count = mysqli_query($conexao, $query);
               } else {
-                $query = "SELECT * from bairro order by id_bairro desc limit 10";
+                $query = "SELECT * from enderecamento_bairro order by id_bairro desc limit 10";
 
-                $query_count = "SELECT * from bairro";
+                $query_count = "SELECT * from enderecamento_bairro";
                 $result_count = mysqli_query($conexao, $query_count);
               }
 
@@ -101,26 +101,18 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                       $id_localidade = $res["id_localidade"];
                       $tipo_geografico_bairro = $res["tipo_geografico"];
                       $id_usuario_editor = $res["id_usuario_editor_registro"];
-                      $data_ultima_edicao_bairro = $res["data_ultima_edicao"];
+                      $data_ultima_edicao_bairro = $res["data_edicao_registro"];
                       $id = $res["id_bairro"];
 
                       $data2 = implode('/', array_reverse(explode('-', $data_ultima_edicao_bairro)));
 
 
                       //trazendo o nome da categoria que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_localidade = "SELECT * from localidade where id_localidade = '$id_localidade' ";
+                      $query_localidade = "SELECT * from enderecamento_localidade where id_localidade = '$id_localidade' ";
 
                       $result_localidade = mysqli_query($conexao, $query_localidade);
                       $row_localidade = mysqli_fetch_array($result_localidade);
                       $nome_localidade = $row_localidade['nome_localidade'];
-
-                      //trazendo o nome do usuario que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_user = "SELECT * from usuario_sistema where id_usuario = '$id_usuario_editor' ";
-
-                      $result_user = mysqli_query($conexao, $query_user);
-                      $row_user = mysqli_fetch_array($result_user);
-                      $nome_user = $row_user['nome_usuario'];
-
 
 
                     ?>
@@ -182,7 +174,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     if (@$_GET['func'] == 'editar') {
       $id = $_GET['id'];
 
-      $query = "select * from bairro where id_bairro = '$id' ";
+      $query = "select * from enderecamento_bairro where id_bairro = '$id' ";
       $result = mysqli_query($conexao, $query);
 
       while ($res = mysqli_fetch_array($result)) {
@@ -194,7 +186,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 
         //consulta para recuperação do nome da localidade
-        $query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+        $query_loc = "select * from enderecamento_localidade where id_localidade = '$id_localidade' ";
         $result_loc = mysqli_query($conexao, $query_loc);
         $row = mysqli_fetch_array($result_loc);
         //vai para a modal
@@ -232,7 +224,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
                       <?php
 
-                      $query = "select * from localidade order by nome_localidade asc";
+                      $query = "select * from enderecamento_localidade order by nome_localidade asc";
                       $result = mysqli_query($conexao, $query);
 
                       while ($res = mysqli_fetch_array($result)) {
@@ -305,7 +297,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
           //}
 
 
-          $query = "UPDATE bairro SET nome_bairro = '$nome_bairro', id_localidade = '$id_localidade', tipo_geografico = '$tipo_geografico_bairro', id_usuario_editor_registro = '$id_usuario_editor', data_ultima_edicao = curDate() where id_bairro = '$id' ";
+          $query = "UPDATE enderecamento_bairro SET nome_bairro = '$nome_bairro', id_localidade = '$id_localidade', tipo_geografico = '$tipo_geografico_bairro', id_usuario_editor = '$id_usuario_editor', data_ultima_edicao = curDate() where id_bairro = '$id' ";
 
           $result = mysqli_query($conexao, $query);
 
@@ -339,7 +331,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
       $id = $_GET['id'];
 
 
-      $query = "DELETE FROM bairro where id_bairro = '$id' ";
+      $query = "DELETE FROM enderecamento_bairro where id_bairro = '$id' ";
       $result = mysqli_query($conexao, $query);
       echo "<script language='javascript'>window.location='atendimento.php?acao=bairros'; </script>";
     }

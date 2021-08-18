@@ -7,12 +7,15 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
 
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -70,7 +73,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     @$uf_saae = $row_ps['uf_saae'];
     @$nome_saae = $row_ps['nome_saae'];
     @$email_saae = $row_ps['email_saae'];
-    @$logo_orgao = $row_ps['logo_orgao'];
+    $logo_orgao = $row_ps['logo_orgao'];
 
     $data = date('d/m/Y');
 
@@ -116,9 +119,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     <table style="margin-bottom: 15px;">
       <thead>
         <tr>
-          <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+          <th style="width: 20%;"><img width="80%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
           <th>
-            <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+            <p><?php echo $nome_prefeitura; ?> <br>
               SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
               SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
               FICHA DE CADASTRO DO CONSUMIDOR
@@ -149,7 +152,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
           <label id="numero_cpf_cnpj" for="id_produto"><?php echo $numero_cpf_cnpj ?></label>
         </div>
 
-        <div class="form-group col-md-5">
+        <div class="form-group col-md-6">
           <label for="id_produto"><b>Nome/Razão Social: </b></label>
           <label for="id_produto"><?php echo $nome_razao_social ?></label>
         </div>
@@ -159,7 +162,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
           <label for="id_produto"><?php echo $numero_rg ?></label>
         </div>
 
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
           <label for="id_produto"><b>Orgão Emissor: </b></label>
           <label for="id_produto"><?php echo $orgao_emissor_rg ?></label>
         </div>

@@ -37,7 +37,7 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
     $data = date('Y-m-d');
 
     $id_localidade = $_SESSION['localidade'];
-    $query_loc = "SELECT * from localidade WHERE id_localidade = '$id_localidade' ";
+    $query_loc = "SELECT * from enderecamento_localidade WHERE id_localidade = '$id_localidade' ";
     $result_loc = mysqli_query($conexao, $query_loc);
     $res_loc = mysqli_fetch_array($result_loc);
     @$nome_localidade = $res_loc["nome_localidade"];
@@ -217,6 +217,7 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
         @$email_saae           = $row_ps['email_saae'];
         $fone_saae             = $row_ps["fone_saae"];
 
+
         $atendente = 'Atendente';
 
 
@@ -323,7 +324,7 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
             }
 
             // validação de senha
-            $query_c = "select * from usuario_sistema where login_usuario = '$login_usuario' and senha_usuario = '$senha_usuario'";
+            $query_c = "SELECT * from usuario_sistema where login_usuario = '$login_usuario' and senha_usuario = '$senha_usuario'";
             $result_c = mysqli_query($conexao, $query_c);
             $row_c = mysqli_num_rows($result_c);
 

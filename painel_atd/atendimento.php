@@ -7,7 +7,7 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -273,11 +273,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
         } elseif (@$_GET['acao'] == 'requerimentob' or isset($_GET['txtpesquisarRequerimentob'])) {
           include_once('requerimentob.php');
         } elseif (@$_GET['acao'] == 'faturamento' or isset($_GET['txtpesquisarFaturamento'])) {
-          include_once('faturamento.php');
+          include_once('historico_financeiro.php');
         } elseif (@$_GET['acao'] == 'acordos') {
           include_once('view/acordos.php');
-        } elseif (@$_GET['acao'] == 'cancela_acordos') {
-          include_once('model/processa_cancela_acordos.php');
         } elseif (@$_GET['acao'] == 'fatura') {
           include_once('acordo.php');
         } elseif (@$_GET['acao'] == 'confirma') {

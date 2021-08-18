@@ -15,15 +15,16 @@ $data = date('d/m/Y');
 $query_perfil = "SELECT * from perfil_saae";
 $result_perfil = mysqli_query($conexao, $query_perfil);
 $row_perfil = mysqli_fetch_array($result_perfil);
-$nome_municipio           = $row_perfil["nome_municipio"];
-$logo_orgao               = $row_perfil["logo_orgao"];
-$email_saae               = $row_perfil["email_saae"];
-$fone_saae                = $row_perfil["fone_saae"];
-$nome_logradouro_saae     = $row_perfil["nome_logradouro_saae"];
-$numero_imovel_saae       = $row_perfil["numero_imovel_saae"];
-$nome_bairro_saae         = $row_perfil["nome_bairro_saae"];
-$cep_saae                 = $row_perfil["cep_saae"];
-$uf_saae                  = $row_perfil["uf_saae"];
+$nome_municipio       = $row_perfil["nome_municipio"];
+$logo_orgao           = $row_perfil["logo_orgao"];
+$email_saae           = $row_perfil["email_saae"];
+$fone_saae            = $row_perfil["fone_saae"];
+$nome_logradouro_saae = $row_perfil["nome_logradouro_saae"];
+$numero_imovel_saae   = $row_perfil["numero_imovel_saae"];
+$nome_bairro_saae     = $row_perfil["nome_bairro_saae"];
+$cep_saae             = $row_perfil["cep_saae"];
+$uf_saae              = $row_perfil["uf_saae"];
+$logo_orgao           = $row_perfil['logo_orgao'];
 
 ?>
 

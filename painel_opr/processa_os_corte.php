@@ -40,7 +40,7 @@ $data_cadastro            = $row_uc['CADASTRO'];
 $observacoes_text         = $row_uc['OBSERVAÇÕES'];
 
 //consulta para numeração automatica
-$query_num_req = "select * from requerimento order by id_requerimento desc ";
+$query_num_req = "select * from requerimento_servico order by id_requerimento desc ";
 $result_num_req = mysqli_query($conexao, $query_num_req);
 $res_num_req = mysqli_fetch_array($result_num_req);
 $ultimo_req = $res_num_req["id_requerimento"];
@@ -76,11 +76,11 @@ if ($fone_zap == 'NÃO') {
 $data_requerimento = date('Y-m-d');
 
 
-echo 'id_localidade ' . $id_localidade . ', id_requerimento ' . $ultimo_req . ', existe_unidade_consumidora ' . $existe_unidade_consumidora . ', id_unidade_consumidora ' . $id_unidade_consumidora . ', tipo_juridico ' . $tipo_juridico . ', numero_cpf_cnpj ' . $ncc3 . ', nome_razao_social ' . $nome_razao_social . ', numero_rg ' . $numero_rg . ', orgao_emissor_rg ' . $orgao_emissor_rg . ', uf_rg ' . $uf_rg . ', fone_fixo ' . $tel . ', fone_movel ' . $cel . ', fone_movel_zap ' . $fone_zap . ', email ' . $email . ', status_requerimento ' . $status_requerimento . ', id_usuario_editor_registro ' . $id_usuario_editor;
+//echo 'id_localidade ' . $id_localidade . ', id_requerimento ' . $ultimo_req . ', existe_unidade_consumidora ' . $existe_unidade_consumidora . ', id_unidade_consumidora ' . $id_unidade_consumidora . ', tipo_juridico ' . $tipo_juridico . ', numero_cpf_cnpj ' . $ncc3 . ', nome_razao_social ' . $nome_razao_social . ', numero_rg ' . $numero_rg . ', orgao_emissor_rg ' . $orgao_emissor_rg . ', uf_rg ' . $uf_rg . ', fone_fixo ' . $tel . ', fone_movel ' . $cel . ', fone_movel_zap ' . $fone_zap . ', email ' . $email . ', status_requerimento ' . $status_requerimento . ', id_usuario_editor_registro ' . $id_usuario_editor;
 
 
 // insert requerimento
-$query2 = "INSERT INTO requerimento (id_localidade, id_requerimento, data_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, status_requerimento, id_usuario_editor_registro) values ('$id_localidade', '$ultimo_req', '$data_requerimento', '$existe_unidade_consumidora', '$id_unidade_consumidora', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$status_requerimento', '$id_usuario_editor')";
+$query2 = "INSERT INTO requerimento_servico (id_localidade, id_requerimento, data_requerimento, existe_unidade_consumidora, id_unidade_consumidora, tipo_juridico, numero_cpf_cnpj, nome_razao_social, numero_rg, orgao_emissor_rg, uf_rg, fone_fixo, fone_movel, fone_movel_zap, email, status_requerimento, id_usuario_editor_registro) values ('$id_localidade', '$ultimo_req', '$data_requerimento', '$existe_unidade_consumidora', '$id_unidade_consumidora', '$tipo_juridico', '$ncc3', '$nome_razao_social', '$numero_rg', '$orgao_emissor_rg', '$uf_rg', '$tel', '$cel', '$fone_zap', '$email', '$status_requerimento', '$id_usuario_editor')";
 
 $result2 = mysqli_query($conexao, $query2);
 

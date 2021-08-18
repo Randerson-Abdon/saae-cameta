@@ -2,11 +2,11 @@
 <?php
 include('../conexao.php'); //conexao com o banco
 echo "<label>Logradouro</label>";
-echo "<select name=id_logradouro id=id_logradouro class=form-control mr-2 >";
+echo "<select name=id_logradouro id=id_logradouro class=form-control >";
 echo "<option>---Escolha uma opção---</option>";
 
 //busca dados do combo 2
-$sql = "SELECT * FROM logradouro WHERE id_bairro = '" . $_GET['bairro'] . "' AND id_localidade = '" . $_GET['localidade'] . "' order by nome_logradouro asc";
+$sql = "SELECT * FROM enderecamento_logradouro WHERE id_bairro = '" . $_GET['bairro'] . "' AND id_localidade = '" . $_GET['localidade'] . "' order by nome_logradouro asc";
 
 $resultado = mysqli_query($conexao, $sql) or die("Problema na Consulta");
 

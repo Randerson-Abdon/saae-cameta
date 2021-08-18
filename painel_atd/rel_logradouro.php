@@ -7,7 +7,7 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -101,7 +101,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                 <!--LISTAR TODOS OS LOGRADOUROS -->
                 <?php
 
-                $query_count = "SELECT * from logradouro";
+                $query_count = "SELECT * from enderecamento_logradouro";
                 $result_count = mysqli_query($conexao, $query_count);
                 $linha_count = mysqli_num_rows($result_count);
 
@@ -125,7 +125,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                 @$uf_saae = $row_ps['uf_saae'];
                 @$nome_saae = $row_ps['nome_saae'];
                 @$email_saae = $row_ps['email_saae'];
-                @$logo_orgao = $row_ps['logo_orgao'];
+                $logo_orgao = $row_ps['logo_orgao'];
 
                 $data = date('d/m/Y');
 
@@ -133,9 +133,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                 <table style="margin-bottom: 15px;">
                   <thead>
                     <tr>
-                      <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+                      <th style="width: 20%;"><img width="80%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
                       <th>
-                        <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+                        <p><?php echo $nome_prefeitura ?> <br>
                           SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                           SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
                           RELATÓRIO DA COMPOSIÇÃO DE LOGRADOUROS ‐ <?php echo $data ?></p>
@@ -175,13 +175,13 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
                       //$data2 = implode('/', array_reverse(explode('-', $data_ultima_edicao_logradouro)));
 
                       //trazendo o nome da categoria que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_localidade = "SELECT * from localidade where id_localidade = '$localidade' ";
+                      $query_localidade = "SELECT * from enderecamento_localidade where id_localidade = '$localidade' ";
                       $result_localidade = mysqli_query($conexao, $query_localidade);
                       $row_localidade = mysqli_fetch_array($result_localidade);
                       $nome_localidade = $row_localidade['nome_localidade'];
 
                       //trazendo o nome do bairro que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_bairro = "SELECT * from bairro where id_localidade = '$localidade' and id_bairro = '$bairro' ";
+                      $query_bairro = "SELECT * from enderecamento_bairro where id_bairro = '$bairro' ";
                       $result_bairro = mysqli_query($conexao, $query_bairro);
                       $row_bairro = mysqli_fetch_array($result_bairro);
                       $nome_bairro = $row_bairro['nome_bairro'];

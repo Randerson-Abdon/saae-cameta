@@ -203,6 +203,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 		$valorTotal     = $_POST['valorTotal']; // valor a ser parcelado
 		$valorEntrada   = $_POST['valorEntrada']; // valor da entrada
 
+
 		$data 		    = $_POST['data']; // data
 
 		// array
@@ -310,7 +311,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 		echo "<p class='sucesso'><strong>Sucesso!</strong> Dados cadastrados corretamente.<br> Não esqueça de gerar o <strong>boleto</strong> para pagamento da entrada de seu acordo!!!</p>";
 		echo "<input type='submit' class='btn btn-danger' name='submit' value='Voltar' onClick='window.close();' style='margin-right: 20px;'>";
-		echo "<a class='btn btn-success' title='Gerar Boleto' target='_blank' href='../lib/boleto_a/boleto_cef.php?id=$id&valor=$valorEntrada&acordo=$id_acordo_firmado&id_localidade=$id_localidade'>Gerar Boleto</a>";
+		echo "<a class='btn btn-success' title='Gerar Boleto' target='_blank' href='../lib/boleto/boleto_cef_entrada.php?id=$id&valor=$valorEntrada&acordo=$id_acordo_firmado&id_localidade=$id_localidade'>Gerar Boleto</a>";
 
 
 		// usado para exibir os valores na tela
@@ -367,7 +368,10 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 		$soma = str_replace(',', '.', $soma3);
 		$extenso = convert_number_to_words($soma);
 
-		$id_localidade2 = $_SESSION['id_localidade'];
+		$query_n = "SELECT * from unidade_consumidora where id_unidade_consumidora = '$id' ";
+		$result_n = mysqli_query($conexao, $query_n);
+		$row_n = mysqli_fetch_array($result_n);
+		$id_localidade2 = $row_n["id_localidade"];
 
 		//executa o store procedure info consumidor
 		$result_sp = mysqli_query(
@@ -467,7 +471,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 									<u><b>Cláusula 3ª</b></u>: Em acordo firmado no escritório ou balcão eletrônico do: SERVIÇO AUT. DE ÁGUA E ESGOTO DE <?php echo $nome_municipio; ?> fica acertado entre as partes o parcelamento total da dívida do cliente devedor que é de: <span><b>R$ <?php echo $soma2; ?></b></span> (<?php echo $extenso; ?>). Constituido de:<br>
 
-									- ENTRADA: <b><span>R$ <?php echo $valorEntrada; ?></span> (<?php echo $extenso_entrada2; ?>), à vencer em: <span> <?php echo date("d/m/Y", time() + (5 * 86400)); ?></span>;</b><br>
+									- ENTRADA: <b><span>R$ <?php echo $valorEntrada; ?></span>, à vencer em: <span> <?php echo date("d/m/Y", time() + (5 * 86400)); ?></span>;</b><br>
 
 									- PARCELAMENTO: <b>
 

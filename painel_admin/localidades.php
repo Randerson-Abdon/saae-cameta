@@ -58,14 +58,14 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
               if (isset($_GET['buttonPesquisar']) and $_GET['txtpesquisarLocalidades'] != '') {
 
 
-                $nome = $_GET['txtpesquisarLocalidades'] . '%';
-                $query = "SELECT * from localidade where nome_localidade LIKE '$nome' order by nome_localidade asc ";
+                $nome = '%' . $_GET['txtpesquisarLocalidades'] . '%';
+                $query = "SELECT * from enderecamento_localidade where nome_localidade LIKE '$nome' order by nome_localidade asc ";
 
                 $result_count = mysqli_query($conexao, $query);
               } else {
-                $query = "SELECT * from localidade order by id_localidade desc limit 10";
+                $query = "SELECT * from enderecamento_localidade order by id_localidade desc limit 10";
 
-                $query_count = "SELECT * from localidade";
+                $query_count = "SELECT * from enderecamento_localidade";
                 $result_count = mysqli_query($conexao, $query_count);
               }
 
@@ -107,9 +107,10 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     while ($res = mysqli_fetch_array($result)) {
                       $nome_localidade = $res["nome_localidade"];
                       $id_usuario_editor = $res["id_usuario_editor_registro"];
-                      $data_ultima_edicao  = $res["data_ultima_edicao"];
+                      $data_ultima_edicao  = $res["data_edicao_registro"];
                       $id = $res["id_localidade"];
 
+                      $data_ultima_edicao = substr($data_ultima_edicao, 0, 10);
                       $data2 = implode('/', array_reverse(explode('-', $data_ultima_edicao)));
 
                       //trazendo o nome do usuario que esta relacionado com o id, semelhante ao INNER JOIN
@@ -177,13 +178,15 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
 
+
+
     <!-- Modal -->
 
 
     <?php
 
     //consulta para numeração automatica
-    $query_num_aula = "select * from localidade order by id_localidade desc ";
+    $query_num_aula = "select * from enderecamento_localidade order by id_localidade desc ";
     $result_num_aula = mysqli_query($conexao, $query_num_aula);
 
     $res_num_aula = mysqli_fetch_array($result_num_aula);
@@ -236,7 +239,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
       //VERIFICAR SE A LOCALIDADE JÁ ESTÁ CADASTRADA
-      $query_verificar_nome = "SELECT * from localidade where nome_localidade = '$nome_localidade' ";
+      $query_verificar_nome = "SELECT * from enderecamento_localidade where nome_localidade = '$nome_localidade' ";
       $result_verificar_nome = mysqli_query($conexao, $query_verificar_nome);
       $row_verificar_nome = mysqli_num_rows($result_verificar_nome);
       if ($row_verificar_nome > 0) {
@@ -244,22 +247,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         exit();
       }
 
+      echo $id_localidade . ', ' . $nome_localidade . ', ' . $id_usuario_editor;
 
-
-      $query = "INSERT INTO localidade (id_localidade, nome_localidade, id_usuario_editor_registro, data_ultima_edicao) values ('$id_localidade', '$nome_localidade', '$id_usuario_editor', curDate())";
+      $query = "INSERT INTO enderecamento_localidade (id_localidade, nome_localidade, id_usuario_editor_registro, data_edicao_registro) values ('$id_localidade', '$nome_localidade', '$id_usuario_editor', curDate())";
 
       $result = mysqli_query($conexao, $query);
-
-
-      //INSERINDO NA TABELA DE ALUNOS
-      // if($nivel == 'Aluno'){
-
-      // $query_alunos = "INSERT INTO alunos (nome, cpf, email, senha, foto, data) values ('$nome', '$cpf', '$usuario', '$senha', 'sem-perfil.png', curDate())";
-
-      // $result_alunos = mysqli_query($conexao, $query_alunos);
-
-
-      // }
 
 
       if ($result == '') {
@@ -279,7 +271,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     if (@$_GET['func'] == 'edita') {
       $id = $_GET['id'];
 
-      $query = "select * from localidade where id_localidade = '$id' ";
+      $query = "select * from enderecamento_localidade where id_localidade = '$id' ";
       $result = mysqli_query($conexao, $query);
 
       while ($res = mysqli_fetch_array($result)) {
@@ -330,7 +322,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
           if ($res["nome_localidade"] != $nome_localidade) {
             //VERIFICAR SE O CPF JÁ ESTÁ CADASTRADO
-            $query_verificar_loc = "SELECT * from localidade where nome_localidade = '$nome_localidade' ";
+            $query_verificar_loc = "SELECT * from enderecamento_localidade where nome_localidade = '$nome_localidade' ";
             $result_verificar_loc = mysqli_query($conexao, $query_verificar_loc);
             $row_verificar_loc = mysqli_num_rows($result_verificar_loc);
             if ($row_verificar_loc > 0) {
@@ -339,19 +331,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
             }
           }
 
-          //if($res["usuario"] != $usuario){
-          //VERIFICAR SE O USUARIO JÁ ESTÁ CADASTRADO
-          //$query_verificar_usu = "SELECT * from usuarios where usuario = '$usuario' and nivel = '$nivel' ";
-          //$result_verificar_usu = mysqli_query($conexao, $query_verificar_usu);
-          //$row_verificar_usu = mysqli_num_rows($result_verificar_usu);
-          //if($row_verificar_usu > 0){
-          // echo "<script language='javascript'>window.alert('Usuário já Cadastrado'); </script>";
-          // exit();
-          //}
-          //}
-
-
-          $query = "UPDATE localidade SET nome_localidade = '$nome_localidade', id_usuario_editor_registro = '$id_usuario_editor', data_ultima_edicao = curDate() where id_localidade = '$id' ";
+          $query = "UPDATE enderecamento_localidade SET nome_localidade = '$nome_localidade', id_usuario_editor_registro = '$id_usuario_editor' where id_localidade = '$id' ";
 
           $result = mysqli_query($conexao, $query);
 
@@ -384,7 +364,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     if (@$_GET['func'] == 'excluir') {
       $id = $_GET['id'];
 
-      $query = "DELETE FROM localidade where id_localidade = '$id' ";
+      $query = "DELETE FROM enderecamento_localidade where id_localidade = '$id' ";
       $result = mysqli_query($conexao, $query);
       echo "<script language='javascript'>window.location='admin.php?acao=localidades'; </script>";
     }

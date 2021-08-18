@@ -67,7 +67,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
               } else {
                 $query = "SELECT * from usuario_sistema order by id_usuario desc limit 10";
 
-                $query_count = "SELECT * from usuario_sistema";
+                $query_count = "SELECT * from usuario";
                 $result_count = mysqli_query($conexao, $query_count);
               }
 
@@ -221,7 +221,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
               <div class="form-group">
                 <label for="fornecedor">Senha</label>
-                <input type="password" class="form-control mr-2" name="senha" placeholder="Senha" required>
+                <input type="text" class="form-control mr-2" name="senha" placeholder="Senha" required>
               </div>
 
               <div class="form-group">
@@ -240,9 +240,8 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                 <select class="form-control mr-2" id="category" name="nivel" style="text-transform:uppercase;">
 
                   <option value="1">Administrativo</option>
-                  <option value="2">Operacional</option>
                   <option value="3">Atendente</option>
-                  <option value="4">Caixa</option>
+                  <option value="2">Operacional</option>
                   <option value="0">Admin./Atend./Operac.</option>
 
 
@@ -273,14 +272,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     <?php
     if (isset($_POST['salvar'])) {
       $nome = mb_strtoupper($_POST['nome']);
-      $cpf = $_POST['cpf'];
-      $cpf = str_replace('.', '', $cpf);
-      $cpf = str_replace('-', '', $cpf);
-
+      $cpf = mb_strtoupper($_POST['cpf']);
       $usuario = $_POST['usuario'];
 
       $senha = $_POST['senha'];
-      //$senha = password_hash($senha, PASSWORD_DEFAULT);
+      $senha = password_hash($senha, PASSWORD_DEFAULT);
 
       $status = mb_strtoupper($_POST['status']);
       $nivel = mb_strtoupper($_POST['nivel']);
@@ -307,7 +303,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
 
-      $query = "INSERT INTO usuario (nome_usuario, cpf_usuario, login_usuario, senha_usuario, status_usuario, nivel_usuario, data_cadastro_usuario) values ('$nome', '$cpf', '$usuario', '$senha', '$status', '$nivel', curDate())";
+      $query = "INSERT INTO usuario_sistema (nome_usuario, cpf_usuario, login_usuario, senha_usuario, status_usuario, nivel_usuario, data_cadastro_usuario) values ('$nome', '$cpf', '$usuario', '$senha', '$status', '$nivel', curDate())";
 
       $result = mysqli_query($conexao, $query);
 
@@ -384,7 +380,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                   <div class="form-group">
                     <label for="fornecedor">Senha</label>
-                    <input type="password" class="form-control mr-2" name="senha" placeholder="Senha" value="<?php echo $senha ?>" required>
+                    <input type="text" class="form-control mr-2" name="senha" placeholder="Senha" value="<?php echo $senha ?>" required>
                   </div>
 
 
@@ -440,7 +436,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
           }
 
 
-          $query = "UPDATE usuario SET nome_usuario = '$nome', cpf_usuario = '$cpf', login_usuario = '$usuario', senha_usuario = '$senha' where id_usuario = '$id' ";
+          $query = "UPDATE usuario_sistema SET nome_usuario = '$nome', cpf_usuario = '$cpf', login_usuario = '$usuario', senha_usuario = '$senha' where id_usuario = '$id' ";
 
           $result = mysqli_query($conexao, $query);
 
@@ -509,16 +505,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     <!--ATIVAR O USUÁRIO-->
     <?php if (@$_GET['func'] == 'ativa') {
       $id = $_GET['id'];
-      $user = $_SESSION['id_usuario'];
-
-      //validação para controle de ativação
-      if ($user != 109) {
-        echo "<script language='javascript'>window.alert('Você não tem autorização para realizar esta ação, consulte a direção!!!'); </script>";
-        echo "<script language='javascript'>window.location='admin.php?acao=usuarios'; </script>";
-        exit;
-      }
-
-      $sql = "UPDATE usuario SET status_usuario = 'A' WHERE id_usuario = '$id'";
+      $sql = "UPDATE usuario_sistema SET status_usuario = 'A' WHERE id_usuario = '$id'";
       mysqli_query($conexao, $sql);
 
       echo "<script language='javascript'>window.alert('Ativado Sucesso!'); </script>";
@@ -531,17 +518,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     <!--INATIVAR O USUÁRIO-->
     <?php if (@$_GET['func'] == 'inativa') {
       $id = $_GET['id'];
-
-      $user = $_SESSION['id_usuario'];
-
-      //validação para controle de ativação
-      if ($user != 109) {
-        echo "<script language='javascript'>window.alert('Você não tem autorização para realizar esta ação, consulte a direção!!!'); </script>";
-        echo "<script language='javascript'>window.location='admin.php?acao=usuarios'; </script>";
-        exit;
-      }
-
-      $sql = "UPDATE usuario SET status_usuario = 'I' WHERE id_usuario = '$id'";
+      $sql = "UPDATE usuario_sistema SET status_usuario = 'I' WHERE id_usuario = '$id'";
       mysqli_query($conexao, $sql);
 
       echo "<script language='javascript'>window.alert('Inativado com Sucesso!'); </script>";

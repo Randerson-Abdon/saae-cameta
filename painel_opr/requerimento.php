@@ -50,13 +50,13 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                 $nome = '%' . $_GET['txtpesquisarRequerimento'] . '%';
                 $numero_cpf_cnpj = $_GET['txtpesquisarRequerimento'];
-                $query = "SELECT * from requerimento where nome_razao_social LIKE '$nome' OR numero_cpf_cnpj LIKE '$numero_cpf_cnpj' AND status_requerimento != 'C' order by id_requerimento asc ";
+                $query = "SELECT * from requerimento_servico where nome_razao_social LIKE '$nome' OR numero_cpf_cnpj LIKE '$numero_cpf_cnpj' AND status_requerimento != 'C' order by id_requerimento asc ";
 
                 $result_count = mysqli_query($conexao, $query);
               } else {
-                $query = "SELECT * from requerimento where status_requerimento != 'C' order by id_requerimento desc limit 10";
+                $query = "SELECT * from requerimento_servico where status_requerimento != 'C' order by id_requerimento desc limit 10";
 
-                $query_count = "SELECT * from requerimento";
+                $query_count = "SELECT * from requerimento_servico";
                 $result_count = mysqli_query($conexao, $query_count);
               }
 
@@ -127,6 +127,8 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                       $status_requerimento = $res["status_requerimento"];
                       $data_requerimento = $res["data_requerimento"];
                       $observacoes = $res["observacoes"];
+
+                      $data_requerimento = substr($data_requerimento, 0, 10);
 
                       $data2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
@@ -205,7 +207,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
     if (@$_GET['func'] == 'req') {
       $id = $_GET['id'];
 
-      $query_req = "select * from requerimento where id_requerimento = '$id' ";
+      $query_req = "select * from requerimento_servico where id_requerimento = '$id' ";
       $result_req = mysqli_query($conexao, $query_req);
 
       while ($res = mysqli_fetch_array($result_req)) {
@@ -228,11 +230,12 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $status_requerimento = $res['status_requerimento'];
         $data_requerimento = $res['data_requerimento'];
 
+        $data_requerimento = substr($data_requerimento, 0, 10);
         $data_requerimento2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
         //RECUPERAÇÃO DE ENDEREÇAMENTO
         //trazendo nome de bairro que esta relacionado com o id , semelhante ao INNER JOIN
-        $query_end = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
+        $query_end = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
         $result_end = mysqli_query($conexao, $query_end);
         $row_end = mysqli_fetch_array($result_end);
         $id_localidade = $row_end["id_localidade"];
@@ -242,22 +245,23 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         $complemento_logradouro = $row_end["complemento_logradouro"];
 
         //trazendo info localidade
-        $query_lo = "SELECT * from localidade where id_localidade = '$id_localidade' ";
+        $query_lo = "SELECT * from enderecamento_localidade where id_localidade = '$id_localidade' ";
         $result_lo = mysqli_query($conexao, $query_lo);
         $row_lo = mysqli_fetch_array($result_lo);
         $nome_localidade = $row_lo["nome_localidade"];
 
         //trazendo info bairro
-        $query_ba = "SELECT * from bairro where id_bairro = '$id_bairro' ";
+        $query_ba = "SELECT * from enderecamento_bairro where id_bairro = '$id_bairro' ";
         $result_ba = mysqli_query($conexao, $query_ba);
         $row_ba = mysqli_fetch_array($result_ba);
         $nome_bairro = $row_ba["nome_bairro"];
 
         //trazendo info logradouro
-        $query_log = "SELECT * from logradouro where id_logradouro = '$id_logradouro' ";
+        $query_log = "SELECT * from enderecamento_logradouro where id_logradouro = '$id_logradouro' ";
         $result_log = mysqli_query($conexao, $query_log);
         $row_log = mysqli_fetch_array($result_log);
         $nome_logradouro = $row_log["nome_logradouro"];
+        $id_tipo_logradouro = $row_log["tipo_logradouro"];
 
         //trazendo tipo_enderecamento de unidade_consumidora que esta relacionado com o id, semelhante ao INNER JOIN
         $query_tp = "SELECT * from tipo_logradouro where id_tipo_logradouro = '$id_tipo_logradouro' ";

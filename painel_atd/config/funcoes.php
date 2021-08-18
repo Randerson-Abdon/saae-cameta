@@ -81,11 +81,7 @@ function calcularVencimentoParcelas($dtVencimento, $nParcelas, $repete = "")
     } else {
         $dataExplode = explode("/", $dtVencimento);
         $dia    = $dataExplode[0];
-        if ($dia > 15) {
-            $mes = $dataExplode[1];
-        } else {
-            $mes    = $dataExplode[1] - 1;
-        }
+        $mes    = $dataExplode[1];
         $ano    = $dataExplode[2];
 
         for ($i = 1; $i <= $nParcelas; $i++) {

@@ -32,23 +32,18 @@ include_once('../conexao.php');
 	<?php
 
 	$id_unidade_consumidora = $_POST['id_unidade_consumidora'];
+	$localidade = 01;
 	//completando com zeros a esquerda
 	$id_unidade_consumidora = str_pad($id_unidade_consumidora, 5, '0', STR_PAD_LEFT);
 
-	?>
-
-	<?php
 
 
-	?>
-
-
-
-	<?php
-
-	$sql = "SELECT * FROM unidade_consumidora WHERE id_unidade_consumidora LIKE '$id_unidade_consumidora' ";
-	$query = mysqli_query($conexao, $sql);
-	$row = mysqli_num_rows($query);
+	$result_sp3 = mysqli_query(
+		$conexao,
+		"CALL sp_seleciona_unidade_consumidora($localidade,$id_unidade_consumidora);"
+	) or die("Erro na query da procedure: " . mysqli_error($conexao));
+	mysqli_next_result($conexao);
+	$row = mysqli_num_rows($result_sp3);
 	?>
 	<section>
 		<?php
@@ -87,44 +82,31 @@ include_once('../conexao.php');
 										<tbody>
 
 											<?php
-											while ($sqlline = mysqli_fetch_array($query)) {
+											while ($row_uc = mysqli_fetch_array($result_sp3)) {
 
-												$uc = $sqlline["id_unidade_consumidora"];
-												$localidade = $sqlline["id_localidade"];
-												$cpfcnpj = $sqlline["numero_cpf_cnpj"];
-												$nome_user = $sqlline['nome_razao_social'];
-												$nome_rg = $sqlline['numero_rg'];
-												$nome_om = $sqlline['orgao_emissor_rg'];
-												$nome_ufrg = $sqlline['uf_rg'];
-												$nome_tf = $sqlline['fone_fixo'];
-												$nome_tfm = $sqlline['fone_movel'];
-												$nome_tfz = $sqlline['fone_zap'];
-												$nome_email = $sqlline['email'];
-												$data = $sqlline['data_cadastro'];
+												$nome_razao_social        = $row_uc['NOME'];
+												$numero_cpf_cnpj          = $row_uc['CPF_CNPJ'];
+												$data_cadastro            = $row_uc['CADASTRO'];
+
 
 												//trabalhando a data
-												$data2 = implode('/', array_reverse(explode('-', $data)));
-
-
+												//$data2 = implode('/', array_reverse(explode('-', $data)));
 
 											?>
 
 												<tr>
 
-													<td><?php echo $uc; ?></td>
-
-
-													<td><?php echo $nome_user; ?></td>
-													<td><?php echo $cpfcnpj; ?></td>
-
-													<td><?php echo $data2; ?></td>
+													<td><?php echo $id_unidade_consumidora; ?></td>
+													<td><?php echo $nome_razao_social; ?></td>
+													<td><?php echo $numero_cpf_cnpj; ?></td>
+													<td><?php echo $data_cadastro; ?></td>
 
 
 													<td>
 														<!--chamando modal para envio de mensagem-->
-														<a class="text-primary" title="Ver Perfil" href="atendimento.php?acao=requerimento&func=perfil&id=<?php echo $uc; ?>&id_localidade=<?php echo $localidade; ?>"><i class="fas fa-id-card"></i></a>
+														<a class="text-primary" title="Ver Perfil" href="atendimento.php?acao=requerimento&func=perfil&id=<?php echo $id_unidade_consumidora; ?>"><i class="fas fa-id-card"></i></a>
 
-														<a class="text-secondary" title="Criar Requerimento" href="atendimento.php?acao=requerimento&func=criar&id=<?php echo $uc; ?>"><i class="fas fa-plus-square"></i></a>
+														<a class="text-secondary" title="Criar Requerimento" href="atendimento.php?acao=requerimento&func=criar&id=<?php echo $id_unidade_consumidora; ?>"><i class="fas fa-plus-square"></i></a>
 													</td>
 												</tr>
 												</tr>

@@ -605,6 +605,9 @@
             (Texto de responsabilidade do cedente)</font><br><br><span class=cp>
             <FONT class=campo>
               - <?php echo $dadosboleto["demonstrativo2"] ?><br>
+              <?php echo @$dadosboleto["instrucoes0"]; ?><br><br>
+              <?php echo @$dadosboleto["instrucoes1"]; ?><br>
+              <?php echo @$dadosboleto["instrucoes2"]; ?><br>
               <?php echo $dadosboleto["instrucoes3"]; ?><br>
               <?php echo $dadosboleto["instrucoes4"]; ?></FONT><br><br>
           </span>

@@ -48,7 +48,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
         <?php
 
         //monta dados do combo 1
-        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
         $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 

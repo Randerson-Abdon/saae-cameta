@@ -3,6 +3,27 @@
 ini_set('memory_limit', '-1');
 include_once('../conexao.php');
 include_once('../verificar_autenticacao.php');
+
+
+function finalDeSemana($aData)
+{
+  $dia = substr($aData, 8, 10);
+  $mes = substr($aData, 5, 7);
+  $ano = substr($aData, 0, 4);
+  $date = date('w', mktime(0, 0, 0, $mes, $dia, $ano));
+
+
+
+  if ($date == 6) :
+    echo '6' . '<br>';
+  elseif ($date == 0) :
+    echo '7' . '<br>';
+  else :
+    echo 'Não é final de semana' . '<br>';
+  endif;
+}
+
+
 ?>
 
 <?php
@@ -22,35 +43,16 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     <hr>
     <div class="row">
 
-      <!-- CONSULTA POR Matrícula-->
+      <!-- CONSULTA POR UNIDADE CONSUMIDORA-->
       <div id="uc" name="uc">
         <div class="row">
 
           <div class="form-group col-md-4">
-            <label for="fornecedor">Localidade</label>
-
-            <select class="form-control mr-2" id="category" name="id_localidade" onchange=javascript:Atualizar(this.value); required>
-              <option value="">---Escolha uma opção---</option>";
-              <?php
-
-              //monta dados do combo 1
-              $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
-
-              $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
-
-              while ($linha = mysqli_fetch_array($resultado)) {
-                echo "<option value=" . $linha['id_localidade'] . ">" . $linha['nome_localidade'] . "</option>";
-              }
-              ?>
-            </select>
-          </div>
-
-          <div class="form-group col-md-2">
-            <label for="id_produto">Matrícula</label>
+            <label for="id_produto">Unidade Consumidora</label>
             <input type="text" class="form-control mr-3" minlength="2" name="id_unidade_consumidora" placeholder="UC" required>
           </div>
 
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-4">
             <label for="fornecedor">Ação</label>
             <select class="form-control mr-2" id="acao" name="acao" style="text-transform:uppercase;">
 
@@ -101,9 +103,8 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 if (isset($_POST['iniciar'])) {
   $uc = $_POST['id_unidade_consumidora'];
   $acao = $_POST['acao'];
-  $id_localidade = $_POST['id_localidade'];
 
-  echo "<script language='javascript'>window.location='admin.php?acao=faturando&func=iniciar&id=$uc&iniciar=$acao&id_localidade=$id_localidade'; </script>";
+  echo "<script language='javascript'>window.location='admin.php?acao=faturando&func=iniciar&id=$uc&iniciar=$acao'; </script>";
 }
 ?>
 
@@ -112,9 +113,10 @@ if (isset($_POST['iniciar'])) {
 <!--INICIAR -->
 <?php
 if (@$_GET['func'] == 'iniciar') {
-  $id         = $_GET['id'];
-  $iniciar    = $_GET['iniciar'];
-  $localidade = $_GET['id_localidade'];
+  $id      = $_GET['id'];
+  $iniciar = $_GET['iniciar'];
+
+  $localidade = '01';
 
   //executa o store procedure info consumidor
   $result_sp = mysqli_query(
@@ -168,12 +170,31 @@ if (@$_GET['func'] == 'iniciar') {
               <input type="text" class="form-control mr-2" name="status" value="<?php echo $status_ligacao ?>" readonly>
             </div>
 
-            <p style="font-size: 12pt; margin-bottom: -12px;"> <b> Selecione abaixo os meses para <?php if ($iniciar == 'E') {
-                                                                                                    echo "estorno";
-                                                                                                  } else {
-                                                                                                    echo 'faturamento';
-                                                                                                  } ?>: </b> </p>
+            <p style="font-size: 12pt; margin-bottom: -12px;"> <b> Selecione abaixo o ano e os meses para <?php if ($iniciar == 'E') {
+                                                                                                            echo "estorno";
+                                                                                                          } else {
+                                                                                                            echo 'faturamento';
+                                                                                                          } ?>: </b> </p>
             <hr>
+            <div class="row">
+              <div class="form-group col-md-5">
+                <label for="id_produto">Selecione o ano:</label>
+                <select name="ano" id="ano">
+                  <?php
+                  $anoInicio = intval(date('Y'));
+                  for ($i = 0; $i < 10; $i++, $anoInicio--) {
+                    echo '<option value="' . $anoInicio . '">' . $anoInicio . '</option>';
+                  } ?>
+
+
+                </select>
+              </div>
+
+              <div class="form-group col-md-4">
+                Todos os Mêses <input type="checkbox" title="Selecionar Tudo" id="todos" name="all">
+              </div>
+
+            </div>
 
             <div class="row">
 
@@ -242,6 +263,24 @@ if (@$_GET['func'] == 'iniciar') {
 
           <button type="button" class="btn btn-danger mb-3" data-dismiss="modal">Cancelar </button>
           </form>
+
+          <script>
+            // função selecionat todos
+            $(document).ready(function() {
+
+              $('#todos').click(function() {
+                var val = this.checked;
+                //aler(val);
+                $('.lista').each(function() {
+                  $(this).prop('checked', val);
+
+                });
+
+              });
+
+            });
+          </script>
+
         </div>
       </div>
     </div>
@@ -252,7 +291,7 @@ if (@$_GET['func'] == 'iniciar') {
   if (isset($_POST['salvar'])) {
 
     $fatura = $_POST['fatura'];
-
+    $select_ano = $_POST['ano'];
     $valor_consumo     = substr($valor_faixa_consumo, 3);
     $valor_consumo     = str_replace(',', '.', $valor_consumo);
     $mes_gerador       = date("Y-m-d");
@@ -272,18 +311,20 @@ if (@$_GET['func'] == 'iniciar') {
 
     foreach ($fatura as $value) {
 
+      //var_dump($value);
+
       //vencimento e corte
-      $Y = date('Y');
-      $m = $value + 1;
-      $m2 = $value + 1;
-      if ($m2 == '13') {
-        $me = '01';
-        @$Ye = $Y + 1;
+      $Y = $select_ano; //2021
+      $m = $value + 1; //4
+      $m2 = $value + 1; //4
+      if ($m2 == 13) {
+        $me = 01;
+        $Ye = $Y + 1;
       } else {
-        $me = $m;
-        $Ye = $Y;
+        $me = $m; //4
+        $Ye = $Y; //2021
       }
-      $d = date('d');
+      $d = 05; //24
       $vencimento = $Ye . '-' . $me . '-' . $d;
       $d = $d + 10;
       if ($d > 20) {
@@ -291,18 +332,66 @@ if (@$_GET['func'] == 'iniciar') {
       } else {
         $dc = $d;
       }
-      $corte =  $Ye . '-' . $me . $dc;
+      $corte =  $Ye . '-' . $me . '-' . $dc;
+
+      //vencimento e corte
+      $Y = $select_ano; //2021
+      $m = $value + 1; //4
+      $m2 = $value + 1; //4
+      if ($m2 == 13) {
+        $me = 01;
+        $Ye = $Y + 1;
+      } else {
+        $me = $m; //4
+        $Ye = $Y; //2021
+      }
+      $d = 05; //24
+
+
+
+      $vencimento = $Ye . '-' . str_pad($me, 2, '0', STR_PAD_LEFT) . '-' . str_pad($d, 2, '0', STR_PAD_LEFT);
+
+      $dia = substr($vencimento, 8, 10);
+      $mes = substr($vencimento, 5, 7);
+      $ano = substr($vencimento, 0, 4);
+      $date = date('w', mktime(0, 0, 0, intval($mes), intval($dia), intval($ano)));
+
+      if ($date == 6) {
+        $vencimento = $Ye . '-' . $me . '-' . ($d + 2);
+      } elseif ($date == 0) {
+        $vencimento = $Ye . '-' . $me . '-' . ($d + 1);
+      }
+
+
+      $d = $d + 10;
+      if ($d > 30) {
+        $dc = $d - 30;
+        $mec = $me + 1;
+      } else {
+        $dc = $d;
+        $mec = $me;
+      }
+
+      if ($mec == 13) {
+        $mec = 01;
+        $Ye = $Y + 1;
+      } else {
+        $mec = $mec; //4
+        $Ye = $Y; //2021
+      }
+
+      $corte =  $Ye . '-' . $mec . '-' . $dc;
 
       //fatura
-      $ano = date('Y') . '/';
+      $ano = $select_ano . '/';
       $value = $ano . $value;
 
-      //echo $localidade . ', ' . $uc . ', ' . $value . ', ' . $mes_gerador . ', ' . $vencimento . ', ' . $corte . ', ' . $valor_consumo . ', ' . $id_usuario_editor . '<br>';
+      //echo '<br>' . $localidade . ', ' . $uc . ', ' . $value . ', ' . $mes_gerador . ', ' . $vencimento . ', ' . $corte . ', ' . $valor_consumo . ', ' . $id_usuario_editor . ', ' . $date . '<br>';
 
       if ($iniciar == 'F') {
 
         //trazendo info financeiro devedor
-        $query_hf = "SELECT * from historico_financeiro where id_unidade_consumidora = '$uc' and mes_faturado = '$value' and status_estorno_tarifa = 'S' ";
+        $query_hf = "SELECT * from historico_financeiro where id_unidade_consumidora = '$uc' and mes_faturado = '$value' and data_pagamento_fatura is null ";
         $result_hf = mysqli_query($conexao, $query_hf);
         $linha = mysqli_num_rows($result_hf);
 
@@ -310,7 +399,7 @@ if (@$_GET['func'] == 'iniciar') {
           $query = "INSERT INTO historico_financeiro (id_localidade, id_unidade_consumidora, mes_faturado, data_lancamento_fatura, data_vencimento_fatura, data_prevista_corte, $tipo, total_geral_tarifa, total_geral_faturado, id_usuario_editor_registro) values ('$localidade', '$uc', '$value', '$mes_gerador', '$vencimento', '$corte', '$valor_consumo', '$valor_consumo', '$valor_consumo', '$id_usuario_editor')";
           $result = mysqli_query($conexao, $query);
         } else {
-          $query = "UPDATE historico_financeiro SET status_estorno_tarifa = 'N', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$uc' AND mes_faturado = '$value' ";
+          $query = "UPDATE historico_financeiro SET total_geral_tarifa = '$valor_consumo', total_geral_faturado = '$valor_consumo', $tipo = '$valor_consumo', status_estorno_tarifa = 'N', id_usuario_editor_registro = '$id_usuario_editor' where id_unidade_consumidora = '$uc' AND mes_faturado = '$value' ";
           $result = mysqli_query($conexao, $query);
         }
       } else {

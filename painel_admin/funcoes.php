@@ -108,7 +108,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     while ($res = mysqli_fetch_array($result)) {
                       $nome_funcao = $res["nome_funcao"];
                       $descricao_funcao = $res["descricao_funcao"];
-                      $id_usuario_editor = $res["id_usuario_editor_registro"];
+                      $id_usuario_editor = $res["id_usuario_editor"];
                       $data_ultima_edicao_funcao = $res["data_ultima_edicao_funcao"];
                       $id = $res["id"];
 
@@ -201,7 +201,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
               <div class="form-group">
                 <label for="id_produto">Usuário Editor</label>
-                <input type="text" class="form-control mr-2" name="id_usuario_editor_registro" placeholder="Usuário Editor" style="text-transform:uppercase;" required>
+                <input type="text" class="form-control mr-2" name="id_usuario_editor" placeholder="Usuário Editor" style="text-transform:uppercase;" required>
               </div>
 
 
@@ -228,7 +228,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     if (isset($_POST['salvar'])) {
       $nome_funcao = mb_strtoupper($_POST['nome_funcao']);
       $descricao_funcao = mb_strtoupper($_POST['descricao_funcao']);
-      $id_usuario_editor = mb_strtoupper($_POST['id_usuario_editor_registro']);
+      $id_usuario_editor = mb_strtoupper($_POST['id_usuario_editor']);
 
 
       //VERIFICAR SE A BAIRRO JÁ ESTÁ CADASTRADA
@@ -242,7 +242,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
 
-      $query = "INSERT INTO funcoes (nome_funcao, descricao_funcao, id_usuario_editor_registro, data_ultima_edicao_funcao) values ('$nome_funcao', '$descricao_funcao', '$id_usuario_editor', curDate())";
+      $query = "INSERT INTO funcoes (nome_funcao, descricao_funcao, id_usuario_editor, data_ultima_edicao_funcao) values ('$nome_funcao', '$descricao_funcao', '$id_usuario_editor', curDate())";
 
       $result = mysqli_query($conexao, $query);
 
@@ -282,7 +282,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       while ($res = mysqli_fetch_array($result)) {
         $nome_funcao = $res["nome_funcao"];
         $descricao_funcao = $res["descricao_funcao"];
-        $id_usuario_editor = $res["id_usuario_editor_registro"];
+        $id_usuario_editor = $res["id_usuario_editor"];
         $data_ultima_edicao_funcao = $res["data_ultima_edicao_funcao"];
 
     ?>
@@ -312,7 +312,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                   <div class="form-group">
                     <label for="id_produto">Usuário Editor</label>
-                    <input type="text" class="form-control mr-2" name="id_usuario_editor_registro" placeholder="Usuário Editor" value="<?php echo $id_usuario_editor ?>" style="text-transform:uppercase;" required>
+                    <input type="text" class="form-control mr-2" name="id_usuario_editor" placeholder="Usuário Editor" value="<?php echo $id_usuario_editor ?>" style="text-transform:uppercase;" required>
                   </div>
 
 
@@ -337,7 +337,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         if (isset($_POST['editar'])) {
           $nome_funcao = mb_strtoupper($_POST['nome_funcao']);
           $descricao_funcao = mb_strtoupper($_POST['descricao_funcao']);
-          $id_usuario_editor = mb_strtoupper($_POST['id_usuario_editor_registro']);
+          $id_usuario_editor = mb_strtoupper($_POST['id_usuario_editor']);
 
 
           if ($res["nome_funcao"] != $nome_funcao) {
@@ -351,19 +351,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
             }
           }
 
-          //if($res["usuario"] != $usuario){
-          //VERIFICAR SE O USUARIO JÁ ESTÁ CADASTRADO
-          //$query_verificar_usu = "SELECT * from usuarios where usuario = '$usuario' and nivel = '$nivel' ";
-          //$result_verificar_usu = mysqli_query($conexao, $query_verificar_usu);
-          //$row_verificar_usu = mysqli_num_rows($result_verificar_usu);
-          //if($row_verificar_usu > 0){
-          // echo "<script language='javascript'>window.alert('Usuário já Cadastrado'); </script>";
-          // exit();
-          //}
-          //}
-
-
-          $query = "UPDATE funcoes SET nome_funcao = '$nome_funcao', descricao_funcao = '$descricao_funcao', id_usuario_editor_registro = '$id_usuario_editor' where id = '$id' ";
+          $query = "UPDATE funcoes SET nome_funcao = '$nome_funcao', descricao_funcao = '$descricao_funcao', id_usuario_editor = '$id_usuario_editor' where id = '$id' ";
 
           $result = mysqli_query($conexao, $query);
 

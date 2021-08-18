@@ -7,7 +7,7 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -49,7 +49,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
   if (@$_GET['func'] == 'imprime') {
     $id = $_GET['id'];
 
-    $query = "select * from requerimento where id_requerimento = '$id' ";
+    $query = "select * from requerimento_servico where id_requerimento = '$id' ";
     $result = mysqli_query($conexao, $query);
 
     while ($res = mysqli_fetch_array($result)) {
@@ -62,7 +62,6 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
       $numero_rg = $res['numero_rg'];
       $orgao_emissor_rg = $res['orgao_emissor_rg'];
       $uf_rg = $res['uf_rg'];
-      $localidade = $res['id_localidade'];
 
       $fone_fixo = $res['fone_fixo'];
       $fone_movel = $res['fone_movel'];
@@ -73,10 +72,12 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
       $status_requerimento = $res['status_requerimento'];
       $data_requerimento = $res['data_requerimento'];
 
+      $data_requerimento = substr($data_requerimento, 0, 10);
+
       $data_requerimento2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
       //RECUPERAÇÃO DE ENDEREÇAMENTO
-
+      $localidade = '01';
 
       //executa o store procedure info consumidor
       $result_sp2 = mysqli_query(
@@ -131,7 +132,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
       @$uf_saae = $row_ps['uf_saae'];
       @$nome_saae = $row_ps['nome_saae'];
       @$email_saae = $row_ps['email_saae'];
-      @$logo_orgao = $row_ps['logo_orgao'];
+      $logo_orgao = $row_ps['logo_orgao'];
 
       $data = date('d/m/Y');
 
@@ -143,9 +144,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
       <table style="margin-bottom: 15px;">
         <thead>
           <tr>
-            <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+            <th style="width: 20%;"><img width="80%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
             <th>
-              <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+              <p><?php echo $nome_prefeitura ?> <br>
                 SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                 SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
                 SOLICITAÇÃO DE REQUERIMENTO</p>
@@ -366,7 +367,7 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
           </div>
 
           <p style="margin-left: 20px;">
-            M.D . Sr(a) Diretor(a) do SERVIÇO AUT . DE ÁGUA E ESGOTO DE CAMETÁ <br><br>
+            M.D . Sr(a) Diretor(a) do <?php echo $nome_saae ?> <br><br>
             Venho nesta data e , através deste , requerer que v.sa . se digne a autorizar a execução dos serviços acima relacionados. <br><br>
             Nestes termos, <br><br>
             Pede deferimento. <br><br><br>

@@ -60,13 +60,13 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
 
                 $nome = '%' . $_GET['txtpesquisarLogradouros'] . '%';
-                $query = "SELECT * from logradouro where nome_logradouro LIKE '$nome' order by nome_logradouro asc ";
+                $query = "SELECT * from enderecamento_logradouro where nome_logradouro LIKE '$nome' order by nome_logradouro asc ";
 
                 $result_count = mysqli_query($conexao, $query);
               } else {
-                $query = "SELECT * from logradouro order by id_logradouro desc limit 10";
+                $query = "SELECT * from enderecamento_logradouro order by id_logradouro desc limit 10";
 
-                $query_count = "SELECT * from logradouro";
+                $query_count = "SELECT * from enderecamento_logradouro";
                 $result_count = mysqli_query($conexao, $query_count);
               }
 
@@ -119,17 +119,16 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                       //$data2 = implode('/', array_reverse(explode('-', $data_ultima_edicao_logradouro)));
 
                       //trazendo o nome da categoria que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_localidade = "SELECT * from localidade where id_localidade = '$localidade' ";
+                      $query_localidade = "SELECT * from enderecamento_localidade where id_localidade = '$localidade' ";
                       $result_localidade = mysqli_query($conexao, $query_localidade);
                       $row_localidade = mysqli_fetch_array($result_localidade);
                       $nome_localidade = $row_localidade['nome_localidade'];
 
                       //trazendo o nome do bairro que esta relacionado com o id, semelhante ao INNER JOIN
-                      $query_bairro = "SELECT * from bairro where id_localidade = '$localidade' AND id_bairro = '$bairro' ";
+                      $query_bairro = "SELECT * from enderecamento_bairro where id_bairro = '$bairro' ";
                       $result_bairro = mysqli_query($conexao, $query_bairro);
                       $row_bairro = mysqli_fetch_array($result_bairro);
                       $nome_bairro = $row_bairro['nome_bairro'];
-
 
                       //trazendo o nome do tipo logradouro que esta relacionado com o id, semelhante ao INNER JOIN
                       $query_t_log = "SELECT * from tipo_logradouro where id_tipo_logradouro = '$tipo_logradouro' ";
@@ -149,7 +148,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                         <td>
 
-                          <a class="btn btn-info btn-sm" href="admin.php?acao=logradouros&func=edita&id=<?php echo $id; ?>"><i class="fas fa-edit"></i></a>
+                          <a class="btn btn-info btn-sm" href="admin.php?acao=logradouros&func=edita&id=<?php echo $id; ?>&id_bairro=<?php echo $bairro; ?>"><i class="fas fa-edit"></i></a>
 
                           <a class="btn btn-danger btn-sm" href="admin.php?acao=logradouros&func=excluir&id=<?php echo $id; ?>"><i class="fa fa-minus-square"></i></a>
 
@@ -204,7 +203,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     <?php
 
     //consulta para numeração automatica
-    $query_num_log = "select * from logradouro order by id_logradouro desc ";
+    $query_num_log = "select * from enderecamento_logradouro order by id_logradouro desc ";
     $result_num_log = mysqli_query($conexao, $query_num_log);
 
     $res_num_log = mysqli_fetch_array($result_num_log);
@@ -252,7 +251,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                     <?php
 
                     //recuperando dados da tabela localidade para o select
-                    $query = "select * from bairro order by nome_bairro asc";
+                    $query = "select * from enderecamento_bairro order by nome_bairro asc";
                     $result = mysqli_query($conexao, $query);
                     while ($res = mysqli_fetch_array($result)) {
 
@@ -319,7 +318,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
       $nome_localidade = mb_strtoupper($_POST['id_localidade']);
       //consulta para id_localidade
-      $query_loc = "SELECT * FROM localidade WHERE nome_localidade = '$nome_localidade' ";
+      $query_loc = "SELECT * from enderecamento_localidade where nome_localidade = '$nome_localidade' ";
       $result_loc = mysqli_query($conexao, $query_loc);
       $res_loc = mysqli_fetch_array($result_loc);
       $id_localidade = $res_loc["id_localidade"];
@@ -334,7 +333,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
       $cep_logradouro = str_replace("-", "", $cep_logradouro);
 
       //VERIFICAR SE A LOCALIDADE JÁ ESTÁ CADASTRADA
-      $query_verificar_log = "SELECT * from logradouro where nome_logradouro= '$nome_logradouro' ";
+      $query_verificar_log = "SELECT * from enderecamento_logradouro where nome_logradouro= '$nome_logradouro' ";
       $result_verificar_log = mysqli_query($conexao, $query_verificar_log);
       $row_verificar_log = mysqli_num_rows($result_verificar_log);
       if ($row_verificar_log > 0) {
@@ -342,9 +341,9 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         exit();
       }
 
-      echo $id_logradouro . ', ' . $nome_logradouro . ', ' . $id_localidade . ', ' . $id_bairro . ', ' . $cep_logradouro . ', ' . $id_usuario_editor . ', ' . $id_tipo_logradouro;
+      //echo $id_logradouro . ', ' . $nome_logradouro . ', ' . $id_localidade . ', ' . $id_bairro . ', ' . $cep_logradouro . ', ' . $id_usuario_editor . ', ' . $id_tipo_logradouro;
 
-      $query = "INSERT INTO logradouro (id_logradouro, nome_logradouro, id_localidade, id_bairro, cep_logradouro, id_usuario_editor_registro, tipo_logradouro) values ('$id_logradouro', '$nome_logradouro', '$id_localidade', '$id_bairro', '$cep_logradouro', '$id_usuario_editor', '$id_tipo_logradouro')";
+      $query = "INSERT INTO enderecamento_logradouro (id_logradouro, nome_logradouro, id_localidade, id_bairro, cep_logradouro, id_usuario_editor_registro, tipo_logradouro) values ('$id_logradouro', '$nome_logradouro', '$id_localidade', '$id_bairro', '$cep_logradouro', '$id_usuario_editor', '$id_tipo_logradouro')";
 
       $result = mysqli_query($conexao, $query);
 
@@ -352,7 +351,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         echo "<script language='javascript'>window.alert('Ocorreu um erro ao Salvar!'); </script>";
       } else {
         echo "<script language='javascript'>window.alert('Salvo com Sucesso!'); </script>";
-        echo "<script language='javascript'>window.location='admin.php?acao=logradouros'; </script>";
+        // echo "<script language='javascript'>window.location='admin.php?acao=logradouros'; </script>";
       }
     }
     ?>
@@ -364,8 +363,11 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     <?php
     if (@$_GET['func'] == 'edita') {
       $id = $_GET['id'];
+      $id_bairro = $_GET['id_bairro'];
 
-      $query = "select * from logradouro where id_logradouro = '$id' ";
+      //echo $id . ', ' . $id_bairro;
+
+      $query = "SELECT * from enderecamento_logradouro where id_logradouro = '$id' and id_bairro = '$id_bairro' ";
       $result = mysqli_query($conexao, $query);
 
       while ($res = mysqli_fetch_array($result)) {
@@ -373,24 +375,24 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         $id_localidade = $res['id_localidade'];
         $id_bairro = $res['id_bairro'];
         $cep_logradouro = $res['cep_logradouro'];
-        $id_tipo_logradouro = $res['id_tipo_logradouro'];
+        $id_tipo_logradouro = $res['tipo_logradouro'];
 
         //consulta para recuperação do nome da localidade
-        $query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+        $query_loc = "SELECT * from enderecamento_localidade where id_localidade = '$id_localidade' ";
         $result_loc = mysqli_query($conexao, $query_loc);
         $row = mysqli_fetch_array($result_loc);
         //vai para a modal
         $nome_loc = $row['nome_localidade'];
 
         //consulta para recuperação do nome do bairro
-        $query_ba = "select * from bairro where id_bairro = '$id_bairro' ";
+        $query_ba = "SELECT * from enderecamento_bairro where id_localidade = '$id_localidade' and id_bairro = '$id_bairro' ";
         $result_ba = mysqli_query($conexao, $query_ba);
         $row = mysqli_fetch_array($result_ba);
         //vai para a modal
         $nome_ba = $row['nome_bairro'];
 
         //consulta para recuperação do nome do tipo logradouro
-        $query_tl = "select * from tipo_logradouro where id_tipo_logradouro = '$id_tipo_logradouro' ";
+        $query_tl = "SELECT * from tipo_logradouro where id_tipo_logradouro = '$id_tipo_logradouro' ";
         $result_tl = mysqli_query($conexao, $query_tl);
         $row = mysqli_fetch_array($result_tl);
         //vai para a modal
@@ -426,7 +428,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                       <?php
 
-                      $query = "select * from localidade order by nome_localidade asc";
+                      $query = "select * from enderecamento_localidade order by nome_localidade asc";
                       $result = mysqli_query($conexao, $query);
 
                       while ($res = mysqli_fetch_array($result)) {
@@ -458,7 +460,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
 
                       <?php
 
-                      $query = "select * from bairro order by nome_bairro asc";
+                      $query = "select * from enderecamento_bairro order by nome_bairro asc";
                       $result = mysqli_query($conexao, $query);
 
                       while ($res = mysqli_fetch_array($result)) {
@@ -543,42 +545,22 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
           $id_tipo_logradouro = mb_strtoupper($_POST['id_tipo_logradouro']);
           $id_usuario_editor = $_SESSION['id_usuario'];
 
-          if ($res["nome_logradouro"] != $nome_logradouro) {
+          /* if ($res["nome_logradouro"] != $nome_logradouro) {
             //VERIFICAR SE O CPF JÁ ESTÁ CADASTRADO
-            $query_verificar_log = "SELECT * from logradouro where nome_logradouro = '$nome_logradouro' ";
+            $query_verificar_log = "SELECT * from enderecamento_logradouro where nome_logradouro = '$nome_logradouro' ";
             $result_verificar_log = mysqli_query($conexao, $query_verificar_log);
             $row_verificar_log = mysqli_num_rows($result_verificar_log);
             if ($row_verificar_log > 0) {
               echo "<script language='javascript'>window.alert('Logradouro já Cadastrado'); </script>";
               exit();
             }
-          }
+          } */
 
-          //if($res["usuario"] != $usuario){
-          //VERIFICAR SE O USUARIO JÁ ESTÁ CADASTRADO
-          //$query_verificar_usu = "SELECT * from usuarios where usuario = '$usuario' and nivel = '$nivel' ";
-          //$result_verificar_usu = mysqli_query($conexao, $query_verificar_usu);
-          //$row_verificar_usu = mysqli_num_rows($result_verificar_usu);
-          //if($row_verificar_usu > 0){
-          // echo "<script language='javascript'>window.alert('Usuário já Cadastrado'); </script>";
-          // exit();
-          //}
-          //}
+          //echo $nome_logradouro . ', ' . $id_localidade . ', ' . $id_bairro . ', ' . $cep_logradouro . ', ' . $id_tipo_logradouro . ', ' . $id_usuario_editor;
 
-
-          $query = "UPDATE logradouro SET nome_logradouro = '$nome_logradouro', id_localidade = '$id_localidade', id_bairro = '$id_bairro', cep_logradouro = '$cep_logradouro', id_tipo_logradouro = '$id_tipo_logradouro', id_usuario_editor_registro = '$id_usuario_editor', data_ultima_edicao = curDate() where id_logradouro = '$id' ";
+          $query = "UPDATE enderecamento_logradouro SET nome_logradouro = '$nome_logradouro', id_localidade = '$id_localidade', id_bairro = '$id_bairro', cep_logradouro = '$cep_logradouro', tipo_logradouro = '$id_tipo_logradouro', id_usuario_editor_registro = '$id_usuario_editor' where id_logradouro = '$id' and id_bairro = '$id_bairro' ";
 
           $result = mysqli_query($conexao, $query);
-
-
-          //atualização dos alunos
-          // if($nivel == 'Aluno'){
-          // $query_alunos = "UPDATE alunos SET nome = '$nome', cpf = '$cpf', email = '$usuario', senha = '$senha' where cpf = '$res[cpf]' ";
-
-          // $result_alunos = mysqli_query($conexao, $query_alunos);
-          // }
-
-
 
           if ($result == '') {
             echo "<script language='javascript'>window.alert('Ocorreu um erro ao Editar!'); </script>";
@@ -597,8 +579,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
     if (@$_GET['func'] == 'excluir') {
       $id = $_GET['id'];
 
-
-      $query = "DELETE FROM logradouro where id_logradouro = '$id' ";
+      $query = "DELETE FROM enderecamento_logradouro where id_logradouro = '$id' ";
       $result = mysqli_query($conexao, $query);
       echo "<script language='javascript'>window.location='admin.php?acao=logradouros'; </script>";
     }

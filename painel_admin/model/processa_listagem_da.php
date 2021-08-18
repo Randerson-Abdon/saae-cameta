@@ -151,7 +151,7 @@ if ($slBuscar == 'uc') {
                                         <table style="margin-bottom: 15px; margin-left: 30px;">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 20%; height: 100%;"><img width="90%" src="../../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+                                                    <th style="width: 36%; height: 100%;"><img width="90%" src="../../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
                                                     <th>
                                                         <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
                                                             SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
@@ -402,7 +402,7 @@ if ($slBuscar == 'uc') {
                                         $data = date('d/m/Y');
 
                                         //trazendo info logradouro
-                                        $query_ps = "SELECT * FROM logradouro WHERE id_localidade = '$id_localidade' AND id_bairro = '$id_bairro' AND id_logradouro = '$id_logradouro' ";
+                                        $query_ps = "SELECT * FROM enderecamento_logradouro WHERE id_localidade = '$id_localidade' AND id_bairro = '$id_bairro' AND id_logradouro = '$id_logradouro' ";
                                         $result_ps = mysqli_query($conexao, $query_ps);
                                         $row_ps = mysqli_fetch_array($result_ps);
                                         $nome_logradouro = $row_ps['nome_logradouro'];
@@ -419,7 +419,7 @@ if ($slBuscar == 'uc') {
                                         <table style="margin-bottom: 15px; margin-left: 30px;">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 20%; height: 100%;"><img width="90%" src="../../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+                                                    <th style="width: 36%; height: 100%;"><img width="90%" src="../../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
                                                     <th>
                                                         <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
                                                             SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
@@ -671,11 +671,6 @@ if ($slBuscar == 'uc') {
     </body>
 
     </html>
-
-
-
-
-
 
 
 <?php } ?>

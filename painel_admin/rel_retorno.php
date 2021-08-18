@@ -124,7 +124,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                   }
 
                   //trazendo info bancos
-                  $query_banco = "SELECT * from banco_arrecadador where id_febraban = '$cd_banco' ";
+                  $query_banco = "SELECT * from bancos where id_febraban = '$cd_banco' ";
                   $result_banco = mysqli_query($conexao, $query_banco);
                   $row_banco = mysqli_fetch_array($result_banco);
                   @$nome_banco = $row_banco["nome_banco"];
@@ -167,7 +167,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
                             <label for="id_produto"><strong>Total de Registros: <?php echo $t_reg; ?></strong></label>
                           </div>
 
-                          <div class="form-group col-md-4">
+                          <div class="form-group col-md-5">
                             <label for="id_produto"><strong>Valor Total dos Registros: R$ <?php echo number_format($v_t_r, 2, ",", "."); ?></strong></label>
                           </div>
 

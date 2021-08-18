@@ -14,6 +14,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
 
 ?>
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,7 +51,8 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
   <?php
   if (@$_GET['func'] == 'imprime') {
     $id = $_GET['id'];
-    $localidade = $_GET['id_localidade'];
+
+    $localidade = '01';
 
     //trazendo info perfil_saae
     $query_ps = "SELECT * from perfil_saae";
@@ -70,8 +74,6 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     @$uf_saae = $row_ps['uf_saae'];
     @$nome_saae = $row_ps['nome_saae'];
     @$email_saae = $row_ps['email_saae'];
-    @$logo_orgao = $row_ps['logo_orgao'];
-
 
     $data = date('d/m/Y');
 
@@ -117,9 +119,9 @@ if ($_SESSION['nivel_usuario'] != '3' && $_SESSION['nivel_usuario'] != '0') {
     <table style="margin-bottom: 15px;">
       <thead>
         <tr>
-          <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+          <th style="width: 20%;"><img width="80%" src="../img/sIzabel/saae_sIzabel_logo.png" alt=""></th>
           <th>
-            <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+            <p><?php echo $nome_prefeitura; ?> <br>
               SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
               SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
               FICHA DE CADASTRO DO CONSUMIDOR

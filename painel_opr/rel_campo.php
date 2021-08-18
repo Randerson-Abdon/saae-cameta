@@ -2,10 +2,6 @@
 include_once('../conexao.php');
 session_start();
 include_once('../verificar_autenticacao.php');
-?>
-
-
-<?php
 
 if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
   header('Location: ../login.php');
@@ -13,9 +9,6 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 }
 
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,7 +58,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       $status_ordem_servico = $res['status_ordem_servico'];
 
       //trazendo info do requerimento
-      $query_rq = "SELECT * from requerimento where id_requerimento = '$id_requerimento' ";
+      $query_rq = "SELECT * from requerimento_servico where id_requerimento = '$id_requerimento' ";
       $result_rq = mysqli_query($conexao, $query_rq);
       $row_rq = mysqli_fetch_array($result_rq);
       $nome_razao_social = $row_rq['nome_razao_social'];
@@ -75,11 +68,12 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       $data_requerimento = $row_rq['data_requerimento'];
       $status_requerimento = $row_rq['status_requerimento'];
 
+      $data_requerimento = substr($data_requerimento, 0, 10);
       $data2 = implode('/', array_reverse(explode('-', $data_requerimento)));
 
 
       //trazendo info endereco_instalacao
-      $query_e = "SELECT * from endereco_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
+      $query_e = "SELECT * from enderecamento_instalacao where id_unidade_consumidora = '$id_unidade_consumidora' ";
       $result_e = mysqli_query($conexao, $query_e);
       $row_e = mysqli_fetch_array($result_e);
       $id_localidade = $row_e['id_localidade'];
@@ -89,21 +83,21 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       $complemento_logradouro = $row_e['complemento_logradouro'];
 
       //consulta para recuperação do nome da localidade
-      $query_loc = "select * from localidade where id_localidade = '$id_localidade' ";
+      $query_loc = "select * from enderecamento_localidade where id_localidade = '$id_localidade' ";
       $result_loc = mysqli_query($conexao, $query_loc);
       $row_loc = mysqli_fetch_array($result_loc);
       //vai para a modal
       $nome_loc = $row_loc['nome_localidade'];
 
       //consulta para recuperação do nome do bairro
-      $query_ba = "select * from bairro where id_bairro = '$id_bairro' ";
+      $query_ba = "select * from enderecamento_bairro where id_bairro = '$id_bairro' ";
       $result_ba = mysqli_query($conexao, $query_ba);
       $row_ba = mysqli_fetch_array($result_ba);
       //vai para a modal
       $nome_ba = $row_ba['nome_bairro'];
 
       //consulta para recuperação do nome do logradouro
-      $query_log = "select * from logradouro where id_logradouro = '$id_logradouro' ";
+      $query_log = "select * from enderecamento_logradouro where id_logradouro = '$id_logradouro' ";
       $result_log = mysqli_query($conexao, $query_log);
       $row_log = mysqli_fetch_array($result_log);
       //vai para a modal
@@ -136,7 +130,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       @$uf_saae = $row_ps['uf_saae'];
       @$nome_saae = $row_ps['nome_saae'];
       @$email_saae = $row_ps['email_saae'];
-      @$logo_orgao = $row_ps['logo_orgao'];
+      $logo_orgao = $row_ps['logo_orgao'];
 
       $data = date('d/m/Y');
 
@@ -148,9 +142,9 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       <table table style="margin-bottom: 15px;">
         <thead>
           <tr>
-            <th style="width: 25%;"><img width="95%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
+            <th style="width: 20%;"><img width="80%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
             <th>
-              <p style="margin-top: 18px;"><?php echo $nome_prefeitura ?> <br>
+              <p><?php echo $nome_prefeitura ?> <br>
                 SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                 SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
                 FICHA DE ORDEM DE SERVIÇO EM CAMPO <?php echo $data ?></p>
@@ -369,18 +363,18 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
           <div class="form-group col-md-12">
             <label for="fornecedor">Observações</label>
-            <textarea type="text" maxlength="600" class="form-control mr-2" style="width: 100%; height: 150%;"></textarea>
+            <textarea type="text" rows="8" maxlength="350" class="form-control mr-2"></textarea>
           </div>
 
         </div>
 
 
         <div class="row">
-          <div class="form-group text-center col-md-6" style="margin-top: 150px;">
+          <div class="form-group text-center col-md-6" style="margin-top: 120px;">
             <label for="fornecedor">_________________________________________________________</label>
           </div>
 
-          <div class="form-group text-center col-md-6" style="margin-top: 150px;">
+          <div class="form-group text-center col-md-6" style="margin-top: 120px;">
             <label for="fornecedor">_________________________________________________________</label>
           </div>
         </div>

@@ -5,7 +5,7 @@ include_once('../verificar_autenticacao.php');
 
 <?php
 
-if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
+if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0' && $_SESSION['nivel_usuario'] != '77') {
   header('Location: ../login.php');
   exit();
 }
@@ -16,11 +16,11 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 <div class="container">
   <div class="row">
 
-    <div class="col-lg-7 col-md-6">
+    <div class="col-lg-6 col-md-6" style="margin-left: 3%;">
       <h3>CONSUMIDOR</h3>
     </div>
 
-    <div class="pesquisar col-lg-5 col-md-6 col-sm-12">
+    <div class="pesquisar col-lg-5 col-md-6 col-sm-12" style="margin-left: 5%;">
       <form class="form-inline my-2 my-lg-0">
         <input name="txtpesquisarConsumidores" class="form-control mr-sm-2" type="search" placeholder="Pesquisar Consumidores" aria-label="Pesquisar">
         <button name="buttonPesquisar" class="btn btn-outline-secondary my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
@@ -191,7 +191,6 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
     <?php
     if (@$_GET['func'] == 'editar') {
       $id = $_GET['id'];
-
       $localidade = $_GET['id_localidade'];
 
       //executa o store procedure info consumidor
@@ -225,7 +224,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       $tipo_enderecamento       = $row_uc['CORRESPONDENCIA'];
       $status_ligacao           = $row_uc['STATUS'];
       $data_cadastro            = $row_uc['CADASTRO'];
-      $observacoes              = $row_uc['OBSERVAÇÕES'];
+      $observacoes_text         = $row_uc['OBSERVAÇÕES'];
 
       $id_usuario_editor        = $_SESSION['id_usuario'];
 
@@ -255,8 +254,13 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                   </div>
 
                   <div class="form-group col-md-3">
-                    <label for="id_produto">Tipo Jurídico</label>
-                    <input type="text" class="form-control mr-2" name="tipo_juridico" value="<?php echo $tipo_juridico ?>" style="text-transform:uppercase;" readonly>
+                    <label for="fornecedor">Tipo Jurídico</label>
+                    <select class="form-control mr-2" id="category" name="tipo_juridico" style="text-transform:uppercase;" disabled>
+                      <option value="" <?php if ($tipo_juridico == '') { ?> selected <?php } ?>>selecione</option>
+                      <option value="J" <?php if ($tipo_juridico == 'PESSOA JURÍDICA') { ?> selected <?php } ?>>Jurídica</option>
+                      <option value="P" <?php if ($tipo_juridico == 'PESSOA FÍSICA') { ?> selected <?php } ?>>Física</option>
+
+                    </select>
                   </div>
 
                   <div class="form-group col-md-4">
@@ -313,8 +317,8 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                     <select class="form-control mr-2" id="category" name="fone_zap" style="text-transform:uppercase;" disabled>
 
                       <option value="" <?php if ($fone_zap == '') { ?> selected <?php } ?>>SELECIONE</option>
-                      <option value="S" <?php if ($fone_zap == 'S') { ?> selected <?php } ?>>SIM</option>
-                      <option value="N" <?php if ($fone_zap == 'N') { ?> selected <?php } ?>>NÃO</option>
+                      <option value="S" <?php if ($fone_zap == 'SIM') { ?> selected <?php } ?>>SIM</option>
+                      <option value="N" <?php if ($fone_zap == 'NÃO') { ?> selected <?php } ?>>NÃO</option>
 
                     </select>
                   </div>
@@ -390,7 +394,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                   <div class="form-group col-md-9">
                     <label for="fornecedor">Observações</label>
-                    <input type="text" class="form-control mr-2" name="observacoes" placeholder="Observações" value="<?php echo $observacoes; ?>" style="text-transform:uppercase;" readonly>
+                    <input type="text" class="form-control mr-2" name="observacoes" placeholder="Observações" value="<?php echo $observacoes_text ?>" style="text-transform:uppercase;" readonly>
                   </div>
 
 
@@ -402,7 +406,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
             <div class="modal-footer">
               <div style="margin-top: -16px;">
-                <a class="btn btn-info" target="_blank" href="rel_perfil.php?func=imprime&id=<?php echo $id; ?>">Imprimir</a>
+                <a class="btn btn-info" target="_blank" href="rel_perfil.php?func=imprime&id=<?php echo $id; ?>&id_localidade=<?php echo $localidade; ?>">Imprimir</a>
               </div>
 
               <button type="button" class="btn btn-danger mb-3" data-dismiss="modal">Sair </button>
@@ -488,17 +492,17 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                     <input type="text" class="form-control mr-2" name="id_unidade_consumidora" value="<?php echo $id ?>" style="text-transform:uppercase;" readonly>
                   </div>
 
-                  <div class="form-group col-md-3">
+                  <div class="form-group col-md-4">
                     <label for="id_produto">Localidade</label>
                     <input type="text" class="form-control mr-2" name="nome_localidade" value="<?php echo $nome_localidade ?>" style="text-transform:uppercase;" readonly>
                   </div>
 
-                  <div class="form-group col-md-3">
+                  <div class="form-group col-md-5">
                     <label for="id_produto">Bairro</label>
                     <input type="text" class="form-control mr-2" name="nome_bairro" value="<?php echo $nome_bairro ?>" style="text-transform:uppercase;" readonly>
                   </div>
 
-                  <div class="form-group col-md-3">
+                  <div class="form-group col-md-5">
                     <label for="id_produto">Logradouro</label>
                     <input type="text" class="form-control mr-2" name="nome_logradouro" value="<?php echo $nome_logradouro ?>" style="text-transform:uppercase;" readonly>
                   </div>
@@ -513,7 +517,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                     <input type="text" class="form-control mr-2" name="numero_logradouro" value="<?php echo $numero_logradouro ?>" placeholder="Nº" style="text-transform:uppercase;" readonly>
                   </div>
 
-                  <div class="form-group col-md-5">
+                  <div class="form-group col-md-6">
                     <label for="id_produto">Complemento</label>
                     <input type="text" class="form-control mr-2" name="complemento_logradouro" value="<?php echo $complemento_logradouro ?>" placeholder="Complemento" style="text-transform:uppercase;" readonly>
                   </div>
@@ -549,7 +553,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                       <?php
 
-                      $query = "select * from bairro where id_localidade = '$id_localidade2' order by nome_bairro asc";
+                      $query = "select * from enderecamento_bairro where id_localidade = '$id_localidade2' order by nome_bairro asc";
                       $result = mysqli_query($conexao, $query);
 
                       while ($res = mysqli_fetch_array($result)) {
@@ -581,7 +585,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                       <?php
 
-                      $query = "select * from logradouro where id_bairro = '$id_bairro2' order by nome_logradouro asc";
+                      $query = "select * from enderecamento_logradouro where id_bairro = '$id_bairro2' order by nome_logradouro asc";
                       $result = mysqli_query($conexao, $query);
 
                       while ($res = mysqli_fetch_array($result)) {

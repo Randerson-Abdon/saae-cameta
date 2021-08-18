@@ -1,14 +1,14 @@
 <?php
 
-/* $banco = 'saae-santaizabelpa-local';
-$host = 'localhost';
-$usuario = 'root';
-$senha = '';
- */
 $banco = 'santaizabel-pa';
-$host = 'santaizabel-pa.cvpyiyze5epg.sa-east-1.rds.amazonaws.com';
+$host = 'localhost';
 $usuario = 'provider';
 $senha = 'Jp?20061965';
+
+/* $banco = 'santaizabel-pa';
+$host = 'santaizabel-pa.cvpyiyze5epg.sa-east-1.rds.amazonaws.com';
+$usuario = 'provider';
+$senha = 'Jp?20061965'; */
 
 date_default_timezone_set('America/Belem');
 

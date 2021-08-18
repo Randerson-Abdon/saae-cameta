@@ -27,7 +27,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         <?php
 
         //monta dados do combo 1
-        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM localidade";
+        $sql = "SELECT DISTINCT nome_localidade,id_localidade FROM enderecamento_localidade";
 
         $resultado = @mysqli_query($conexao, $sql) or die("Problema na Consulta");
 
@@ -46,8 +46,8 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
   <div class="row">
 
-    <div class="form-group col-md-2">
-      <label for="id_produto">N° de Faturas em Atraso</label>
+    <div class="form-group col-md-3">
+      <label for="id_produto">N° de Faturas em Atrazo</label>
       <input type="text" class="form-control mr-2" name="fat_atrazo" placeholder="Somente números" required>
     </div>
 
@@ -68,29 +68,10 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
         id_localidade: $("select[name='id_localidade']").val(),
         id_logradouro: $("select[name='id_logradouro']").val(),
         id_bairro: $("select[name='id_bairro']").val(),
-        status: $("select[name='status']").val(),
         fat_atrazo: $("input[name='fat_atrazo']").val()
       }), //estamos enviando o valor do input
       success: function(resposta) {
         $('#dados').html(resposta);
-      }
-
-    });
-  });
-</script>
-<script>
-  $("#imprimir").click(function() {
-    $.ajax({
-      url: "rel_corte.php ",
-      type: "POST",
-      data: ({
-        id_localidade: $("select[name='id_localidade']").val(),
-        id_logradouro: $("select[name='id_logradouro']").val(),
-        id_bairro: $("select[name='id_bairro']").val(),
-        fat_atrazo: $("input[name='fat_atrazo']").val()
-      }), //estamos enviando o valor do input
-      success: function(resposta) {
-        $('#dados2').html(resposta);
       }
 
     });
@@ -109,8 +90,9 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 <!-- EXIBIÇÃO PERFIL -->
 <?php
 if (@$_GET['func'] == 'perfil') {
-  $id         = $_GET['id'];
-  $localidade = $_GET['id_localidade'];
+  $id = $_GET['id'];
+
+  $localidade = '01';
 
   //executa o store procedure info consumidor
   $result_sp2 = mysqli_query(
@@ -144,8 +126,6 @@ if (@$_GET['func'] == 'perfil') {
   $status_ligacao           = $row_uc['STATUS'];
   $data_cadastro            = $row_uc['CADASTRO'];
   $observacoes_text         = $row_uc['OBSERVAÇÕES'];
-
-
 
 ?>
 
