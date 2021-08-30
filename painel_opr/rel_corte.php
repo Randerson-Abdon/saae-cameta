@@ -59,6 +59,10 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
     $id_logradouro = '0';
   }
   $fat_atrazo     = $_POST['fat_atrazo'];
+  $rel_tipo  = $_POST['tipo'];
+  $tipo_status  = $_POST['tipo_status'];
+
+  //echo $id_localidade . '' . $id_bairro . '' . $id_logradouro;
 
   //trazendo info perfil_saae
   $query_ps = "SELECT * from perfil_saae";
@@ -173,27 +177,50 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                         <th>
                           Nome
                         </th>
-                        <th>
-                          Logradouro
-                        </th>
+
+                        <?php if ($rel_tipo == '01') { ?>
+                          <th>
+                            Logradouro
+                          </th>
+                        <?php } ?>
+
                         <th>
                           N°
                         </th>
-                        <th>
-                          Bairro
-                        </th>
+
+                        <?php if ($rel_tipo == '02') { ?>
+                          <th>
+                            Complemento
+                          </th>
+                        <?php } ?>
+
+                        <?php if ($rel_tipo == '01') { ?>
+                          <th>
+                            Bairro
+                          </th>
+                        <?php } ?>
+
                         <th>
                           Em atraso
                         </th>
-                        <th>
-                          Faturado
-                        </th>
-                        <th>
-                          *J/M
-                        </th>
-                        <th>
-                          Total Faturado
-                        </th>
+
+                        <?php if ($rel_tipo == '02') { ?>
+                          <th>
+                            Status
+                          </th>
+                        <?php } ?>
+
+                        <?php if ($rel_tipo == '01') { ?>
+                          <th>
+                            Faturado
+                          </th>
+                          <th>
+                            *J/M
+                          </th>
+                          <th>
+                            Total Faturado
+                          </th>
+                        <?php } ?>
 
                       </thead>
                       <tbody>
@@ -210,8 +237,17 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                           $faturado          = $res["TOTAL"];
                           $jurus_multa       = $res["J/M*"];
                           $total_faturado    = $res["TOTAL GERAL"];
+                          $complemento       = $res["COMPLEMENTO"];
+                          $status_ligacao    = $res["STATUS"];
 
                           $id_usuario_editor = $_SESSION['id_usuario'];
+
+                          if ($tipo_status == 'A' and $status_ligacao == 'INATIVA') {
+                            continue;
+                          } elseif ($tipo_status == 'I' and $status_ligacao == 'ATIVA') {
+                            continue;
+                          }
+
 
                         ?>
 
@@ -219,13 +255,32 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                             <td class="text-danger"><?php echo $uc; ?></td>
                             <td><?php echo $nome_razao_social; ?></td>
-                            <td><?php echo $nome_logradouro; ?></td>
+
+                            <?php if ($rel_tipo == '01') { ?>
+                              <td><?php echo $nome_logradouro; ?></td>
+                            <?php } ?>
+
                             <td><?php echo $numero_logradouro; ?></td>
-                            <td><?php echo $nome_bairro; ?></td>
+
+                            <?php if ($rel_tipo == '02') { ?>
+                              <td><?php echo $complemento; ?></td>
+                            <?php } ?>
+
+                            <?php if ($rel_tipo == '01') { ?>
+                              <td><?php echo $nome_bairro; ?></td>
+                            <?php } ?>
+
                             <td><?php echo $qtde; ?></td>
-                            <td><?php echo $faturado; ?></td>
-                            <td><?php echo $jurus_multa; ?></td>
-                            <td><?php echo $total_faturado; ?></td>
+
+                            <?php if ($rel_tipo == '02') { ?>
+                              <td><?php echo $status_ligacao; ?></td>
+                            <?php } ?>
+
+                            <?php if ($rel_tipo == '01') { ?>
+                              <td><?php echo $faturado; ?></td>
+                              <td><?php echo $jurus_multa; ?></td>
+                              <td><?php echo $total_faturado; ?></td>
+                            <?php } ?>
 
                           </tr>
 
@@ -235,11 +290,19 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                       <tfoot>
                         <tr>
 
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <?php if ($rel_tipo == '01') { ?>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          <?php } ?>
+
+                          <?php if ($rel_tipo == '02') { ?>
+                            <td></td>
+                            <td></td>
+                          <?php } ?>
+
 
                           <td>
                             <span class="text-danger">Registros: <?php echo $row; ?> </span>

@@ -79,9 +79,33 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 											<thead class="text-secondary">
 
 												<ul>
+													<div class="row" style="margin-left: -50px;">
 
-													<div class="form-group col-md-2" style="margin-left: -50px;">
-														<input type="button" class="btn btn-danger form-control" value="Imprimir" onclick="javascript:submitForm(this.form, 'rel_corte.php');" />
+														<div class="form-group col-md-2">
+															<label for="fornecedor">Tipo de Relatório</label>
+															<select class="form-control mr-2" id="tipo" name="tipo" style="text-transform:uppercase;">
+
+																<option value="01">Interno</option>
+																<option value="02">Externo</option>
+
+															</select>
+														</div>
+
+														<div class="form-group col-md-2">
+															<label for="fornecedor">Status</label>
+															<select class="form-control mr-2" id="tipo_status" name="tipo_status" style="text-transform:uppercase;">
+
+																<option value="T">Todos</option>
+																<option value="A">Ativa</option>
+																<option value="I">Inativa</option>
+
+															</select>
+														</div>
+
+														<div class="form-group col-md-2" style="top: 22px;">
+															<input type="button" class="btn btn-danger form-control" value="Imprimir" onclick="javascript:submitForm(this.form, 'rel_corte.php');" />
+														</div>
+
 													</div>
 
 												</ul>

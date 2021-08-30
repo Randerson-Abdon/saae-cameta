@@ -65,6 +65,7 @@ $saae_cnpj = $p1 . '.' . $p2 . '.' . $p3 . '/' . $p4 . '-' . $p5;
 @$nome_saae = $row_ps['nome_saae'];
 @$email_saae = $row_ps['email_saae'];
 $logo_orgao = $row_ps['logo_orgao'];
+$home_page_saae = $row_ps['home_page_saae'];
 
 //consulta para numeração automatica
 $query_num = "select * from controle_boleto_servico order by numero_boleto desc ";
@@ -177,8 +178,8 @@ $dadosboleto["demonstrativo3"] = "Prefeitura Municipal de " . $nome_localidade;
 
 // INSTRUÇÕES PARA O CAIXA
 $dadosboleto["instrucoes0"] = "- SR(A). CAIXA, NÃO RECEBER ESTE BOLETO APÓS O VENCIMENTO";
-$dadosboleto["instrucoes1"] = "- Em caso de dúvidas entre em contato conosco: " . $email_saae;
-$dadosboleto["instrucoes2"] = "- Emitido pelo sistema SAAENET - www.saaesantaizabel.net";
+$dadosboleto["instrucoes1"] = "- Em caso de dúvidas entre em contato conosco: $email_saae";
+$dadosboleto["instrucoes2"] = "- Emitido pelo sistema SAAENET - $home_page_saae";
 $dadosboleto["instrucoes3"] = "";
 $dadosboleto["instrucoes4"] = "";
 

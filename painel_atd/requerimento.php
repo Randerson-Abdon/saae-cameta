@@ -432,7 +432,7 @@ function limparTexto($conteudo)
                 url: "resultado4.php ",
                 type: "POST",
                 data: ({
-                  id_localidade: $("select[name='id_localidade']").val(),
+                  id_localidade: $("select[name='id_localidade2']").val(),
                   id_logradouro: $("select[name='id_logradouro']").val(),
                   id_bairro: $("select[name='id_bairro']").val(),
                   numero_logradouro: $("input[name='numero_logradouro']").val()

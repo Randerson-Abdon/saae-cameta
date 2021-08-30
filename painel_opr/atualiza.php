@@ -8,7 +8,7 @@ echo "<select  name=id_bairro onchange=javascript:Atualizar2(this.value," . $_GE
 echo "<option>---Escolha uma opção---</option>";
 
 //busca dados do combo 2
-$sql = "SELECT * FROM enderecamento_bairro INNER JOIN enderecamento_localidade ON enderecamento_localidade.id_localidade = enderecamento_bairro.id_localidade WHERE enderecamento_bairro.id_localidade = '" . $_GET['localidade'] . "' order by nome_bairro asc";
+$sql = "SELECT * FROM enderecamento_bairro INNER JOIN localidade ON enderecamento_localidade.id_localidade = enderecamento_bairro.id_localidade WHERE enderecamento_bairro.id_localidade = '" . $_GET['localidade'] . "' order by nome_bairro asc";
 
 $resultado = mysqli_query($conexao, $sql) or die("Problema na Consulta");
 

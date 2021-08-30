@@ -59,9 +59,6 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
     @$total_saidas       = $res_hc["total_saidas"];
     @$valor_encerramento = $res_hc["valor_encerramento"];
 
-    @$total_saidas       = $res_hc["total_saidas"];
-    @$total_saidas       = $res_hc["total_saidas"];
-
     // apagando zeros a esquerda
     $id_caixa = ltrim($id_usuario_editor, "0") . ltrim($id_termo_abertura_encerramento, "0");
 
@@ -94,7 +91,7 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
 
             #printable {
                 position: fixed;
-                left: 0;
+                left: 20;
                 top: 0;
                 width: 302px;
 
@@ -110,7 +107,7 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
 
         <div class="form-row">
 
-            <div class="form-group col-md-1">
+            <div class="form-group col-md-2">
                 <label for="inputAddress">N° do Caixa</label>
                 <input type="text" class="form-control" name="id_caixa" value="<?php echo $id_termo_abertura_encerramento; ?>" readonly>
             </div>
@@ -193,8 +190,6 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
 
 
         <?php
-
-
         //trazendo info perfil_saae
         $query_ps = "SELECT * from perfil_saae";
         $result_ps = mysqli_query($conexao, $query_ps);
@@ -280,7 +275,7 @@ if ($_SESSION['nivel_usuario'] != '4' && $_SESSION['nivel_usuario'] != '0') {
                 </div>
 
                 <div class="form-group col-md-10">
-                    <label class="nota" for="id_produto">Valor de Encerramento: <?php echo number_format($valor_abertura + $total_entradas, 2, ".", ","); ?></label>
+                    <label class="nota" for="id_produto">Valor de Encerrament: <?php echo number_format($total_entradas - $total_saidas, 2, ".", ""); ?></label>
                 </div>
 
                 <div class="form-group col-md-10">

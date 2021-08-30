@@ -278,7 +278,7 @@ include_once('conexao.php');
                           $vencimento2               = $res["VENCTO"];
                           $total_multas_faturadas    = $res["MULTA"];
                           $total_juros_faturados     = $res["JUROS"];
-                          $total_servicos_requeridos = $res["SERVICOS"];
+                          $total_servicos_requeridos = $res["SERVIÇOS"];
                           $total_parcela_acordo      = $res["ACORDO"];
                           $id_localidade             = $res["ID_LOC"];
 

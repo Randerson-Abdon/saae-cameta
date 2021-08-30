@@ -67,16 +67,17 @@ $uf_saae                  = $row_perfil["uf_saae"];
 
 
 
-  <div class="topo">
-    <a href="index.php">
-      <img width="22%" src="../../../img/parametros/<?php echo $logo_orgao; ?>" class="logo" /></a>
-
-
-    <a href="index.php">
-      <img width="40%" src="../../../img/logo 02.jpeg" class="logo ml-4" /></a>
-
-
-  </div>
+  <div class="topo" style="margin-bottom: -6%;">
+    <div class="row" style="width: 100%;">
+      <div class="col-md-3">
+        <a href="index.php">
+          <img width="200" height="150" src="../../../img/parametros/<?php echo $logo_orgao; ?>" class="img-fluid" alt="Imagem responsiva">
+      </div>
+      <div class="col-md-3">
+        <a href="index.php">
+          <img width="200" height="150" src="../../../img/parametros/logo 02.jpeg" class="img-fluid" alt="Imagem responsiva">
+      </div>
+    </div>
   </div>
   <div class="menu borderRadius transitionALL">
     <ul>

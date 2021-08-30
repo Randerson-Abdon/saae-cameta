@@ -78,7 +78,7 @@ if ($_SESSION['nivel_usuario'] != '1' && $_SESSION['nivel_usuario'] != '0') {
         url: "processa_lista_bl.php ",
         type: "POST",
         data: ({
-          id_localidade: $("select[name='id_localidade']").val(),
+          id_localidade: $("select[name='id_localidade2']").val(),
           id_logradouro: $("select[name='id_logradouro']").val(),
           status: $("select[name='status']").val(),
           id_bairro: $("select[name='id_bairro']").val(),

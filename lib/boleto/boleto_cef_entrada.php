@@ -195,8 +195,8 @@ $dadosboleto["demonstrativo3"] = "Prefeitura Municipal de " . $nome_localidade;
 $dadosboleto["instrucoes0"] = "- SR(A). CAIXA, NÃO RECEBER ESTE BOLETO APÓS O VENCIMENTO";
 $dadosboleto["instrucoes1"] = "- O acordo firmado só será validado após o pagamento deste boleto";
 $dadosboleto["instrucoes2"] = "- O não pagamento até o dia do vencimento acarretará no cancelamento do acordo firmado";
-$dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: " . $email_saae;
-$dadosboleto["instrucoes4"] = "- Emitido pelo sistema SAAENET - www." . $home_page_saae;
+$dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: $email_saae";
+$dadosboleto["instrucoes4"] = "- Emitido pelo sistema SAAENET - $home_page_saae";
 
 // DADOS OPCIONAIS DE ACORDO COM O BANCO OU CLIENTE
 $dadosboleto["quantidade"] = "";

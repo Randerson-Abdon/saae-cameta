@@ -34,6 +34,8 @@ include_once('../conexao.php');
 	$id_logradouro		= $_POST['id_logradouro'];
 	$numero_logradouro  = $_POST['numero_logradouro'];
 
+	//echo $id_localidade . ', ' . $id_bairro . ', ' . $id_logradouro;
+
 	//executa o store procedure info endereço
 	$result = mysqli_query(
 		$conexao,

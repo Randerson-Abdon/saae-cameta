@@ -22,7 +22,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
     <div class="form-group col-md-2">
       <label for="fornecedor">Localidade</label>
 
-      <select class="form-control mr-2" id="category" name="id_localidade" onchange=javascript:Atualizar(this.value);>
+      <select class="form-control mr-2" id="category" name="id_localidade" onchange=javascript:Atualizar01(this.value);>
         <option value="">---Escolha uma opção---</option>";
         <?php
 
@@ -38,9 +38,9 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
       </select>
     </div>
 
-    <div class="form-group col-md-3" id="atualiza"></div>
+    <div class="form-group col-md-3" id="atualiza0"></div>
 
-    <div class="form-group col-md-3" id="atualiza2"></div>
+    <div class="form-group col-md-3" id="atualiza02"></div>
 
   </div>
 

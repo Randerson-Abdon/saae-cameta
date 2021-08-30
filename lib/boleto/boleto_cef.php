@@ -70,6 +70,7 @@ $saae_cnpj = $p1 . '.' . $p2 . '.' . $p3 . '/' . $p4 . '-' . $p5;
 @$nome_saae = $row_ps['nome_saae'];
 @$email_saae = $row_ps['email_saae'];
 @$logo_orgao = $row_ps['logo_orgao'];
+$home_page_saae = $row_ps['home_page_saae'];
 
 //função para tipo de boleto
 $query = "select * from historico_financeiro where id_unidade_consumidora = '$id' and mes_faturado = '$mes_faturado' ";
@@ -180,8 +181,8 @@ while ($res = mysqli_fetch_array($result)) {
 	// INSTRUÇÕES PARA O CAIXA
 	//$dadosboleto["instrucoes1"] = "- Sr. Caixa, cobrar multa de 2% após o vencimento";
 	//$dadosboleto["instrucoes2"] = "- Receber até 10 dias após o vencimento";
-	$dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: saaesi@gmail.com";
-	$dadosboleto["instrucoes4"] = "- Emitido pelo sistema SAAENET - www.saaesantaizabel.com.br";
+	$dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: $email_saae";
+	$dadosboleto["instrucoes4"] = "- Emitido pelo sistema SAAENET - $home_page_saae";
 
 	// DADOS OPCIONAIS DE ACORDO COM O BANCO OU CLIENTE
 	$dadosboleto["quantidade"] = "";

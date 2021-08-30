@@ -65,7 +65,7 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
 
                 <?php
 
-                $id_localidade  = $_POST['id_localidade'];
+                $id_localidade  = $_POST['id_localidade2'];
                 $id_logradouro  = $_POST['id_logradouro'];
                 $id_bairro      = $_POST['id_bairro'];
                 $status         = $_POST['status'];
@@ -138,11 +138,11 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                   @$nome_bairro_saae      = $row_p['nome_bairro_saae'];
                   @$nome_logradouro_saae  = $row_p['nome_logradouro_saae'];
                   @$numero_imovel_saae    = $row_p['numero_imovel_saae'];
-                  @$nome_municipio_saae   = $row_p['nome_municipio_saae'];
+                  @$nome_municipio_saae   = $row_p['nome_municipio'];
                   @$uf_saae               = $row_p['uf_saae'];
                   @$nome_saae             = $row_p['nome_saae'];
                   @$email_saae            = $row_p['email_saae'];
-
+                  $logo_orgao             = $row_p['logo_orgao'];
                   $data = date('d/m/Y');
 
                 ?>
@@ -150,16 +150,16 @@ if ($_SESSION['nivel_usuario'] != '2' && $_SESSION['nivel_usuario'] != '0') {
                   <table style="margin-bottom: 15px;">
                     <thead>
                       <tr>
-                        <th style="width: 20%;"><img width="80%" src="../img/sIzabel/saae_sIzabel_logo.png" alt=""></th>
+                        <th style="width: 20%;"><img width="80%" src="../img/parametros/<?php echo $logo_orgao; ?>" alt=""></th>
                         <th>
                           <p><?php echo $nome_prefeitura ?> <br>
                             SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO ‐ SAAE <br>
                             SISTEMA DE GESTÃO COMERCIAL E OPERACIONAL ‐ SAAENET <br>
-                            RELATÓRIO DE CONSUMIDORES DE SANTA IZABEL <br><?php if ($id_bairro != '0') {
-                                                                            echo 'BAIRRO ' . $nome_bairro;
-                                                                          } ?><?php if ($id_logradouro != '0') {
-                                                                                echo ' - ' . $abreviatura . $nome_logradouro;
-                                                                              } ?> ‐ <?php echo $data ?></p>
+                            RELATÓRIO DE CONSUMIDORES DE <?php echo $nome_municipio_saae; ?> <br><?php if ($id_bairro != '0') {
+                                                                                                    echo 'BAIRRO ' . $nome_bairro;
+                                                                                                  } ?><?php if ($id_logradouro != '0') {
+                                                                                                        echo ' - ' . $abreviatura . $nome_logradouro;
+                                                                                                      } ?> ‐ <?php echo $data ?></p>
                         </th>
                       </tr>
                     </thead>

@@ -4,7 +4,7 @@
 include('../conexao.php'); //conexao com o banco
 
 echo "<label>Bairro</label>";
-echo "<select  name=id_bairro onchange=javascript:Atualizar02(this.value," . $_GET['localidade'] . "); class=form-control mr-2 >";
+echo "<select  name=id_bairro onchange=javascript:Atualizar02(this.value," . $_GET['localidade'] . "); class=form-control >";
 echo "<option>---Escolha uma opção---</option>";
 
 //busca dados do combo 2
