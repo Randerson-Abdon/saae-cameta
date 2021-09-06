@@ -490,6 +490,10 @@ $uf_saae                  = $row_perfil["uf_saae"];
           include_once('view/transparencia.php');
         } elseif (@$_GET['acao'] == 'plano01') {
           include_once('view/plano01.php');
+        } elseif (@$_GET['acao'] == 'confirmar') {
+          include_once('view/confirmar.php');
+        } elseif (@$_GET['acao'] == 'consulta') {
+          include_once('view/consulta_matriculas.php');
         } else {
           include_once('view/home.php');
         }
@@ -803,12 +807,6 @@ $uf_saae                  = $row_perfil["uf_saae"];
   <?php
 
   } ?>
-
-
-
-
-
-
 
   </form>
   </body>

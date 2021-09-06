@@ -98,30 +98,8 @@ include_once('conexao.php');
 
               <?php
 
-              $localidade = $_POST['id_localidade'];
-
-              $numero_cpf_cnpj = $_POST['numero_cpf_cnpj'];
-              //tratamento para numero_cpf_cnpj
-              $ncc = str_replace("/", "", $numero_cpf_cnpj);
-              $ncc2 = str_replace(".", "", $ncc);
-              $ncc3 = str_replace("-", "", $ncc2);
-
-              $id_unidade_consumidora = $_POST['uc'];
-              //completando com zeros a esquerda
-              $uc = str_pad($id_unidade_consumidora, 5, '0', STR_PAD_LEFT);
-
-
-              //trazendo info unidade_consumidora
-              $query_un = "SELECT * from unidade_consumidora where id_unidade_consumidora = '$uc' AND numero_cpf_cnpj = '$ncc3' ";
-              $result_un = mysqli_query($conexao, $query_un);
-
-              //VERIFICAR SE O EMAIL OU SENHA JÁ ESTÁ CADASTRADO                          
-              $row_verificar_un = mysqli_num_rows($result_un);
-              if ($row_verificar_un == 0) {
-                echo "<script language='javascript'>window.alert('Matrícula ou CPF inexistente, verifique os dados digitados ou procure a unidade de atendimento mais próxima!!!'); </script>";
-                echo "<script>window.close();</script>";
-                exit();
-              }
+              $localidade = $_GET[md5('localidade')];
+              $uc = $_GET[md5('uc')];
 
               $result = mysqli_query(
                 $conexao,
